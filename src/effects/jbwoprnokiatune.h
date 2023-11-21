@@ -13,9 +13,16 @@
 
 #define JBWOPR_EFFECT_NAME_NOKIA_TUNE "Nokia Tune"		///< Name of JBWoprNokiaTuneEffect
 
-
+/// @brief Nokia tune effect
+/// @details This class implements the Nokia tune effect.
 class JBWoprNokiaTuneEffect : public JBWoprSongEffect {
 public:
+	/// @brief JBWoprNokiaTuneEffect constructor
+	/// @ingroup EffectGroup
+	/// @param woprBoard Pointer to JBWoprDevice
+	/// @param tempo Tempo of effect
+	/// @param duration Duration of effect
+	/// @param name Name of effect
 	explicit JBWoprNokiaTuneEffect(JBWoprDevice *woprBoard,
 								   uint32_t tempo = 180,
 								   uint32_t duration = -1,

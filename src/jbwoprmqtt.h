@@ -81,7 +81,7 @@ public:
 	// MQTT
 	//
 	/// @brief MQTT publish message
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will publish a message to the MQTT broker.
 	/// @param topic MQTT topic
 	/// @param jsonDoc JSON document
@@ -90,7 +90,7 @@ public:
 	bool mqttPublishMessage(const std::string topic, const DynamicJsonDocument& jsonDoc, bool retain = false);
 
 	/// @brief MQTT publish message
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will publish a message to the MQTT broker.
 	/// @param topic MQTT topic
 	/// @param value MQTT payload value
@@ -99,7 +99,7 @@ public:
 	bool mqttPublishMessage(const std::string topic, const std::string value, bool retain = false);
 
 	/// @brief MQTT publish message
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will publish a message to the MQTT broker.
 	/// @param topic MQTT topic
 	/// @param value MQTT payload value
@@ -344,29 +344,29 @@ protected:
 	const char* COMMAND_SET = "set";							///< Set command
 
 	/// @brief Start MQTT
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will initialize the MQTT client.
 	/// @return True if successful
 	bool _mqttStart();
 
 	/// @brief Stop MQTT
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will stop the MQTT client.
 	void _mqttStop();
 
 	/// @brief Reconnect MQTT
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will check if connection is lost and try to reconnect
 	/// the MQTT client as needed.
 	bool _mqttReconnect();
 
 	/// @brief Called when MQTT client get connected
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will be called when the MQTT client is connected.
 	virtual bool _onMqttConnect();
 
 	/// @brief MQTT callback
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method is the callback for the MQTT client, and will
 	/// handle incoming messages.
 	/// @param topic MQTT topic
@@ -375,7 +375,7 @@ protected:
 	void _mqttCallback(const char* topic, const byte* payload, unsigned int length);
 
 	/// @brief Handle MQTT command message
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will handle incoming MQTT command messages.
 	/// @param entity Entity name
 	/// @param subEntity Sub entity name
@@ -384,7 +384,7 @@ protected:
 	virtual void _handleCommand(const std::string& entity, const std::string& subEntity, const std::string& command, const std::string& payload);
 
 	/// @brief Handle MQTT effect command message
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will handle incoming MQTT effect command messages.
 	/// @param subEntity Sub entity name
 	/// @param command Command
@@ -392,7 +392,7 @@ protected:
 	virtual void _handleEffectCommand(const std::string& subEntity, const std::string& command, const std::string& payload);
 
 	/// @brief Handle MQTT display command message
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will handle incoming MQTT display command messages.
 	/// @param subEntity Sub entity name
 	/// @param command Command
@@ -400,7 +400,7 @@ protected:
 	virtual void _handleDisplayCommand(const std::string& subEntity, const std::string& command, const std::string& payload);
 
 	/// @brief Handle MQTT defcon command message
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @details This method will handle incoming MQTT defcon command messages.
 	/// @param subEntity Sub entity name
 	/// @param command Command
@@ -408,14 +408,14 @@ protected:
 	virtual void _handleDefconCommand(const std::string& subEntity, const std::string& command, const std::string& payload);
 
 	/// @brief Get publish topic for specified entity
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @param entityId Entity ID
 	/// @param subEntityId Sub entity ID
 	/// @return Topic
 	std::string _getTopic(const char * entityId, const char* subEntityId);
 
 	/// @brief Get subscription topic
-	/// @ingroup MQTTGroup
+	/// @ingroup MqttGroup
 	/// @return Subscription topic
 	std::string _getSubscriptionTopic();
 

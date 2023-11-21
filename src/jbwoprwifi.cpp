@@ -68,7 +68,7 @@ bool JBWoprWiFiDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 
 	tm info;
 	_log->trace("Get time");
-	displayShowText("GET TIME");
+	displayShowText("Get time");
 	if (!JBTimeHelper::getTime(&info)) {
 		_log->error("Failed to get time");
 		return false;

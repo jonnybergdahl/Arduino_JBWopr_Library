@@ -50,7 +50,7 @@ struct JBWoprBoardPins {
 	uint8_t dacPin; 						///< DAC pin
 };
 
-/// @brief W.O.P.R. configuration
+/// @brief JBWoprDevice configuration
 struct JBWoprConfiguration {
 	std::string timeFormat;	                ///< Time format
 	std::string dateFormat;                 ///< Date format

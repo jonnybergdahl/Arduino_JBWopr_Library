@@ -39,6 +39,7 @@ enum CodeSolveVariant {
 class JBWoprEffectBase {
 public:
 	/// @brief Constructor
+	/// @ingroup EffectGroup
 	/// @param WOPRDevice instance
 	/// @param duration (optional) Duration of effect in milliseconds, default is -1 (infinite)
 	/// @param name (optional) Name of effect
@@ -47,22 +48,29 @@ public:
 							  std::string name = JBWOPR_EFFECT_NAME_BASE);
 
 	/// @brief Get name of effect
+	/// @ingroup EffectGroup
 	/// @return Name of effect
 	virtual std::string getName();
 
 	/// @brief Start effect
+	/// @ingroup EffectGroup
 	virtual void start();
 
 	/// @brief Stop effect
+	/// @ingroup EffectGroup
 	virtual void stop();
 
 	/// @brief Run loop
+	/// @ingroup EffectGroup
 	virtual void loop();
+
 	/// @brief Check if effect is running
+	/// @ingroup EffectGroup
 	/// @return True if effect is running
 	bool isRunning() const;
 
 	/// @brief Set duration of effect
+	/// @ingroup EffectGroup
 	/// @param duration Duration of effect in milliseconds
 	uint32_t getDuration() const;
 
@@ -76,6 +84,7 @@ protected:
 	uint32_t _nextTick = 0; 			///< Next tick time in milliseconds
 
 	/// @brief Display text on raw display
+	/// @ingroup EffectGroup
 	/// @details This method will display text on the raw display without using
 	/// the displayShowText() method of the JBWoprDevice class.
 	/// @param text Text to display
@@ -90,6 +99,7 @@ private:
 class JBWoprTextDisplayEffect : public JBWoprEffectBase {
 public:
 	/// @brief Constructor
+	/// @ingroup EffectGroup
 	/// @param woprDevice JBWoprDevice instance
 	/// @param text Text to display
 	/// @param alignment (optional) Text alignment, default is LEFT
@@ -102,21 +112,25 @@ public:
 									 const std::string& name=JBWOPR_EFFECT_NAME_TEXT);
 
 	/// @brief Start effect
+	/// @ingroup EffectGroup
 	void start() override;
 
 	/// @brief Run loop
+	/// @ingroup EffectGroup
 	void loop() override;
 
 	/// @brief Set text to display
+	/// @ingroup EffectGroup
 	/// @param text Text to display
 	virtual void setText(const std::string& text);
 
 	/// @brief Set center text
+	/// @ingroup EffectGroup
 	/// @param value True if text should be centered
 	virtual void setAlignment(JBTextAlignment alignment);
 
 protected:
-	std::string _text;				///< Text to display
+	std::string _text;					///< Text to display
 	JBTextAlignment _alignment;        ///< True if text should be centered
 };
 
@@ -124,6 +138,7 @@ protected:
 class JBWoprScrollTextDisplayEffect : public JBWoprEffectBase {
 public:
 	/// @brief Constructor
+	/// @ingroup EffectGroup
 	/// @param woprDevice JBWoprDevice instance
 	/// @param text Text to display
 	/// @param scrollSpeed (optional) Scroll speed in milliseconds, default is 200
@@ -136,16 +151,20 @@ public:
 										   const std::string& name=JBWOPR_EFFECT_NAME_SCROLLTEXT);
 
 	/// @brief Start effect
+	/// @ingroup EffectGroup
 	void start() override;
 
 	/// @brief Run loop
+	/// @ingroup EffectGroup
 	void loop() override;
 
 	/// @brief Set text to display
+	/// @ingroup EffectGroup
 	/// @param text Text to display
 	virtual void setText(const std::string& text);
 
 	/// @brief Set scroll speed
+	/// @ingroup EffectGroup
 	/// @param scrollSpeed Scroll speed in milliseconds
 	void setScrollSpeed(uint32_t scrollSpeed);
 
@@ -164,6 +183,7 @@ private:
 class JBWoprTimeDisplayEffect : public JBWoprEffectBase {
 public:
 	/// @brief Constructor
+	/// @ingroup EffectGroup
 	/// @param woprDevice JBWoprDevice instance
 	/// @param timeFormat (optional) Time format, default is fetched from config
 	/// @param duration (optional) Duration of effect in milliseconds, default is -1 (infinite)
@@ -174,17 +194,21 @@ public:
 									 const std::string& name=JBWOPR_EFFECT_NAME_TIME);
 
 	/// @brief Start effect
+	/// @ingroup EffectGroup
 	void start() override;
 
 	/// @brief Run loop
+	/// @ingroup EffectGroup
 	void loop() override;
 
 	/// @brief Set time format
+	/// @ingroup EffectGroup
 	/// @param timeFormat Time format
 	virtual void setTimeFormat(const std::string& timeFormat);
 
 protected:
 	/// @brief Get time format
+	/// @ingroup EffectGroup
 	/// @param format
 	/// @return Time format
 	virtual std::string _getOddTimeFormat(const std::string& format);
@@ -203,18 +227,27 @@ private:
 /// @brief Display effect for showing the current date
 class JBWoprDateDisplayEffect : public JBWoprEffectBase {
 public:
+	/// @brief Constructor
+	/// @ingroup EffectGroup
+	/// @param woprDevice JBWoprDevice instance
+	/// @param dateFormat (optional) Date format, default is fetched from config
+	/// @param duration (optional) Duration of effect in milliseconds, default is -1 (infinite)
+	/// @param name (optional) Name of effect
 	explicit JBWoprDateDisplayEffect(JBWoprDevice *woprDevice,
 									 std::string  dateFormat = "",
 									 uint32_t duration = -1,
 									 const std::string& name=JBWOPR_EFFECT_NAME_DATE);
 
 	/// @brief Start effect
+	/// @ingroup EffectGroup
 	void start() override;
 
 	/// @brief Get name of effect
+	/// @ingroup EffectGroup
 	void loop() override;
 
 	/// @brief Set date format
+	/// @ingroup EffectGroup
 	/// @param dateFormat Date format
 	void setDateFormat(const std::string& dateFormat);
 
@@ -232,10 +265,12 @@ private:
 };
 
 /// @brief Display effect for showing the current date and time
+/// @ingroup EffectGroup
 /// @details Shows date for 2 seconds, then time for 8 seconds
 class JBWoprDateTimeDisplayEffect : public JBWoprEffectBase {
 public:
 	/// @brief Constructor
+	/// @ingroup EffectGroup
 	/// @param woprDevice JBWoprDevice instance
 	explicit JBWoprDateTimeDisplayEffect(JBWoprDevice *woprDevice,
 										 std::string  timeFormat = "",
@@ -244,16 +279,20 @@ public:
 										 const std::string& name=JBWOPR_EFFECT_NAME_DATETIME);
 
 	/// @brief Start effect
+	/// @ingroup EffectGroup
 	void start() override;
 
 	/// @brief Get name of effect
+	/// @ingroup EffectGroup
 	void loop() override;
 
 	/// @brief Set time format
+	/// @ingroup EffectGroup
 	/// @param timeFormat Time format
 	virtual void setTimeFormat(const std::string& timeFormat);
 
 	/// @brief Set date format
+	/// @ingroup EffectGroup
 	/// @param dateFormat Date format
 	void setDateFormat(const std::string& dateFormat);
 
@@ -270,6 +309,7 @@ private:
 	JBLogger _log {"datetime" };		///< Logger instance
 
 	/// @brief Get time format
+	/// @ingroup EffectGroup
 	/// @param format
 	/// @return Time format
 	virtual std::string _getOddTimeFormat(const std::string& format);
@@ -279,6 +319,7 @@ private:
 class JBWoprXmasSecondsDisplayEffect: public JBWoprScrollTextDisplayEffect {
 public:
 	/// @brief Constructor
+	/// @ingroup EffectGroup
 	/// @param woprBoard JBWoprDevice instance
 	explicit JBWoprXmasSecondsDisplayEffect(JBWoprDevice *woprBoard,
 											uint32_t scrollSpeed = 200,
@@ -286,6 +327,7 @@ public:
 											const std::string& name=JBWOPR_EFFECT_NAME_XMAS_SECONDS);
 
 	/// @brief Start effect
+	/// @ingroup EffectGroup
 	/// @param duration Duration of effect (after it is done) in milliseconds
 	void start() override;
 
@@ -301,6 +343,7 @@ private:
 class JBWoprMissileCodeSolveEffect : public JBWoprEffectBase {
 public:
 	/// @brief Constructor
+	/// @ingroup EffectGroup
 	/// @param woprBoard JBWoprDevice instance
 	/// @param solveVariant Code solve variant, default is MOVIE
 	/// @param duration Duration of effect (after it is done) in milliseconds, default is -1 (infinite)
@@ -311,49 +354,64 @@ public:
 										  const std::string& name=JBWOPR_EFFECT_NAME_CODE_SOLVE);
 
 	/// @brief Start effect
+	/// @ingroup EffectGroup
 	/// @param duration Duration of effect (after it is done) in milliseconds
 	void start() override;
 
 	/// @brief Run loop
+	/// @ingroup EffectGroup
 	void loop() override;
 
 	/// @brief Set code solve variant
+	/// @ingroup EffectGroup
 	/// @param solveVariant Code solve variant
 	void setCodeSolveVariant(CodeSolveVariant solveVariant);
 
 private:
 	/// @brief Display current solution
+	/// @ingroup EffectGroup
 	void _displayCurrentGuess();
 
 	/// @brief Display solved characters
+	/// @ingroup EffectGroup
 	void _displaySolvedCharacters();
 
 	/// @brief Display blinking solution
+	/// @ingroup EffectGroup
 	void _displayBlinkingSolution();
 
 	/// @brief Display blinking launching
+	/// @ingroup EffectGroup
 	void _displayBlinkingLaunching();
 
 	/// @brief Setup current solution
+	/// @ingroup EffectGroup
 	/// @return Current solution
 	std::string _getSolution();
 
 	/// @brief Get starting guess
+	/// @ingroup EffectGroup
 	/// @return Starting guess
 	std::string _getStartingGuess();
 
-	///	@brief  solve order
+	///	@brief Get solve order
+	/// @ingroup EffectGroup
+	/// @return Solve order
 	std::vector<uint32_t> _getSolveOrder();
 
 	/// @brief Get random code
+	/// @ingroup EffectGroup
 	/// @return Random code
 	std::string _getRandomCode();
 
 	/// @brief Get a random char
+	/// @ingroup EffectGroup
 	/// @return Random char
 	static char _getRandomChar();
 
 	/// @brief Get next solve ticks
+	/// @ingroup EffectGroup
+	/// @return Next solve ticks
 	uint32_t _getNextSolveTicks() const;
 
 	CodeSolveVariant _solveVariant = CodeSolveVariant::MOVIE; ///< Code solve variant
@@ -371,6 +429,7 @@ private:
 class JBWoprDefconRainbowEffect : public JBWoprEffectBase {
 public:
 	/// @brief Constructor
+	/// @ingroup EffectGroup
 	/// @param woprBoard JBWoprDevice instance
 	/// @param duration Duration of effect (after it is done) in milliseconds, default is -1 (infinite)
 	/// @param name Name of effect, default is JBWOPR_EFFECT_NAME_DEFCON_RAINBOW
@@ -379,6 +438,7 @@ public:
 									   const std::string& name=JBWOPR_EFFECT_NAME_DEFCON_RAINBOW);
 
 	/// @brief Run loop
+	/// @ingroup EffectGroup
 	void loop() override;
 
 private:
@@ -397,6 +457,7 @@ public:
 	};
 
 	/// @brief Constructor
+	/// @ingroup EffectGroup
 	/// @param woprBoard JBWoprDevice instance
 	/// @param melody Melody
 	/// @param tempo Tempo
@@ -409,16 +470,20 @@ public:
 							  const std::string& name=JBWOPR_EFFECT_NAME_SONG);
 
 	/// @brief Start effect
+	/// @ingroup EffectGroup
 	void start() override;
 
 	/// @brief Run loop
+	/// @ingroup EffectGroup
 	void loop() override;
 
 	/// @brief Set melody
+	/// @ingroup EffectGroup
 	/// @param melody Melody
 	virtual void setSong(const std::vector<Note>* song);
 
 	/// @brief Set tempo
+	/// @ingroup EffectGroup
 	/// @param tempo Tempo
 	virtual void setTempo(uint32_t tempo);
 

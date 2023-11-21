@@ -18,7 +18,7 @@
 // W.O.P.R. with WiFiManager, MQTT and Home Assistant support
 //
 // ====================================================================
-/// Home Assistant specific configuration
+/// JBWoprHADevice configuration
 struct JBWoprHAConfig {
 	bool useHomeAssistant;
 	std::string homeAssistantDiscoveryPrefix;

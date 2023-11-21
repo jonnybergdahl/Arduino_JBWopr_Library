@@ -14,10 +14,12 @@
 #define JBWOPR_EFFECT_NAME_THE_RICK "The Rick"		    ///< Name of JBWoprTheRickEffect
 
 /// @brief The Rick effect
+/// @ingroup EffectGroup
 /// @details Original code: https://github.com/robsoncouto/arduino-songs
 class JBWoprTheRickEffect : public JBWoprSongEffect {
 public:
 	/// @brief Constructor
+	/// @ingroup EffectGroup
 	/// @param woprBoard JBWoprDevice instance
 	/// @param duration Duration of effect (after it is done) in milliseconds, default is -1 (infinite)
 	/// @param name Name of effect, default is JBWOPR_EFFECT_NAME_THE_RICK
