@@ -117,7 +117,7 @@ void JBWoprMqttDevice::displayClear() {
 
 void JBWoprMqttDevice::displaySetBrightness(uint8_t val) {
 	JBWoprWiFiDevice::displaySetBrightness(val);
-	mqttPublishMessage(_getTopic(ENTITY_NAME_DISPLAY, SUBENTITY_NAME_BRIGHTNESS), val);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_DISPLAY, SUBENTITY_NAME_BRIGHTNESS), std::to_string(val));
 }
 
 void JBWoprMqttDevice::displayShowText(const char* text, JBTextAlignment alignment) {
@@ -186,7 +186,7 @@ void JBWoprMqttDevice::defconLedsSetBrightness(uint8_t brightness) {
 
 void JBWoprMqttDevice::defconLedSetColor(JBDefconLevel level, uint32_t color) {
 	JBWoprWiFiDevice::defconLedSetColor(level, color);
-	mqttPublishMessage(_getTopic(ENTITY_NAME_DEFCON, SUBENTITY_NAME_COLOR), color);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_DEFCON, SUBENTITY_NAME_COLOR), JBStringHelper::rgbToString(color));
 }
 
 // ====================================================================
