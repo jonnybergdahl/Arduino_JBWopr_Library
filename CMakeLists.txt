@@ -47,8 +47,8 @@ add_executable(Arduino_WOPR
         src/effects/jbwoprnokiatune.cpp
         examples/JBWopr_AudioDemo/JBWopr_AudioDemo.ino
         examples/JBWopr_ButtonDemo/JBWopr_ButtonDemo.ino
-        examples/JBWopr_DeviceDemo/JBWoprDevice_Demo.ino
-        examples/JBWopr_DefconDemo/JBWopr_DefconLedDemo.ino
+        examples/JBWopr_DeviceDemo/JBWopr_DeviceDemo.ino
+        examples/JBWopr_DefconDemo/JBWopr_DefconDemo.ino
         examples/JBWopr_DisplayDemo/JBWopr_DisplayDemo.ino
         examples/JBWopr_Firmware/JBWopr_Firmware.ino
 
