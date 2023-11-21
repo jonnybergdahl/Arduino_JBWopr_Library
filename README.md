@@ -27,7 +27,11 @@ that you can also use as a starting point for your own firmware.
  - `FIRMWARE_VARIANT_MQTT` - Use the WiFiManager, web configuration portal and MQTT support
  - `FIRMWARE_VARIANT_HA` - Use the WiFiManager, web configuration portal, MQTT and Home Assistant support
 
-### Basic JBWoprDevice usage
+### Code documentation
+
+Full code documentation is available at https://jonnybergdahl.github.io/jbwopr/
+
+## JBWoprDevicee
 
 Create an instance of the `JBWoprDevice` class. Do any configuration you need to do then 
 and call `begin()` in your `setup()` function. Then call `loop()` in your `loop()` function.
