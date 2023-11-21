@@ -127,79 +127,87 @@ Enter the details for your WiFi network and click save. The device will reboot a
 If the _Use web portal_ setting is enabled, you can access the configuration portal by browsing to the IP address of 
 the device. You can find the IP address by looking at the serial output of the device.
 
-![WiFiManager](images/wificonfig.png)
+The following settings are available in the web portal:
+
+![WiFiManager](images/wificonfig.png "WiFi configuration")
 
 ## JBWoprMqttDevice
 
 The 'JBWoprMqttDevice' class adds MQTT support to the `JBWoprWifiDevice` class. It uses the PubSubClient library to
-connect to an MQTT broker. It will publish the device state to the `<mqtt prefix>/<device_id>/state` topic and listen
-for commands on the `<mqtt prefix>/<device_id>/command` topic.
+connect to an MQTT broker. It will publish the device state to the `<mqtt_prefix>/<device_id>/state` topic and listen
+for commands on the `<mqtt_prefix>/<device_id>/command` topic.
+
+The following settings are available in the web portal:
+
+![MQTT](images/mqttconfig.png "MQTT configuration")
 
 ## MQTT Topics
 
-Device state is posted to the `<mqtt prefix>/<device_id>/<enity>/state` topic. It is posted at startup and when state is 
+Device state is posted to the `<mqtt_prefix>/<device_id>/<entity>/state` topic. It is posted at startup and when state is 
 changed.
 
-The following topics are used for device state reporting.
+The following topics are used for device state reporting, and can be used to control the device.
+
+
 
 ### Display
 
 The device will post a message to the following topics when the display state is changed.
 
-| Topic                              | Example payload       | Comment |
-|------------------------------------|-----------------------|---------|
-| wopr/wopr-jonny/display/state      | ON / OFF              |         |
-| wopr/wopr-jonny/display/text       | Hello World           |         |
-| wopr/wopr-jonny/display/scrolltext | Hello scrolling world |         |
-| wopr/wopr-jonny/display/brightness | 50                    |         |
+| Topic                                        | Example payload         | Comment |
+|----------------------------------------------|-------------------------|---------|
+| <mqtt_prefix>/<device_id>/display/state      | ON / OFF                |         |
+| <mqtt_prefix>/<device_id>/display/text       | Hello World             |         |
+| <mqtt_prefix>/<device_id>/display/scrolltext | Hello scrolling world   |         |
+| <mqtt_prefix>/<device_id>/display/brightness | 50                      |         |
 
 ### DEFCON LED's
 
 The device will post a message to the following topics when the DEFCON LED's state is changed.
 
-| Topic                              | Example payload       | Comment |
-|------------------------------------|-----------------------|---------|
-| wopr/wopr-jonny/defcon/state       | ON / OFF              |         |
-| wopr/wopr-jonny/defcon/level       | 1 / 2 / 3 / 4 / 5     |         |
-| wopr/wopr-jonny/defcon/brightness  | 50                    |         |
-| wopr/wopr-jonny/defcon/color       | 255,0,0               |         |
+| Topic                                       | Example payload       | Comment |
+|---------------------------------------------|-----------------------|---------|
+| <mqtt_prefix>/<device_id>/defcon/state      | ON / OFF              |         |
+| <mqtt_prefix>/<device_id>/defcon/level      | 1 / 2 / 3 / 4 / 5     |         |
+| <mqtt_prefix>/<device_id>/defcon/brightness | 50                    |         |
+| <mqtt_prefix>/<device_id>/defcon/color      | 255,0,0               |         |
 
 The device will listen to messages on the following topics.
 
-| Topic                                  | Example payload       | Comment |
-|----------------------------------------|-----------------------|---------|
-| wopr/wopr-jonny/defcon/state/set       | ON / OFF              |         |
-| wopr/wopr-jonny/display/text/set       | Hello World           |         |
-| wopr/wopr-jonny/display/scrolltext/set | Hello scrolling world |         |
-| wopr/wopr-jonny/display/brightness/set | 50                    |         |
+| Topic                                            | Example payload       | Comment |
+|--------------------------------------------------|-----------------------|---------|
+| <mqtt_prefix>/<device_id>/defcon/state/set       | ON / OFF              |         |
+| <mqtt_prefix>/<device_id>/display/text/set       | Hello World           |         |
+| <mqtt_prefix>/<device_id>/display/scrolltext/set | Hello scrolling world |         |
+| <mqtt_prefix>/<device_id>/display/brightness/set | 50                    |         |
 
 
 ### Effects
 
 The device will post a message to the following topics when an effect state is changed.
 
-| Topic                              | Example payload       | Comment |
-|------------------------------------|-----------------------|---------|
-| wopr/wopr-jonny/effect/state       | ON / OFF              |         |
-| wopr/wopr-jonny/effect/name        | Rainbow               |         |
+| Topic                                  | Example payload       | Comment |
+|----------------------------------------|-----------------------|---------|
+| <mqtt_prefix>/<device_id>/effect/state | ON / OFF              |         |
+| <mqtt_prefix>/<device_id>/effect/name  | Rainbow               |         |
 
 The device will listen to messages on the following topics.
 
-| Topic                                  | Example payload       | Comment |
-|----------------------------------------|-----------------------|---------|
-| wopr/wopr-jonny/effect/state/set       | ON / OFF              |         |
-| wopr/wopr-jonny/effect/name/set        | Rainbow               |         |
+| Topic                                      | Example payload       | Comment |
+|--------------------------------------------|-----------------------|---------|
+| <mqtt_prefix>/<device_id>/effect/state/set | ON / OFF              |         |
+| <mqtt_prefix>/<device_id>/effect/name/set  | Rainbow               |         |
 
 ### Buttons
 
 The device will post a message to the following topics when a button is clicked or double clicked.
 
-| Topic                                   | Example payload      | Comment |
-|-----------------------------------------|----------------------|---------|
-| wopr/wopr-jonny/button_front_left/event | click / double_click |         |
-| wopr/wopr-jonny/button_front_right/event| click / double_click |         |
-| wopr/wopr-jonny/button_back_top/event   | click / double_click |         |
-| wopr/wopr-jonny/button_back_bottom/event| click / double_click |         |
+| Topic                                              | Example payload      | Comment |
+|----------------------------------------------------|----------------------|---------|
+| <mqtt_prefix>/<device_id>/button_front_left/event  | click / double_click |         |
+| <mqtt_prefix>/<device_id>/button_front_right/event | click / double_click |         |
+| <mqtt_prefix>/<device_id>/button_back_top/event    | click / double_click |         |
+| <mqtt_prefix>/<device_id>/button_back_bottom/event | click / double_click |         |
 
 ## JBWoprHomeAssistantDevice
 
