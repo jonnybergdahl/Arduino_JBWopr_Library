@@ -20,45 +20,43 @@
 #include <jbwopr.h>
 #include <Adafruit_LEDBackpack.h>
 
-// Define the segment names, this is missing in Adafruit's library. See the segment mapping
-// here - https://learn.adafruit.com/14-segment-alpha-numeric-led-featherwing/usage
+// Segment names for 14-segment alphanumeric displays.
+// See https://learn.adafruit.com/14-segment-alpha-numeric-led-featherwing/usage
 //
-#define ALPHA_SEG_A  0b0000000000000001
-#define ALPHA_SEG_B  0b0000000000000010
-#define ALPHA_SEG_C  0b0000000000000100
-#define ALPHA_SEG_D  0b0000000000001000
-#define ALPHA_SEG_E  0b0000000000010000
-#define ALPHA_SEG_F  0b0000000000100000
-#define ALPHA_SEG_G1 0b0000000001000000
-#define ALPHA_SEG_G2 0b0000000010000000
-#define ALPHA_SEG_H  0b0000000100000000
-#define ALPHA_SEG_J  0b0000001000000000
-#define ALPHA_SEG_K  0b0000010000000000
-#define ALPHA_SEG_L  0b0000100000000000
-#define ALPHA_SEG_M  0b0001000000000000
-#define ALPHA_SEG_N  0b0010000000000000
-#define ALPHA_SEG_DP 0b0100000000000000
+//     -------A-------
+//     |\     |     /|
+//     | \    J    / |
+//     |   H  |  K   |
+//     F    \ | /    B
+//     |     \|/     |
+//     |--G1--|--G2--|
+//     |     /|\     |
+//     E    / | \    C
+//     |   L  |   N  |
+//     | /    M    \ |
+//     |/     |     \|
+//     -------D-------  DP
 
 JBWoprDevice wopr;
 std::array<Adafruit_AlphaNum4, 3> displays;
 
 // Define a basic animation
-uint16_t animation[] { 0,ALPHA_SEG_A,
-					   1,ALPHA_SEG_H,
-					   1,ALPHA_SEG_N,
-					   2,ALPHA_SEG_L,
-					   2,ALPHA_SEG_K,
-					   3,ALPHA_SEG_A,
-					   3,ALPHA_SEG_B,
-					   3,ALPHA_SEG_C,
-					   3,ALPHA_SEG_D,
-					   2,ALPHA_SEG_N,
-					   2,ALPHA_SEG_H,
-					   1,ALPHA_SEG_K,
-					   1,ALPHA_SEG_L,
-					   0,ALPHA_SEG_D,
-					   0,ALPHA_SEG_E,
-					   0,ALPHA_SEG_F};
+uint16_t animation[] { 0,ALPHANUM_SEG_A,
+					   1,ALPHANUM_SEG_H,
+					   1,ALPHANUM_SEG_N,
+					   2,ALPHANUM_SEG_L,
+					   2,ALPHANUM_SEG_K,
+					   3,ALPHANUM_SEG_A,
+					   3,ALPHANUM_SEG_B,
+					   3,ALPHANUM_SEG_C,
+					   3,ALPHANUM_SEG_D,
+					   2,ALPHANUM_SEG_N,
+					   2,ALPHANUM_SEG_H,
+					   1,ALPHANUM_SEG_K,
+					   1,ALPHANUM_SEG_L,
+					   0,ALPHANUM_SEG_D,
+					   0,ALPHANUM_SEG_E,
+					   0,ALPHANUM_SEG_F};
 
 void setup() {
 	// Setup serial
