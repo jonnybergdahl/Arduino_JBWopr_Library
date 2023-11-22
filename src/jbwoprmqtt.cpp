@@ -92,9 +92,6 @@ bool JBWoprMqttDevice::mqttPublishMessage(const char* configTopic, const char* v
 		return false;
 	}
 
-	_log->trace("MQTT Publish %s %s:", configTopic, retain ? "(retain)" : "");
-	_log->traceAsciiDump(value, strlen(value));
-
 	if (!_mqttClient->connected()) {
 		_log->trace("MQTT not connected, skipping publish");
 		return false;
@@ -104,6 +101,10 @@ bool JBWoprMqttDevice::mqttPublishMessage(const char* configTopic, const char* v
 		_log->error("Failed to publish to MQTT topic");
 		return false;
 	}
+
+	_log->trace("MQTT > %s %s:", configTopic, retain ? "(retain)" : "");
+	_log->traceAsciiDump(value, strlen(value));
+
 	return true;
 }
 
@@ -318,20 +319,21 @@ bool JBWoprMqttDevice::_mqttReconnect() {
 	}
 
 	_log->debug("Connecting to MQTT server: %s:%i", _mqttConfig.mqttServerName.c_str(), _mqttConfig.mqttServerPort);
-	std::string lastWillTopic("wopr/WOPR-471da0d8/availability");
-	std::string lastWillPayload("offline");
 
 	for (int retry = 0; retry < maxRetries; ++retry) {
 		if (!_mqttClient->connect(_getDeviceName().c_str(),
 								  _mqttConfig.mqttUserName.c_str(),
 								  _mqttConfig.mqttPassword.c_str(),
-								  lastWillTopic.c_str(),
+								  _getLastWillTopic().c_str(),
 								  1,
 								  true,
-								  lastWillPayload.c_str())) {
+								  "offline")) {
 			_log->error("Failed to connect to MQTT server, error %i", _mqttClient->state());
-			delay(1000);
+			delay(500);
 		} else {
+			if (!_onMqttConnect()) {
+				return false;
+			}
 			break;
 		}
 	}
@@ -348,12 +350,12 @@ bool JBWoprMqttDevice::_onMqttConnect() {
 		_log->error("Failed to subscribe to MQTT topic, error: %i", _mqttClient->state());
 		return false;
 	}
+	mqttPublishMessage(_getLastWillTopic().c_str(), "online");
 	return true;
 }
 
 void JBWoprMqttDevice::_mqttCallback(const char* topic, const byte* payload, unsigned int length){
-	_log->trace("MQTT callback");
-	_log->trace("Topic: %s", topic);
+	_log->trace("MQTT < Topic: %s", topic);
 	_log->traceAsciiDump(payload, length);
 
 	std::string entity;
@@ -397,17 +399,23 @@ void JBWoprMqttDevice::_handleCommand(const std::string& entity, const std::stri
 }
 
 void JBWoprMqttDevice::_handleEffectCommand(const std::string& subEntity, const std::string& command, const std::string& payload) {
-	if (subEntity == SUBENTITY_NAME_NAME) {
-		if (command == COMMAND_SET) {
-			effectsStartEffect(payload.c_str());
-		}
-	} else if (subEntity == SUBENTITY_NAME_STATE) {
+	if (subEntity == SUBENTITY_NAME_STATE) {
 		if (command == COMMAND_SET) {
 			if (payload == STATE_ON) {
 				effectsStartCurrentEffect();
 			} else if (payload == STATE_OFF) {
 				effectsStopCurrentEffect();
+			} else {
+				_log->error("Unsupported payload: %s, %s: %s", subEntity.c_str(), command.c_str(), payload.c_str());
 			}
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
+		}
+	} else if (subEntity == SUBENTITY_NAME_NAME) {
+		if (command == COMMAND_SET) {
+			effectsStartEffect(payload.c_str());
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
 		}
 	} else {
 		_log->error("Unsupported sub entity: %s", subEntity.c_str());
@@ -415,18 +423,37 @@ void JBWoprMqttDevice::_handleEffectCommand(const std::string& subEntity, const 
 }
 
 void JBWoprMqttDevice::_handleDisplayCommand(const std::string& subEntity, const std::string& command, const std::string& payload) {
-	if (subEntity == SUBENTITY_NAME_TEXT) {
+	if (subEntity == SUBENTITY_NAME_STATE) {
+		if (command == COMMAND_SET) {
+			// TODO: Handle state
+			if (payload == STATE_ON) {
+				displayShowText("ON");
+			} else if (payload == STATE_OFF) {
+				displayShowText("OFF");
+			} else {
+				_log->error("Unsupported payload: %s, %s: %s", subEntity.c_str(), command.c_str(), payload.c_str());
+			}
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
+		}
+	} else if (subEntity == SUBENTITY_NAME_TEXT) {
 		if (command == COMMAND_SET) {
 			displayShowText(payload);
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
+		}
+	} else if (subEntity == SUBENTITY_NAME_SCROLLTEXT) {
+		if (command == COMMAND_SET) {
+			displayScrollText(payload);
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
 		}
 	} else if (subEntity == SUBENTITY_NAME_BRIGHTNESS) {
 		if (command == COMMAND_SET) {
 			uint8_t brightness = atoi(payload.c_str());
 			displaySetBrightness(brightness);
-		}
-	} else if (subEntity == SUBENTITY_NAME_SCROLLTEXT) {
-		if (command == COMMAND_SET) {
-			displayScrollText(payload);
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
 		}
 	} else {
 		_log->error("Unsupported sub entity: %s", subEntity.c_str());
@@ -434,20 +461,39 @@ void JBWoprMqttDevice::_handleDisplayCommand(const std::string& subEntity, const
 }
 
 void JBWoprMqttDevice::_handleDefconCommand(const std::string& subEntity, const std::string& command, const std::string& payload) {
-	if (subEntity == SUBENTITY_NAME_LEVEL) {
+	if (subEntity == SUBENTITY_NAME_STATE) {
+		if (command == COMMAND_SET) {
+			// TODO: Handle state
+			if (payload == STATE_ON) {
+				defconLedsSetDefconLevel(JBDefconLevel::DEFCON_5);
+			} else if (payload == STATE_OFF) {
+				defconLedsSetDefconLevel(JBDefconLevel::DEFCON_NONE);
+			} else {
+				_log->error("Unsupported payload: %s, %s: %s", subEntity.c_str(), command.c_str(), payload.c_str());
+			}
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
+		}
+	} else if (subEntity == SUBENTITY_NAME_LEVEL) {
 		if (command == COMMAND_SET) {
 			JBDefconLevel level = _getDefconLevel(payload);
 			defconLedsSetDefconLevel(level);
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
 		}
 	} else if (subEntity == SUBENTITY_NAME_COLOR) {
 		if (command == COMMAND_SET) {
 			uint32_t color = JBStringHelper::stringToRgb(payload);
 			defconLedsSetColor(color);
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
 		}
 	} else if (subEntity == SUBENTITY_NAME_BRIGHTNESS) {
 		if (command == COMMAND_SET) {
 			uint8_t brightness = atoi(payload.c_str());
 			defconLedsSetBrightness(brightness);
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
 		}
 	} else {
 		_log->error("Unsupported sub entity: %s", subEntity.c_str());
@@ -455,11 +501,18 @@ void JBWoprMqttDevice::_handleDefconCommand(const std::string& subEntity, const 
 }
 
 std::string JBWoprMqttDevice::_getTopic(const char* entityId, const char* subEntityId) {
+	// <mqttprefix>/<deviceid>/<entity>/<subentity>
 	return _mqttConfig.mqttPrefix + "/" + _getDeviceName() + "/" + entityId + "/" + subEntityId;
 }
 
 std::string JBWoprMqttDevice::_getSubscriptionTopic() {
-	return _mqttConfig.mqttPrefix + "/" + _getDeviceName() + "/#";
+	// <mqttprefix>/<deviceid>/<entity>/<subentity>/<command>
+	return _mqttConfig.mqttPrefix + "/" + _getDeviceName() + "/+/+/+";
+}
+
+std::string JBWoprMqttDevice::_getLastWillTopic() {
+	// <mqttprefix>/<deviceid>/availability"
+	return _mqttConfig.mqttPrefix + "/" + _getDeviceName() + "/availability";
 }
 
 // ====================================================================

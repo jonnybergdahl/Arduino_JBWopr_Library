@@ -147,71 +147,79 @@ The following settings are available in the web portal:
 
 ## MQTT Topics
 
-Device state is posted to the `<mqtt_prefix>/<device_id>/<entity>/state` topic. It is posted at startup and when state is 
-changed.
+At startup, the device will publish an availability message to the `<mqtt_prefix>/<device_id>/availability` topic
+with the payload `online`. It will also set the last will topic to the same topic with the payload `offline`.
+You can use that to check if the device is online or not.
 
-The following topics are used for device state reporting, and can be used to control the device.
-
-
-
-### Display
-
-The device will post a message to the following topics when the display state is changed.
-
-| Topic                                        | Example payload         | Comment |
-|----------------------------------------------|-------------------------|---------|
-| <mqtt_prefix>/<device_id>/display/state      | ON / OFF                |         |
-| <mqtt_prefix>/<device_id>/display/text       | Hello World             |         |
-| <mqtt_prefix>/<device_id>/display/scrolltext | Hello scrolling world   |         |
-| <mqtt_prefix>/<device_id>/display/brightness | 50                      |         |
-
-### DEFCON LED's
-
-The device will post a message to the following topics when the DEFCON LED's state is changed.
-
-| Topic                                       | Example payload       | Comment |
-|---------------------------------------------|-----------------------|---------|
-| <mqtt_prefix>/<device_id>/defcon/state      | ON / OFF              |         |
-| <mqtt_prefix>/<device_id>/defcon/level      | 1 / 2 / 3 / 4 / 5     |         |
-| <mqtt_prefix>/<device_id>/defcon/brightness | 50                    |         |
-| <mqtt_prefix>/<device_id>/defcon/color      | 255,0,0               |         |
-
-The device will listen to messages on the following topics.
-
-| Topic                                            | Example payload       | Comment |
-|--------------------------------------------------|-----------------------|---------|
-| <mqtt_prefix>/<device_id>/defcon/state/set       | ON / OFF              |         |
-| <mqtt_prefix>/<device_id>/display/text/set       | Hello World           |         |
-| <mqtt_prefix>/<device_id>/display/scrolltext/set | Hello scrolling world |         |
-| <mqtt_prefix>/<device_id>/display/brightness/set | 50                    |         |
-
+Current device state is posted to the `<mqtt_prefix>/<device_id>/<entity>/state` topic, it is posted when 
+state is changed.
 
 ### Effects
 
 The device will post a message to the following topics when an effect state is changed.
 
-| Topic                                  | Example payload       | Comment |
-|----------------------------------------|-----------------------|---------|
-| <mqtt_prefix>/<device_id>/effect/state | ON / OFF              |         |
-| <mqtt_prefix>/<device_id>/effect/name  | Rainbow               |         |
+| Topic                                  | Example payload | Comment              |
+|----------------------------------------|-----------------|----------------------|
+| <mqtt_prefix>/<device_id>/effect/state | `ON`            | Effect state, on/off |
+| <mqtt_prefix>/<device_id>/effect/name  | `Rainbow`       | Effect name          |
 
 The device will listen to messages on the following topics.
 
-| Topic                                      | Example payload       | Comment |
-|--------------------------------------------|-----------------------|---------|
-| <mqtt_prefix>/<device_id>/effect/state/set | ON / OFF              |         |
-| <mqtt_prefix>/<device_id>/effect/name/set  | Rainbow               |         |
+| Topic                                      | Example payload | Comment                                    |
+|--------------------------------------------|-----------------|--------------------------------------------|
+| <mqtt_prefix>/<device_id>/effect/state/set | `ON`            | `ON` / `OFF`                               |
+| <mqtt_prefix>/<device_id>/effect/name/set  | `Rainbow`       | Registered name, will start effect as well |
+
+### Display
+
+The device will post a message to the following topics when the display state is changed.
+
+| Topic                                        | Example payload         | Comment                             |
+|----------------------------------------------|-------------------------|-------------------------------------|
+| <mqtt_prefix>/<device_id>/display/state      | `ON`                    | Current display state, on/off       |
+| <mqtt_prefix>/<device_id>/display/text       | `Hello World`           | Currently displayed text            |
+| <mqtt_prefix>/<device_id>/display/scrolltext | `Hello scrolling world` | Currently scrolling text            |
+| <mqtt_prefix>/<device_id>/display/brightness | `50`                    | Current display brightness, percent |
+
+The device will listen to command messages on the following topics.
+
+| Topic                                            | Example payload         | Comment               |
+|--------------------------------------------------|-------------------------|-----------------------|
+| <mqtt_prefix>/<device_id>/display/state/set      | `ON`                    | `ON` or `OFF`         |
+| <mqtt_prefix>/<device_id>/display/text/set       | `Hello World`           | ASCII characters only |
+| <mqtt_prefix>/<device_id>/display/scrolltext/set | `Hello scrolling world` | ASCII characters only |
+| <mqtt_prefix>/<device_id>/display/brightness/set | `50`                    | `0` to `100`          |
+
+### DEFCON LED's
+
+The device will post a message to the following topics when the DEFCON LED's state is changed.
+
+| Topic                                       | Example payload | Comment                            |
+|---------------------------------------------|-----------------|------------------------------------|
+| <mqtt_prefix>/<device_id>/defcon/state      | `ON`            | Current DEFCON state, on/off       |
+| <mqtt_prefix>/<device_id>/defcon/level      | `1`             | Current DEFCON level               |
+| <mqtt_prefix>/<device_id>/defcon/brightness | `50`            | Current DEFCON brightness, percent |
+| <mqtt_prefix>/<device_id>/defcon/color      | `255,0,0`       | Current color value                |
+
+The device will listen to command messages on the following topics.
+
+| Topic                                            | Example payload | Comment                           |
+|--------------------------------------------------|-----------------|-----------------------------------|
+| <mqtt_prefix>/<device_id>/defcon/state/set       | `ON`            | `ON` or `OFF`                     |
+| <mqtt_prefix>/<device_id>/defcon/level/set       | `1`             | Values `0`,`1`,`2`,`3`,`4`,`5`    |
+| <mqtt_prefix>/<device_id>/display/brightness/set | `50`            | `0` to `100`                      |
+| <mqtt_prefix>/<device_id>/defcon/color/set       | `0,0,128`       | RGB byte values in format `R,G,B` |
 
 ### Buttons
 
-The device will post a message to the following topics when a button is clicked or double clicked.
+The device will post a message to the following topics when a button is clicked or double-clicked.
 
-| Topic                                              | Example payload      | Comment |
-|----------------------------------------------------|----------------------|---------|
-| <mqtt_prefix>/<device_id>/button_front_left/event  | click / double_click |         |
-| <mqtt_prefix>/<device_id>/button_front_right/event | click / double_click |         |
-| <mqtt_prefix>/<device_id>/button_back_top/event    | click / double_click |         |
-| <mqtt_prefix>/<device_id>/button_back_bottom/event | click / double_click |         |
+| Topic                                              | Example payload | Comment                   |
+|----------------------------------------------------|-----------------|---------------------------|
+| <mqtt_prefix>/<device_id>/button_front_left/event  | `click`         | `click` or `double_click` |
+| <mqtt_prefix>/<device_id>/button_front_right/event | `double_click`  | `click` or `double_click` |
+| <mqtt_prefix>/<device_id>/button_back_top/event    | `click`         | `click` or `double_click` |
+| <mqtt_prefix>/<device_id>/button_back_bottom/event | `click`         | `click` or `double_click` |
 
 ## JBWoprHomeAssistantDevice
 

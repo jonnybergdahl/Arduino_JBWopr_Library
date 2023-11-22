@@ -412,12 +412,17 @@ protected:
 	/// @param entityId Entity ID
 	/// @param subEntityId Sub entity ID
 	/// @return Topic
-	std::string _getTopic(const char * entityId, const char* subEntityId);
+	virtual std::string _getTopic(const char * entityId, const char* subEntityId);
 
 	/// @brief Get subscription topic
 	/// @ingroup MqttGroup
 	/// @return Subscription topic
-	std::string _getSubscriptionTopic();
+	virtual std::string _getSubscriptionTopic();
+
+	/// @brief Get last will topic
+	/// @ingroup MqttGroup
+	/// @return Last will topic
+	virtual std::string _getLastWillTopic();
 
 	// ====================================================================
 	// Buttons
