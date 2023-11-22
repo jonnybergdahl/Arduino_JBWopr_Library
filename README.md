@@ -5,6 +5,11 @@ Unexpected Maker W.O.P.R. board.
 
 > Note - The Home Assistant support is still a work in progress. 
 
+## Work in progress
+
+ - Add support for state on/off for display/defcon
+ - Add support for discovery in Home Asssistant
+
 ## Installation
 
 Install using the library manager in the Arduino IDE.
@@ -17,6 +22,16 @@ The library exposes several classes that you can use to interact with the board.
  - `JBWoprWifiDevice` - This adds WiFiManager and web configuration portal support to the `JBWoprDevice` class.
  - `JBWoprMqttDevice` - This adds MQTT support to the `JBWoprWifiDevice` class.
  - `JBWoprHomeAssistantDevice` - This adds Home Assistant support to the `JBWoprMqttDevice` class.
+
+### Compiling the examples
+
+Due to the size of the library, you may need to change the partition size in the Arduino IDE.
+
+| Board            | Minimum `Partition Scheme`                        |
+|------------------|---------------------------------------------------|
+| TinyPICO / ESP32 | Minimal SPIFFS (Large APPS with OTA)              |
+| TinyS2 / ESP32S2 | Minimal SPIFFS (1.9MB APP with OTA/190 KB SPIFFS) |
+| TinyS3 / ESP32S3 | Default (3MB APP with OTA/1.5MB SPIFFS)           |
 
 ### Quick start
 
