@@ -6,7 +6,6 @@
 /// @details This code is distributed under the MIT License. See LICENSE for details.
 #include "jbwopr.h"
 #include "jbwoprhelpers.h"
-#include "ha/mdi_consts.h"
 #include <string>
 #include <esp_system.h>
 #include <WiFi.h>
@@ -67,15 +66,9 @@ bool JBWoprDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 	_woprVariant = variant;
 	_log->info("JBWoprDevice begin, variant: %i", variant);
 
-	// Effects
-	if (_config.useTimeOnlyClock) {
-		_defaultEffect = new JBWoprTimeDisplayEffect(this,
-													 _config.timeFormat);
-	} else {
-		_defaultEffect = new JBWoprDateTimeDisplayEffect(this,
-														 _config.timeFormat,
-														 _config.dateFormat);
-	}
+	_defaultEffect = new JBWoprDateTimeDisplayEffect(this,
+													 _config.timeFormat,
+													 _config.dateFormat);
 
 	// Buttons
 	_log->trace("Button pins: %i, %i, %i, %i", pins.buttonFrontLeftPin, pins.buttonFrontRightPin, pins.buttonBackTopPin, pins.buttonBackBottomPin);

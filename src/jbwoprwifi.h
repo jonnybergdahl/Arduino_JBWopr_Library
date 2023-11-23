@@ -140,13 +140,13 @@ protected:
 	std::string _apName = "";										///< AP name
 
 	const char* WEB_PORTAL_PASSWORD = "woprwopr";       			///< AP portal password
-	const char* CONF_EFFECTS_TIMEOUT_KEY = "effectsTimeout";		///< Effects timeout key name
-	const char* CONF_TIME_FORMAT_KEY = "timeFormat";				///< Time format key name
-	const char* CONF_DATE_FORMAT_KEY = "dateFormat";				///< Date Format key name
-	const char* CONF_DEFCON_BRIGHTNESS_KEY = "defconBrightness";	///< DEFCON LEDs brightness key name
-	const char* CONF_DISPLAY_BRIGHTNESS_KEY = "displayBrightness";	///< Display brightness key name
-	const char* CONF_WIFI_HOST_NAME_KEY = "hostName";               ///< Host name key name
-	const char* CONF_WIFI_USE_WEB_PORTAL_KEY = "useWebPortal";		///< Use portal key name
+	const char* JSON_KEY_EFFECTS_TIMEOUT = "effectsTimeout";		///< Effects timeout key name
+	const char* JSON_KEY_TIME_FORMAT = "timeFormat";				///< Time format key name
+	const char* JSON_KEY_DATE_FORMAT = "dateFormat";				///< Date Format key name
+	const char* JSON_KEY_DEFCON_BRIGHTNESS = "defconBrightness";	///< DEFCON LEDs brightness key name
+	const char* JSON_KEY_DISPLAY_BRIGHTNESS = "displayBrightness";	///< Display brightness key name
+	const char* JSON_KEY_WIFI_HOST_NAME = "hostName";               ///< Host name key name
+	const char* JSON_KEY_WIFI_USE_WEB_PORTAL = "useWebPortal";		///< Use portal key name
 
 	const char* HTML_WOPR_TITLE = "<h2>W.O.P.R. settings</h2>";		///< Settings title
 	const char* HTML_NETWORK_TITLE = "<h2>Network settings</h2>";	///< Network title

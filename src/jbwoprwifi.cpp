@@ -203,37 +203,37 @@ serializeJson(jsonDoc, Serial);
 }
 
 void JBWoprWiFiDevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jsonDoc) {
-	if (!jsonDoc[CONF_TIME_FORMAT_KEY].isNull()) {
-		_config.timeFormat = jsonDoc[CONF_TIME_FORMAT_KEY].as<std::string>();
+	if (!jsonDoc[JSON_KEY_TIME_FORMAT].isNull()) {
+		_config.timeFormat = jsonDoc[JSON_KEY_TIME_FORMAT].as<std::string>();
 	}
-	if (!jsonDoc[CONF_DATE_FORMAT_KEY].isNull()) {
-		_config.dateFormat = jsonDoc[CONF_DATE_FORMAT_KEY].as<std::string>();
+	if (!jsonDoc[JSON_KEY_DATE_FORMAT].isNull()) {
+		_config.dateFormat = jsonDoc[JSON_KEY_DATE_FORMAT].as<std::string>();
 	}
-	if (!jsonDoc[CONF_DEFCON_BRIGHTNESS_KEY].isNull()) {
-		_config.defconLedsBrightness = jsonDoc[CONF_DEFCON_BRIGHTNESS_KEY].as<uint8_t>();
+	if (!jsonDoc[JSON_KEY_DEFCON_BRIGHTNESS].isNull()) {
+		_config.defconLedsBrightness = jsonDoc[JSON_KEY_DEFCON_BRIGHTNESS].as<uint8_t>();
 	}
-	if (!jsonDoc[CONF_DISPLAY_BRIGHTNESS_KEY].isNull()) {
-		_config.displayBrightness = jsonDoc[CONF_DISPLAY_BRIGHTNESS_KEY].as<uint8_t>();
+	if (!jsonDoc[JSON_KEY_DISPLAY_BRIGHTNESS].isNull()) {
+		_config.displayBrightness = jsonDoc[JSON_KEY_DISPLAY_BRIGHTNESS].as<uint8_t>();
 	}
-	if (!jsonDoc[CONF_EFFECTS_TIMEOUT_KEY].isNull()) {
-		_config.effectsTimeout = jsonDoc[CONF_EFFECTS_TIMEOUT_KEY].as<uint8_t>();
+	if (!jsonDoc[JSON_KEY_EFFECTS_TIMEOUT].isNull()) {
+		_config.effectsTimeout = jsonDoc[JSON_KEY_EFFECTS_TIMEOUT].as<uint8_t>();
 	}
-	if (!jsonDoc[CONF_WIFI_HOST_NAME_KEY].isNull()) {
-		_wifiConfig.hostName = jsonDoc[CONF_WIFI_HOST_NAME_KEY].as<std::string>();
+	if (!jsonDoc[JSON_KEY_WIFI_HOST_NAME].isNull()) {
+		_wifiConfig.hostName = jsonDoc[JSON_KEY_WIFI_HOST_NAME].as<std::string>();
 	}
-	if (!jsonDoc[CONF_WIFI_USE_WEB_PORTAL_KEY].isNull()) {
-		_wifiConfig.useWebPortal = jsonDoc[CONF_WIFI_USE_WEB_PORTAL_KEY].as<bool>();
+	if (!jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL].isNull()) {
+		_wifiConfig.useWebPortal = jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL].as<bool>();
 	}
 }
 
 void JBWoprWiFiDevice::_setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) {
-	jsonDoc[CONF_TIME_FORMAT_KEY] = _config.timeFormat;
-	jsonDoc[CONF_DATE_FORMAT_KEY] = _config.dateFormat;
-	jsonDoc[CONF_DEFCON_BRIGHTNESS_KEY] = _config.defconLedsBrightness;
-	jsonDoc[CONF_DISPLAY_BRIGHTNESS_KEY] = _config.displayBrightness;
-	jsonDoc[CONF_EFFECTS_TIMEOUT_KEY] = _config.effectsTimeout;
-	jsonDoc[CONF_WIFI_HOST_NAME_KEY] = _wifiConfig.hostName;
-	jsonDoc[CONF_WIFI_USE_WEB_PORTAL_KEY] = _wifiConfig.useWebPortal;
+	jsonDoc[JSON_KEY_TIME_FORMAT] = _config.timeFormat;
+	jsonDoc[JSON_KEY_DATE_FORMAT] = _config.dateFormat;
+	jsonDoc[JSON_KEY_DEFCON_BRIGHTNESS] = _config.defconLedsBrightness;
+	jsonDoc[JSON_KEY_DISPLAY_BRIGHTNESS] = _config.displayBrightness;
+	jsonDoc[JSON_KEY_EFFECTS_TIMEOUT] = _config.effectsTimeout;
+	jsonDoc[JSON_KEY_WIFI_HOST_NAME] = _wifiConfig.hostName;
+	jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL] = _wifiConfig.useWebPortal;
 }
 
 // ====================================================================
@@ -262,14 +262,14 @@ void JBWoprWiFiDevice::_setupWiFiManager() {
 	_networkTitleParam = new WiFiManagerParameter(HTML_NETWORK_TITLE);
 	_breakParam = new WiFiManagerParameter("<br/>");
 
-	_timeFormatParam = new WiFiManagerParameter(CONF_TIME_FORMAT_KEY, "Time format", _config.timeFormat.c_str(), 10);
-	_dateFormatParam = new WiFiManagerParameter(CONF_DATE_FORMAT_KEY, "Date format", _config.dateFormat.c_str(), 10);
-	_displayBrightnessParam = new WiFiManagerParameter(CONF_DISPLAY_BRIGHTNESS_KEY, "Display brightness (%)", _displayBrightnessValue, 3);
-	_defconLedsBrightnessParam = new WiFiManagerParameter(CONF_DEFCON_BRIGHTNESS_KEY, "DEFCON LEDs brightness (%)", _defconLedsBrightnessValue, 3);
-	_effectsTimeoutParam = new WiFiManagerParameter(CONF_EFFECTS_TIMEOUT_KEY, "Effects timeout (s)", _effectsTimeoutValue, 3);
+	_timeFormatParam = new WiFiManagerParameter(JSON_KEY_TIME_FORMAT, "Time format", _config.timeFormat.c_str(), 10);
+	_dateFormatParam = new WiFiManagerParameter(JSON_KEY_DATE_FORMAT, "Date format", _config.dateFormat.c_str(), 10);
+	_displayBrightnessParam = new WiFiManagerParameter(JSON_KEY_DISPLAY_BRIGHTNESS, "Display brightness (%)", _displayBrightnessValue, 3);
+	_defconLedsBrightnessParam = new WiFiManagerParameter(JSON_KEY_DEFCON_BRIGHTNESS, "DEFCON LEDs brightness (%)", _defconLedsBrightnessValue, 3);
+	_effectsTimeoutParam = new WiFiManagerParameter(JSON_KEY_EFFECTS_TIMEOUT, "Effects timeout (s)", _effectsTimeoutValue, 3);
 
-	_hostNameParam = new WiFiManagerParameter(CONF_WIFI_HOST_NAME_KEY, "Host name", _wifiConfig.hostName.c_str(), 40);
-	_useWebPortalParam = new WiFiManagerParameter(CONF_WIFI_USE_WEB_PORTAL_KEY, "Use web portal", "T", 2, _wifiConfig.useWebPortal ? HTML_CHECKBOX_TRUE : HTML_CHECKBOX_FALSE, WFM_LABEL_AFTER);
+	_hostNameParam = new WiFiManagerParameter(JSON_KEY_WIFI_HOST_NAME, "Host name", _wifiConfig.hostName.c_str(), 40);
+	_useWebPortalParam = new WiFiManagerParameter(JSON_KEY_WIFI_USE_WEB_PORTAL, "Use web portal", "T", 2, _wifiConfig.useWebPortal ? HTML_CHECKBOX_TRUE : HTML_CHECKBOX_FALSE, WFM_LABEL_AFTER);
 
 	_wifiManager->addParameter(_woprTitleParam);
 	_wifiManager->addParameter(_timeFormatParam);

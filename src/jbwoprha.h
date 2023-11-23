@@ -72,8 +72,8 @@ protected:
 	//
 	JBWoprHAConfig _haConfig;					///< Home Assistant configuration
 
-	const char* CONF_HA_USE_HOME_ASSISTANT_KEY = "useHomeAssistant";	///< Use Home Assistant key name
-	const char* CONF_HA_DISCOVERY_PREFIX_KEY = "discoveryPrefix";		//< Home Assistant discovery prefix key name
+	const char* JSON_KEY_HA_USE_HOME_ASSISTANT = "useHomeAssistant";	///< Use Home Assistant key name
+	const char* JSON_KEY_HA_DISCOVERY_PREFIX = "discoveryPrefix";		///< Home Assistant discovery prefix key name
 
 	/// @brief Set configuration from JSON document
 	/// @param jsonDoc JSON document
@@ -101,6 +101,9 @@ protected:
 	// ====================================================================
 	// MQTT
 	//
+	const char* ENTITY_NAME_DIAGNOSTIC = "diagnostic";		///< Diagnostics entity name
+	const char* ENTITY_NAME_CONFIG = "config";					///< Config entity name
+
 	/// @brief Called when MQTT client get connected
 	/// @ingroup MQTTGroup
 	/// @details This method will be called when the MQTT client is connected.
@@ -111,11 +114,76 @@ protected:
 	//
 	bool _publishHomeAssistantDiscovery;				///< True if Home Assistant discovery should be published
 
+	const char* HA_DIAG_PREFIX = "diagnostic";							///< Diagnostic discovery prefix
+	const char* HA_CONFIG_PREFIX = "config";							///< Config discovery prefix
+
+	const char* HA_COMPONENT_NUMBER = "number";						///< Number component
+	const char* HA_COMPONENT_SELECT = "select";						///< Select component
+	const char* HA_COMPONENT_SENSOR = "sensor";						///< Sensor component
+	const char* HA_COMPONENT_SWITCH = "switch";						///< Switch component
+
+	const char* HA_DIAG_ENTITY_IP = "ip";								///< IP entity name
+	const char* HA_DIAG_ENTITY_RSSI = "rssi";							///< RSSI entity name
+	const char* HA_DIAG_ENTITY_RAM = "ram";								///< RAM entity name
+	const char* HA_CONF_ENTITY_DATE_FORMAT = "date_format";				///< Date format entity name
+	const char* HA_CONF_ENTITY_TIME_FORMAT = "time_format";				///< Time format entity name
+	const char* HA_CONF_ENTITY_DISPLAY_BRIGHTNESS = "display_brightness";	///< Display brightness entity name
+	const char* HA_CONF_ENTITY_DEFCON_BRIGHTNESS = "defcon_brightness";	///< DEFCON brightness entity name
+	const char* HA_CONF_ENTITY_EFFECTS_TIMEOUT = "effects_timeout";		///< Effects timeout entity name
+	const char* HA_CONF_ENTITY_WIFI_USE_WEB_PORTAL = "use_web_portal";	///< Use web portal entity name
+
+	const char* JSON_KEY_HA_DIAG_ENTITY_IP = "ipAddress";						///< IP entity key name
+	const char* JSON_KEY_HA_DIAG_ENTITY_RSSI = "rssi";							///< RSSI entity key name
+	const char* JSON_KEY_HA_DIAG_ENTITY_RAM = "ram";							///< RAM entity key name
+	const char* JSON_KEY_HA_DIAG_ENTITY_VERSION = "version";					///< Version entity key name
+
 	/// @brief Send Home Assistant discovery
 	bool _homeAssistantSendDiscovery();
 
+	/// @brief Publish Home Assistant diagnostics
+	bool _homeAssistantPublishDiagnostics();
+
+	/// @brief Publish Home Assistant configuration
+	bool _homeAssistantPublishConfig();
+
+	/// @brief Publish Home Assistant state
+	bool _homeAssistantPublishState();
+
+
 	/// @brief Handle Home Assistant command
 	void _homeAssistantHandleCommand(std::string entity, std::string subEntity, std::string command, std::string payload);
+
+	/// @brief Get Home Assistant discovery topic
+	/// @param entity Entity
+	/// @param subEntity Sub entity
+	/// @return Discovery topic
+	std::string _getDiscoveryTopic(const std::string& component,
+								   const std::string& prefix,
+								   const std::string& entity);
+
+	/// @brief Generate basic discovery message
+	/// @param name Name
+	/// @param prefix Prefix
+	/// @param entity Entity
+	/// @param templateValue Template
+	/// @param icon Icon
+	/// @param unitOfMeasurement Unit of measurement
+	/// @return JSON document
+	void _addDiscoveryPayload(DynamicJsonDocument& jsonDoc,
+							  const std::string& name,
+							  const std::string& prefix,
+							  const std::string& entity,
+							  const std::string& templateValue,
+							  const std::string& icon,
+							  const std::string& unitOfMeasurement = "");
+
+	/// @brief Add device data to Home Assistant discovery message
+	/// @param jsonDoc JSON document
+	void _addDeviceData(DynamicJsonDocument& jsonDoc);
+
+	/// @brief Add availability data to Home Assistant discovery message
+	/// @param jsonDoc JSON document
+	void _addAvailabilityData(DynamicJsonDocument& jsonDoc);
 
 private:
 	// ====================================================================

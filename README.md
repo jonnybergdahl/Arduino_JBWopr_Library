@@ -239,3 +239,71 @@ The device will post a message to the following topics when a button is clicked 
 ## JBWoprHomeAssistantDevice
 
 TODO
+
+### Topics
+
+| Topic                                       | Example payload         | Comment       |
+|---------------------------------------------|-------------------------|---------------|
+| <mqtt_prefix>/<device_id>/diagnostics/state | JSON payload, See below | Diagnostics   |
+| <mqtt_prefix>/<device_id>/config/state      | JSON payload, See below | Configuration |
+| <mqtt_prefix>/<device_id>/device/set        | JSON payload, See below | Device state  |
+
+### Diagnostics
+
+Diagnostic information is posted at startup.
+
+```json
+{
+  "ipAddress": "172.30.2.210",
+  "rssi": -50,
+  "version": "1.0.0-beta3"
+}
+
+```
+
+### Configuration
+
+Current configuration is posted at startup.
+
+```json
+{
+  "timeFormat": "%H %M %s",
+  "dateFormat": "%Y-%m-%d",
+  "displayBrightness": 50,
+  "defconLedsBrightness": 50,
+  "effectsTimeout": 30,
+  "wifiHostname": "wopr-5ccf7f2b9b2c",
+  "useWebPortal": true,
+  "useMqtt": true,
+  "mqttServerName": "servername.local",
+  "mqttServerPort": 1883,
+  "mqttUserName": "username",
+  "mqttPassword": "password",
+  "mqttPrefix": "wopr"
+}
+```
+
+### Device state
+
+Current device state is posted when state is changed.
+
+```json
+{
+  "effect": {
+    "state": "ON",
+    "name": "Rainbow"
+  },
+  "display": {
+    "state": "ON",
+    "text": "Hello World",
+    "scrollText": "Hello scrolling world",
+    "brightness": 50
+  },
+  "defcon": {
+    "state": "ON",
+    "level": 1,
+    "brightness": 50,
+    "color": "255,0,0"
+  }
+}
+```

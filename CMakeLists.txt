@@ -28,7 +28,6 @@ include_directories("~/Library/Arduino15/packages/esp32/hardware/esp32/2.0.14/to
 include_directories("~/Library/Arduino15/packages/esp32/hardware/esp32/2.0.14/tools/sdk/esp32/include/hal/esp32/include/")
 
 add_executable(Arduino_WOPR
-        src/ha/mdi_consts.h
         src/jbwopr.cpp
         src/jbwopr.h
         src/jbwoprwifi.h
@@ -51,6 +50,8 @@ add_executable(Arduino_WOPR
         examples/JBWopr_DefconDemo/JBWopr_DefconDemo.ino
         examples/JBWopr_DisplayDemo/JBWopr_DisplayDemo.ino
         examples/JBWopr_Firmware/JBWopr_Firmware.ino
+        src/ha/ha_abbr.h
+        src/ha/mdi_consts.h
 
 )
 

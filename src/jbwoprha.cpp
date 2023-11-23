@@ -7,6 +7,8 @@
 /// @copyright Copyright© 2023, Jonny Bergdahl
 ///
 #include "jbwoprha.h"
+#include "ha/ha_abbr.h"
+#include "ha/mdi_consts.h"
 
 // ====================================================================
 // General
@@ -25,21 +27,12 @@ bool JBWoprHADevice::begin(JBWoprBoardVariant variant) {
 }
 
 bool JBWoprHADevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
-	JBWoprMqttDevice::begin(variant, pins);
-
-	if (!_mqttConfig.useMqtt) {
-		_log->warning("MQTT is not enabled");
+	if (!JBWoprMqttDevice::begin(variant, pins)) {
 		return false;
 	}
 
 	if (!_haConfig.useHomeAssistant) {
 		_log->warning("Home Assistant is not enabled");
-		return false;
-	}
-
-	_log->trace("Publish Home Assistant Discovery");
-	if (!_homeAssistantSendDiscovery()) {
-		_log->error("Failed to send Home Assistant discovery");
 		return false;
 	}
 
@@ -49,9 +42,7 @@ bool JBWoprHADevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 void JBWoprHADevice::loop() {
 	JBWoprMqttDevice::loop();
 
-	if (_publishHomeAssistantDiscovery) {
-		_homeAssistantSendDiscovery();
-	}
+	// Nothing to do here
 }
 
 // ====================================================================
@@ -72,18 +63,18 @@ LogLevel JBWoprHADevice::getLogLevel() {
 void JBWoprHADevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jsonDoc) {
 	JBWoprMqttDevice::_setConfigFromJsonDocument(jsonDoc);
 
-	if (!jsonDoc[CONF_HA_USE_HOME_ASSISTANT_KEY].isNull()) {
-		_haConfig.useHomeAssistant = jsonDoc[CONF_HA_USE_HOME_ASSISTANT_KEY].as<bool>();
+	if (!jsonDoc[JSON_KEY_HA_USE_HOME_ASSISTANT].isNull()) {
+		_haConfig.useHomeAssistant = jsonDoc[JSON_KEY_HA_USE_HOME_ASSISTANT].as<bool>();
 	}
-	if (!jsonDoc[CONF_HA_DISCOVERY_PREFIX_KEY].isNull()) {
-		_haConfig.homeAssistantDiscoveryPrefix = jsonDoc[CONF_HA_DISCOVERY_PREFIX_KEY].as<std::string>();
+	if (!jsonDoc[JSON_KEY_HA_DISCOVERY_PREFIX].isNull()) {
+		_haConfig.homeAssistantDiscoveryPrefix = jsonDoc[JSON_KEY_HA_DISCOVERY_PREFIX].as<std::string>();
 	}
 }
 
 void JBWoprHADevice::_setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) {
 	JBWoprMqttDevice::_setJsonDocumentFromConfig(jsonDoc);
-	jsonDoc[CONF_HA_USE_HOME_ASSISTANT_KEY] = _haConfig.useHomeAssistant;
-	jsonDoc[CONF_HA_DISCOVERY_PREFIX_KEY] = _haConfig.homeAssistantDiscoveryPrefix;
+	jsonDoc[JSON_KEY_HA_USE_HOME_ASSISTANT] = _haConfig.useHomeAssistant;
+	jsonDoc[JSON_KEY_HA_DISCOVERY_PREFIX] = _haConfig.homeAssistantDiscoveryPrefix;
 }
 
 // ====================================================================
@@ -95,8 +86,8 @@ void JBWoprHADevice::_setupWiFiManager() {
 	auto wifiManager = _getWiFiManager();
 
 	_homeAssistantTitleParam = new WiFiManagerParameter(HTML_HOME_ASSISTANT_TITLE);
-	_useHomeAssistantParam = new WiFiManagerParameter(CONF_HA_USE_HOME_ASSISTANT_KEY, "Use Home Assistant", "T", 2, _haConfig.useHomeAssistant ? HTML_CHECKBOX_TRUE : HTML_CHECKBOX_FALSE, WFM_LABEL_AFTER);
-	_homeAssistantDiscoveryPrefixParam = new WiFiManagerParameter(CONF_HA_DISCOVERY_PREFIX_KEY, "Home Assistant Discovery prefix", _haConfig.homeAssistantDiscoveryPrefix.c_str(), 40);
+	_useHomeAssistantParam = new WiFiManagerParameter(JSON_KEY_HA_USE_HOME_ASSISTANT, "Use Home Assistant", "T", 2, _haConfig.useHomeAssistant ? HTML_CHECKBOX_TRUE : HTML_CHECKBOX_FALSE, WFM_LABEL_AFTER);
+	_homeAssistantDiscoveryPrefixParam = new WiFiManagerParameter(JSON_KEY_HA_DISCOVERY_PREFIX, "Home Assistant Discovery prefix", _haConfig.homeAssistantDiscoveryPrefix.c_str(), 40);
 	_break3Param = new WiFiManagerParameter("<br/>");
 
 	wifiManager->addParameter(_homeAssistantTitleParam);
@@ -122,10 +113,15 @@ bool JBWoprHADevice::_onMqttConnect() {
 	}
 
 	if (_haConfig.useHomeAssistant) {
-		_log->trace("Publishing Home Assistant availability");
-		mqttPublishMessage("wopr/WOPR-471da0d8/availability", "online");
-		_homeAssistantSendDiscovery();
+		if (!_homeAssistantSendDiscovery()) {
+			_log->error("Failed to send Home Assistant discovery");
+			return false;
+		}
+		_homeAssistantPublishDiagnostics();
+		_homeAssistantPublishConfig();
+		_homeAssistantPublishState();
 	}
+
 	return true;
 }
 
@@ -133,8 +129,194 @@ bool JBWoprHADevice::_onMqttConnect() {
 // Home Assistant
 //
 bool JBWoprHADevice::_homeAssistantSendDiscovery() {
-	//_log->trace("Publishing Home Assistant discovery messages");
-	_log->error("HA Discovery not implemented");
+	std::string topic;
+
+	_log->trace("Publishing Home Assistant discovery messages");
+
+	// Diagnostics
+	// (We use nested scopes here to solve the memory issue)
+	{
+		DynamicJsonDocument jsonDoc(1024);
+		topic = _getDiscoveryTopic(HA_COMPONENT_SENSOR, HA_DIAG_PREFIX, HA_DIAG_ENTITY_IP);
+		_addDiscoveryPayload(jsonDoc,
+							 "IP Address",
+							 HA_DIAG_PREFIX,
+							 HA_DIAG_ENTITY_IP,
+							 JSON_KEY_HA_DIAG_ENTITY_IP,
+							 MDI_ICON_IP_NETWORK);
+		mqttPublishMessage(topic, jsonDoc, true);
+	}
+
+	{
+		DynamicJsonDocument jsonDoc(1024);
+		topic = _getDiscoveryTopic(HA_COMPONENT_SENSOR, HA_DIAG_PREFIX, HA_DIAG_ENTITY_RSSI);
+		_addDiscoveryPayload(jsonDoc,
+							 "RSSI",
+							 HA_DIAG_PREFIX,
+							 HA_DIAG_ENTITY_RSSI,
+							 JSON_KEY_HA_DIAG_ENTITY_RSSI,
+							 MDI_ICON_WIFI,
+							 "dB");
+		mqttPublishMessage(topic, jsonDoc, true);
+	}
+
+	{
+		DynamicJsonDocument jsonDoc(1024);
+		topic = _getDiscoveryTopic(HA_COMPONENT_SENSOR, HA_DIAG_PREFIX, HA_DIAG_ENTITY_RAM);
+		_addDiscoveryPayload(jsonDoc,
+							 "Free memory",
+							 HA_DIAG_PREFIX,
+							 HA_DIAG_ENTITY_RAM,
+							 JSON_KEY_HA_DIAG_ENTITY_RAM,
+							 MDI_ICON_MEMORY,
+							 "B");
+		mqttPublishMessage(topic, jsonDoc, true);
+	}
+
+	// Config
+	{
+		DynamicJsonDocument jsonDoc(1024);
+		topic = _getDiscoveryTopic(HA_COMPONENT_SELECT, HA_CONFIG_PREFIX, HA_CONF_ENTITY_TIME_FORMAT);
+		_addDiscoveryPayload(jsonDoc,
+							 "Time format",
+							 ENTITY_NAME_CONFIG,
+							 HA_CONF_ENTITY_TIME_FORMAT,
+							 JSON_KEY_TIME_FORMAT,
+							 MDI_ICON_CLOCK_DIGITAL);
+		auto timeOptions = jsonDoc.createNestedArray("options");
+		timeOptions.add("%H %M %S");
+		timeOptions.add("%H.%M.%S");
+		timeOptions.add("%H-%M-%S");
+		timeOptions.add("%H:%M:%S");
+		timeOptions.add("%I %M %S %p");
+		timeOptions.add("%I.%M.%S %p");
+		timeOptions.add("%I:%M:%S %p");
+		jsonDoc["command_topic"] = "wopr/wopr-461da0d8/config/time_format/set";
+		mqttPublishMessage(topic, jsonDoc, true);
+	}
+
+	{
+		DynamicJsonDocument jsonDoc(1024);
+		topic = _getDiscoveryTopic(HA_COMPONENT_SELECT, HA_CONFIG_PREFIX, HA_CONF_ENTITY_DATE_FORMAT);
+		_addDiscoveryPayload(jsonDoc,
+							 "Date format",
+							 HA_CONFIG_PREFIX,
+							 HA_CONF_ENTITY_DATE_FORMAT,
+							 JSON_KEY_DATE_FORMAT,
+							 MDI_ICON_CLOCK_DIGITAL);
+		auto dateOptions = jsonDoc.createNestedArray("options");
+		dateOptions.add("%Y-%m-%d");
+		dateOptions.add("%m/%d/%Y");
+		dateOptions.add("%d/%m/%Y");
+		dateOptions.add("%D-%M-%Y");
+		dateOptions.add("%D.%M.%Y");
+		jsonDoc["command_topic"] = "wopr/wopr-461da0d8/config/date_format/set";
+		mqttPublishMessage(topic, jsonDoc, true);
+	}
+
+	{
+		DynamicJsonDocument jsonDoc(1024);
+		topic = _getDiscoveryTopic(HA_COMPONENT_NUMBER, HA_CONFIG_PREFIX, HA_CONF_ENTITY_DISPLAY_BRIGHTNESS);
+		_addDiscoveryPayload(jsonDoc,
+							 "Display brightness",
+							 HA_CONFIG_PREFIX,
+							 HA_CONF_ENTITY_DISPLAY_BRIGHTNESS,
+							 JSON_KEY_DISPLAY_BRIGHTNESS,
+							 MDI_ICON_BRIGHTNESS_5,
+							 "%");
+		jsonDoc["min"] = 0;
+		jsonDoc["max"] = 100;
+		jsonDoc["mode"] = "box";
+		jsonDoc["command_topic"] = "wopr/wopr-461da0d8/config/display_brightness/set";
+		mqttPublishMessage(topic, jsonDoc, true);
+	}
+
+	{
+		DynamicJsonDocument jsonDoc(1024);
+		topic = _getDiscoveryTopic(HA_COMPONENT_NUMBER, HA_CONFIG_PREFIX, HA_CONF_ENTITY_DEFCON_BRIGHTNESS);
+		_addDiscoveryPayload(jsonDoc,
+							 "DEFCON brightness",
+							 HA_CONFIG_PREFIX,
+							 HA_CONF_ENTITY_DEFCON_BRIGHTNESS,
+							 JSON_KEY_DEFCON_BRIGHTNESS,
+							 MDI_ICON_BRIGHTNESS_5,
+							 "%");
+		jsonDoc["min"] = 0;
+		jsonDoc["max"] = 100;
+		jsonDoc["mode"] = "box";
+		jsonDoc["command_topic"] = "wopr/wopr-461da0d8/config/defcon_brightness/set";
+		mqttPublishMessage(topic, jsonDoc, true);
+	}
+
+	{
+		DynamicJsonDocument jsonDoc(1024);
+		topic = _getDiscoveryTopic(HA_COMPONENT_NUMBER, HA_CONFIG_PREFIX, HA_CONF_ENTITY_EFFECTS_TIMEOUT);
+		_addDiscoveryPayload(jsonDoc,
+							 "Effects timeout",
+							 HA_CONFIG_PREFIX,
+							 HA_CONF_ENTITY_EFFECTS_TIMEOUT,
+							 JSON_KEY_EFFECTS_TIMEOUT,
+							 MDI_ICON_TIMER_OUTLINE,
+							 "s");
+		jsonDoc["mode"] = "box";
+		jsonDoc["command_topic"] = "wopr/wopr-461da0d8/config/effects_timeout/set";
+		mqttPublishMessage(topic, jsonDoc, true);
+	}
+
+	{
+		DynamicJsonDocument jsonDoc(1024);
+		topic = _getDiscoveryTopic(HA_COMPONENT_SWITCH, HA_CONFIG_PREFIX, HA_CONF_ENTITY_WIFI_USE_WEB_PORTAL);
+		_addDiscoveryPayload(jsonDoc,
+							 "Use web portal",
+							 HA_CONFIG_PREFIX,
+							 HA_CONF_ENTITY_WIFI_USE_WEB_PORTAL,
+							 JSON_KEY_WIFI_USE_WEB_PORTAL,
+							 MDI_ICON_WEB);
+		jsonDoc["payload_on"] = "True";
+		jsonDoc["payload_off"] = "False";
+		jsonDoc["command_topic"] = "wopr/wopr-461da0d8/config/use_web_portal/set";
+		mqttPublishMessage(topic, jsonDoc, true);
+	}
+	return true;
+}
+
+bool JBWoprHADevice::_homeAssistantPublishDiagnostics() {
+	_log->trace("Publishing Home Assistant diagnostics message");
+
+	std::string diagnosticsTopic = _getTopic(ENTITY_NAME_DIAGNOSTIC, SUBENTITY_NAME_STATE);
+
+	DynamicJsonDocument jsonDoc(128);
+	jsonDoc[JSON_KEY_HA_DIAG_ENTITY_IP] = WiFi.localIP().toString();
+	jsonDoc[JSON_KEY_HA_DIAG_ENTITY_RSSI] = WiFi.RSSI();
+	jsonDoc[JSON_KEY_HA_DIAG_ENTITY_RAM] = ESP.getFreeHeap();
+	jsonDoc[JSON_KEY_HA_DIAG_ENTITY_VERSION] = LIBRARY_VERSION;
+
+	std::ostringstream oss;
+	serializeJson(jsonDoc, oss);
+	std::string payload = oss.str();
+
+	mqttPublishMessage(diagnosticsTopic, payload);
+
+	return true;
+}
+
+bool JBWoprHADevice::_homeAssistantPublishConfig() {
+	DynamicJsonDocument jsonDoc(512);  // Adjust the size according to your needs
+
+	_log->trace("Publishing Home Assistant configuration");
+
+	auto topic = _getTopic(HA_CONFIG_PREFIX, SUBENTITY_NAME_STATE);
+	_setJsonDocumentFromConfig(jsonDoc);
+	return mqttPublishMessage(topic, jsonDoc);
+}
+
+bool JBWoprHADevice::_homeAssistantPublishState() {
+	_log->trace("Publishing Home Assistant state messages");
+
+	// Display
+	//auto displayStateTopic = _getDiscoveryTopic("light", "display");
+
+	_log->error("HA State not implemented");
 	return false;
 }
 
@@ -144,4 +326,50 @@ void JBWoprHADevice::_homeAssistantHandleCommand(std::string entity, std::string
 	_log->traceDump(payload.c_str(), payload.length());
 
 }
+
+std::string JBWoprHADevice::_getDiscoveryTopic(const std::string& component, const std::string& prefix,  const std::string& entity) {
+	return _haConfig.homeAssistantDiscoveryPrefix + "/" + component + "/" + _getDeviceName() + "/" + prefix + "_" + entity + "/config";
+}
+
+void JBWoprHADevice::_addDiscoveryPayload(DynamicJsonDocument& jsonDoc,
+										  const std::string& name,
+										  const std::string& prefix,
+										  const std::string& entity,
+										  const std::string& valueTemplate,
+										  const std::string& icon,
+										  const std::string& unitOfMeasurement) {
+	_addDeviceData(jsonDoc);
+	_addAvailabilityData(jsonDoc);
+	jsonDoc[HA_NAMES_NAME] = name;
+	jsonDoc[HA_NAMES_ENTITY_CATEGORY] = prefix;
+	jsonDoc[HA_NAMES_UNIQUE_ID] = prefix + "_" + entity;
+	jsonDoc[HA_NAMES_OBJECT_ID] = prefix + "_" + entity;
+	jsonDoc[HA_NAMES_STATE_TOPIC] = _getTopic(prefix, SUBENTITY_NAME_STATE);
+	jsonDoc[HA_NAMES_VALUE_TEMPLATE] = "{{ value_json." + valueTemplate + "}}";
+	if (!icon.empty()) {
+		jsonDoc[HA_NAMES_ICON] = icon;
+	}
+	if (!unitOfMeasurement.empty()) {
+		jsonDoc[HA_NAMES_UNIT_OF_MEASUREMENT] = unitOfMeasurement;
+	}
+}
+
+void JBWoprHADevice::_addDeviceData(DynamicJsonDocument& jsonDoc) {
+	JsonObject device = jsonDoc.createNestedObject("device");
+	device["name"] = _getDeviceName();
+	JsonArray identifiers = device.createNestedArray("identifiers");
+	identifiers.add(_getDeviceName());
+	device["manufacturer"] = "Unexpected Maker";
+	device["model"] = _woprVariant == JBWoprBoardVariant::ORIGINAL ? "W.O.P.R" : "W.O.P.R. Haxorz";
+	device["sw_version"] = LIBRARY_VERSION;
+}
+
+void JBWoprHADevice::_addAvailabilityData(DynamicJsonDocument& jsonDoc) {
+	JsonArray availability = jsonDoc.createNestedArray("availability");
+	auto data = availability.createNestedObject();
+	data["topic"] = _getAvailabilityTopic();
+}
+
+
+
 

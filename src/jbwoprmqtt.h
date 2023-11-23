@@ -87,7 +87,7 @@ public:
 	/// @param jsonDoc JSON document
 	/// @param retain Retain message, default value is false
 	/// @return True if successful
-	bool mqttPublishMessage(const std::string topic, const DynamicJsonDocument& jsonDoc, bool retain = false);
+	bool mqttPublishMessage(const std::string& topic, const DynamicJsonDocument& jsonDoc, bool retain = false);
 
 	/// @brief MQTT publish message
 	/// @ingroup MqttGroup
@@ -96,7 +96,7 @@ public:
 	/// @param value MQTT payload value
 	/// @param retain Retain message, default value is false
 	/// @return True if successful
-	bool mqttPublishMessage(const std::string topic, const std::string value, bool retain = false);
+	bool mqttPublishMessage(const std::string& topic, const std::string& value, bool retain = false);
 
 	/// @brief MQTT publish message
 	/// @ingroup MqttGroup
@@ -266,12 +266,12 @@ protected:
 	//
 	JBWoprMqttConfig _mqttConfig;				///< MQTT configuration
 
-	const char* CONF_MQTT_USE_MQTT_KEY = "useMqtt";					///< Use MQTT key name
-	const char* CONF_MQTT_SERVER_NAME_KEY = "mqttServerName";		///< MQTT server name key name
-	const char* CONF_MQTT_SERVER_PORT_KEY = "mqttServerPort";		///< MQTT server port key name
-	const char* CONF_MQTT_USER_NAME_KEY = "mqttUserName";			///< MQTT user name key name
-	const char* CONF_MQTT_PASSWORD_KEY = "mqttPassword";			///< MQTT password key name
-	const char* CONF_MQTT_PREFIX_KEY = "mqttPrefix";				///< MQTT prefix key name
+	const char* JSON_KEY_MQTT_USE_MQTT = "useMqtt";					///< Use MQTT key name
+	const char* JSON_KEY_MQTT_SERVER_NAME = "mqttServerName";		///< MQTT server name key name
+	const char* JSON_KEY_MQTT_SERVER_PORT = "mqttServerPort";		///< MQTT server port key name
+	const char* JSON_KEY_MQTT_USER_NAME = "mqttUserName";			///< MQTT user name key name
+	const char* JSON_KEY_MQTT_PASSWORD = "mqttPassword";			///< MQTT password key name
+	const char* JSON_KEY_CONF_MQTT_PREFIX = "mqttPrefix";				///< MQTT prefix key name
 
 	/// @brief Set JBWoprMqttDevice specific config values from JSON document
 	/// @ingroup ConfigurationGroup
@@ -326,7 +326,7 @@ protected:
 	const char* ENTITY_NAME_BUTTON_BACK_TOP = "button_back_top";			///< Button back top entity name
 	const char* ENTITY_NAME_BUTTON_BACK_BOTTOM = "button_back_bottom";		///< Button back bottom entity name
 
-	const char* SUBENTITY_NAME_STATE = "state";				///< Color subentity name
+	const char* SUBENTITY_NAME_STATE = "state";				///< State subentity name
 	const char* SUBENTITY_NAME_BRIGHTNESS = "brightness";	///< Brightness subentity name
 	const char* SUBENTITY_NAME_COLOR = "color";				///< Color subentity name
 	const char* SUBENTITY_NAME_TEXT = "text";				///< Text subentity name
@@ -414,15 +414,22 @@ protected:
 	/// @return Topic
 	virtual std::string _getTopic(const char * entityId, const char* subEntityId);
 
+	/// @brief Get publish topic for specified entity
+	/// @ingroup MqttGroup
+	/// @param entityId Entity ID
+	/// @param subEntityId Sub entity ID
+	/// @return Topic
+	virtual std::string _getTopic(const std::string& entityId, const std::string& subEntityId);
+
 	/// @brief Get subscription topic
 	/// @ingroup MqttGroup
 	/// @return Subscription topic
 	virtual std::string _getSubscriptionTopic();
 
-	/// @brief Get last will topic
+	/// @brief Get availability topic
 	/// @ingroup MqttGroup
-	/// @return Last will topic
-	virtual std::string _getLastWillTopic();
+	/// @return Availability topic
+	virtual std::string _getAvailabilityTopic();
 
 	// ====================================================================
 	// Buttons

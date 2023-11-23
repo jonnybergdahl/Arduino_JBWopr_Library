@@ -34,7 +34,7 @@
 #include <jbwoprwifi.h>
 #elif defined(FIRMWARE_VARIANT_MQTT)
 #include <jbwoprmqtt.h>
-#elif
+#else
 #include <jbwoprha.h>
 #endif
 #include <effects/jbwopreffects.h>
@@ -46,7 +46,7 @@
 JBWoprWiFiDevice wopr;
 #elif defined(FIRMWARE_VARIANT_MQTT)
 JBWoprMqttDevice wopr;
-#elif
+#else
 JBWoprHADevice wopr;
 #endif
 int32_t effectIndex = 0;					// Keeps track of the currently selected effect

@@ -74,14 +74,14 @@ LogLevel JBWoprMqttDevice::getLogLevel() {
 // ====================================================================
 // MQTT
 //
-bool JBWoprMqttDevice::mqttPublishMessage(const std::string configTopic, const DynamicJsonDocument& jsonDoc, bool retain) {
+bool JBWoprMqttDevice::mqttPublishMessage(const std::string& configTopic, const DynamicJsonDocument& jsonDoc, bool retain) {
 	char payload[1024];
 	serializeJson(jsonDoc, payload);
 
 	return mqttPublishMessage(configTopic.c_str(), payload, retain);
 }
 
-bool JBWoprMqttDevice::mqttPublishMessage(const std::string topic, const std::string payload, bool retain) {
+bool JBWoprMqttDevice::mqttPublishMessage(const std::string& topic, const std::string& payload, bool retain) {
 
 	return mqttPublishMessage(topic.c_str(), payload.c_str(), retain);
 }
@@ -195,34 +195,34 @@ void JBWoprMqttDevice::defconLedSetColor(JBDefconLevel level, uint32_t color) {
 //
 void JBWoprMqttDevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jsonDoc) {
 	JBWoprWiFiDevice::_setConfigFromJsonDocument(jsonDoc);
-	if (!jsonDoc[CONF_MQTT_USE_MQTT_KEY].isNull()) {
-		_mqttConfig.useMqtt = jsonDoc[CONF_MQTT_USE_MQTT_KEY].as<bool>();
+	if (!jsonDoc[JSON_KEY_MQTT_USE_MQTT].isNull()) {
+		_mqttConfig.useMqtt = jsonDoc[JSON_KEY_MQTT_USE_MQTT].as<bool>();
 	}
-	if (!jsonDoc[CONF_MQTT_SERVER_NAME_KEY].isNull()) {
-		_mqttConfig.mqttServerName = jsonDoc[CONF_MQTT_SERVER_NAME_KEY].as<std::string>();
+	if (!jsonDoc[JSON_KEY_MQTT_SERVER_NAME].isNull()) {
+		_mqttConfig.mqttServerName = jsonDoc[JSON_KEY_MQTT_SERVER_NAME].as<std::string>();
 	}
-	if (!jsonDoc[CONF_MQTT_SERVER_PORT_KEY].isNull()) {
-		_mqttConfig.mqttServerPort = jsonDoc[CONF_MQTT_SERVER_PORT_KEY].as<uint16_t>();
+	if (!jsonDoc[JSON_KEY_MQTT_SERVER_PORT].isNull()) {
+		_mqttConfig.mqttServerPort = jsonDoc[JSON_KEY_MQTT_SERVER_PORT].as<uint16_t>();
 	}
-	if (!jsonDoc[CONF_MQTT_USER_NAME_KEY].isNull()) {
-		_mqttConfig.mqttUserName = jsonDoc[CONF_MQTT_USER_NAME_KEY].as<std::string>();
+	if (!jsonDoc[JSON_KEY_MQTT_USER_NAME].isNull()) {
+		_mqttConfig.mqttUserName = jsonDoc[JSON_KEY_MQTT_USER_NAME].as<std::string>();
 	}
-	if (!jsonDoc[CONF_MQTT_PASSWORD_KEY].isNull()) {
-		_mqttConfig.mqttPassword = jsonDoc[CONF_MQTT_PASSWORD_KEY].as<std::string>();
+	if (!jsonDoc[JSON_KEY_MQTT_PASSWORD].isNull()) {
+		_mqttConfig.mqttPassword = jsonDoc[JSON_KEY_MQTT_PASSWORD].as<std::string>();
 	}
-	if (!jsonDoc[CONF_MQTT_PREFIX_KEY].isNull()) {
-		_mqttConfig.mqttPrefix = jsonDoc[CONF_MQTT_PREFIX_KEY].as<std::string>();
+	if (!jsonDoc[JSON_KEY_CONF_MQTT_PREFIX].isNull()) {
+		_mqttConfig.mqttPrefix = jsonDoc[JSON_KEY_CONF_MQTT_PREFIX].as<std::string>();
 	}
 }
 
 void JBWoprMqttDevice::_setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) {
 	JBWoprWiFiDevice::_setJsonDocumentFromConfig(jsonDoc);
-	jsonDoc[CONF_MQTT_USE_MQTT_KEY] = _mqttConfig.useMqtt;
-	jsonDoc[CONF_MQTT_SERVER_NAME_KEY] = _mqttConfig.mqttServerName;
-	jsonDoc[CONF_MQTT_SERVER_PORT_KEY] = _mqttConfig.mqttServerPort;
-	jsonDoc[CONF_MQTT_USER_NAME_KEY] = _mqttConfig.mqttUserName;
-	jsonDoc[CONF_MQTT_PASSWORD_KEY] = _mqttConfig.mqttPassword;
-	jsonDoc[CONF_MQTT_PREFIX_KEY] = _mqttConfig.mqttPrefix;
+	jsonDoc[JSON_KEY_MQTT_USE_MQTT] = _mqttConfig.useMqtt;
+	jsonDoc[JSON_KEY_MQTT_SERVER_NAME] = _mqttConfig.mqttServerName;
+	jsonDoc[JSON_KEY_MQTT_SERVER_PORT] = _mqttConfig.mqttServerPort;
+	jsonDoc[JSON_KEY_MQTT_USER_NAME] = _mqttConfig.mqttUserName;
+	jsonDoc[JSON_KEY_MQTT_PASSWORD] = _mqttConfig.mqttPassword;
+	jsonDoc[JSON_KEY_CONF_MQTT_PREFIX] = _mqttConfig.mqttPrefix;
 }
 
 // ====================================================================
@@ -236,12 +236,12 @@ void JBWoprMqttDevice::_setupWiFiManager(){
 
 	_mqttTitleParam = new WiFiManagerParameter(HTML_MQTT_TITLE);
 	_break2Param = new WiFiManagerParameter("<br/>");
-	_useMqttParam = new WiFiManagerParameter(CONF_MQTT_USE_MQTT_KEY, "Use MQTT", "T", 2, _mqttConfig.useMqtt ? HTML_CHECKBOX_TRUE : HTML_CHECKBOX_FALSE, WFM_LABEL_AFTER);
-	_mqttServerNameParam = new WiFiManagerParameter(CONF_MQTT_SERVER_NAME_KEY, "MQTT server", _mqttConfig.mqttServerName.c_str(), 40);
-	_mqttServerPortParam = new WiFiManagerParameter(CONF_MQTT_SERVER_PORT_KEY, "MQTT port", _mqttServerPortValue, 5);
-	_mqttUserNameParam = new WiFiManagerParameter(CONF_MQTT_USER_NAME_KEY, "MQTT user name", _mqttConfig.mqttUserName.c_str(), 40);
-	_mqttPasswordParam = new WiFiManagerParameter(CONF_MQTT_PASSWORD_KEY, "MQTT password", _mqttConfig.mqttPassword.c_str(), 40);
-	_mqttPrefixParam = new WiFiManagerParameter(CONF_MQTT_PREFIX_KEY, "MQTT prefix", _mqttConfig.mqttPrefix.c_str(), 40);
+	_useMqttParam = new WiFiManagerParameter(JSON_KEY_MQTT_USE_MQTT, "Use MQTT", "T", 2, _mqttConfig.useMqtt ? HTML_CHECKBOX_TRUE : HTML_CHECKBOX_FALSE, WFM_LABEL_AFTER);
+	_mqttServerNameParam = new WiFiManagerParameter(JSON_KEY_MQTT_SERVER_NAME, "MQTT server", _mqttConfig.mqttServerName.c_str(), 40);
+	_mqttServerPortParam = new WiFiManagerParameter(JSON_KEY_MQTT_SERVER_PORT, "MQTT port", _mqttServerPortValue, 5);
+	_mqttUserNameParam = new WiFiManagerParameter(JSON_KEY_MQTT_USER_NAME, "MQTT user name", _mqttConfig.mqttUserName.c_str(), 40);
+	_mqttPasswordParam = new WiFiManagerParameter(JSON_KEY_MQTT_PASSWORD, "MQTT password", _mqttConfig.mqttPassword.c_str(), 40);
+	_mqttPrefixParam = new WiFiManagerParameter(JSON_KEY_CONF_MQTT_PREFIX, "MQTT prefix", _mqttConfig.mqttPrefix.c_str(), 40);
 
 	wifiManager->addParameter(_mqttTitleParam);
 	wifiManager->addParameter(_useMqttParam);
@@ -324,7 +324,7 @@ bool JBWoprMqttDevice::_mqttReconnect() {
 		if (!_mqttClient->connect(_getDeviceName().c_str(),
 								  _mqttConfig.mqttUserName.c_str(),
 								  _mqttConfig.mqttPassword.c_str(),
-								  _getLastWillTopic().c_str(),
+								  _getAvailabilityTopic().c_str(),
 								  1,
 								  true,
 								  "offline")) {
@@ -350,7 +350,7 @@ bool JBWoprMqttDevice::_onMqttConnect() {
 		_log->error("Failed to subscribe to MQTT topic, error: %i", _mqttClient->state());
 		return false;
 	}
-	mqttPublishMessage(_getLastWillTopic().c_str(), "online");
+	mqttPublishMessage(_getAvailabilityTopic().c_str(), "online");
 	return true;
 }
 
@@ -505,12 +505,16 @@ std::string JBWoprMqttDevice::_getTopic(const char* entityId, const char* subEnt
 	return _mqttConfig.mqttPrefix + "/" + _getDeviceName() + "/" + entityId + "/" + subEntityId;
 }
 
+std::string JBWoprMqttDevice::_getTopic(const std::string& entityId, const std::string& subEntityId) {
+	return _getTopic(entityId.c_str(), subEntityId.c_str());
+}
+
 std::string JBWoprMqttDevice::_getSubscriptionTopic() {
 	// <mqttprefix>/<deviceid>/<entity>/<subentity>/<command>
 	return _mqttConfig.mqttPrefix + "/" + _getDeviceName() + "/+/+/+";
 }
 
-std::string JBWoprMqttDevice::_getLastWillTopic() {
+std::string JBWoprMqttDevice::_getAvailabilityTopic() {
 	// <mqttprefix>/<deviceid>/availability"
 	return _mqttConfig.mqttPrefix + "/" + _getDeviceName() + "/availability";
 }

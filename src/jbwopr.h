@@ -22,7 +22,7 @@
 #include "effects/jbwopreffects.h"
 #include "jbwoprhelpers.h"
 
-#define LIBRARY_VERSION "1.0.0";
+#define LIBRARY_VERSION "1.0.0-beta3";
 
 /// @brief W.O.P.R. board version
 enum JBWoprBoardVariant {
@@ -57,7 +57,6 @@ struct JBWoprConfiguration {
 	uint8_t displayBrightness;              ///< Display brightness
 	uint32_t defconLedsBrightness;          ///< DEFCON LEDs brightness
 	uint32_t effectsTimeout;               	///< Effects timeout, seconds
-	bool useTimeOnlyClock;                  ///< Time only clock
 };
 
 /// @defgroup DisplayGroup Display related methods
