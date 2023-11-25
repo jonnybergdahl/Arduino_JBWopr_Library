@@ -180,14 +180,16 @@ void JBWoprMqttDevice::defconLedsSetDefconLevel(JBDefconLevel level) {
 }
 void JBWoprMqttDevice::defconLedsSetColor(uint32_t color) {
 	JBWoprWiFiDevice::defconLedsSetColor(color);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_DEFCON, SUBENTITY_NAME_COLOR), JBStringHelper::rgbToString(color));
 }
+
 void JBWoprMqttDevice::defconLedsSetBrightness(uint8_t brightness) {
 	JBWoprWiFiDevice::defconLedsSetBrightness(brightness);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_DEFCON, SUBENTITY_NAME_BRIGHTNESS), std::to_string(brightness));
 }
 
 void JBWoprMqttDevice::defconLedSetColor(JBDefconLevel level, uint32_t color) {
 	JBWoprWiFiDevice::defconLedSetColor(level, color);
-	mqttPublishMessage(_getTopic(ENTITY_NAME_DEFCON, SUBENTITY_NAME_COLOR), JBStringHelper::rgbToString(color));
 }
 
 // ====================================================================
@@ -401,13 +403,7 @@ void JBWoprMqttDevice::_handleCommand(const std::string& entity, const std::stri
 void JBWoprMqttDevice::_handleEffectCommand(const std::string& subEntity, const std::string& command, const std::string& payload) {
 	if (subEntity == SUBENTITY_NAME_STATE) {
 		if (command == COMMAND_SET) {
-			if (payload == STATE_ON) {
-				effectsStartCurrentEffect();
-			} else if (payload == STATE_OFF) {
-				effectsStopCurrentEffect();
-			} else {
-				_log->error("Unsupported payload: %s, %s: %s", subEntity.c_str(), command.c_str(), payload.c_str());
-			}
+				effectsStartEffect(payload);
 		} else {
 			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
 		}

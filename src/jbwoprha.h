@@ -117,6 +117,7 @@ protected:
 	const char* HA_DIAG_PREFIX = "diagnostic";							///< Diagnostic discovery prefix
 	const char* HA_CONFIG_PREFIX = "config";							///< Config discovery prefix
 
+	const char* HA_COMPONENT_LIGHT = "light";						///< Light component
 	const char* HA_COMPONENT_NUMBER = "number";						///< Number component
 	const char* HA_COMPONENT_SELECT = "select";						///< Select component
 	const char* HA_COMPONENT_SENSOR = "sensor";						///< Sensor component
