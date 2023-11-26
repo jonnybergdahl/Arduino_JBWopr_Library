@@ -122,6 +122,7 @@ protected:
 	const char* HA_COMPONENT_SELECT = "select";						///< Select component
 	const char* HA_COMPONENT_SENSOR = "sensor";						///< Sensor component
 	const char* HA_COMPONENT_SWITCH = "switch";						///< Switch component
+	const char* HA_COMPONENT_BUTTON = "button";						///< Button component
 
 	const char* HA_DIAG_ENTITY_IP = "ip";								///< IP entity name
 	const char* HA_DIAG_ENTITY_RSSI = "rssi";							///< RSSI entity name
@@ -132,6 +133,7 @@ protected:
 	const char* HA_CONF_ENTITY_DEFCON_BRIGHTNESS = "defcon_brightness";	///< DEFCON brightness entity name
 	const char* HA_CONF_ENTITY_EFFECTS_TIMEOUT = "effects_timeout";		///< Effects timeout entity name
 	const char* HA_CONF_ENTITY_WIFI_USE_WEB_PORTAL = "use_web_portal";	///< Use web portal entity name
+	const char* HA_CONF_ENTITY_RESTART = "restart";						///< Restart entity name
 
 	const char* JSON_KEY_HA_DIAG_ENTITY_IP = "ipAddress";						///< IP entity key name
 	const char* JSON_KEY_HA_DIAG_ENTITY_RSSI = "rssi";							///< RSSI entity key name

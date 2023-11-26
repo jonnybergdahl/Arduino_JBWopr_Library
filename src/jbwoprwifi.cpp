@@ -41,11 +41,9 @@ bool JBWoprWiFiDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 	}
 	else {
 		// Load configuration
-		_log->debug("Loading configuration");
 		_loadConfiguration();
 	}
 
-	_log->debug("Setup WiFiManager");
 	_setupWiFiManager();
 
 	displayShowText("Start WiFi");
@@ -155,7 +153,7 @@ void JBWoprWiFiDevice::webPortalStop()
 //
 void JBWoprWiFiDevice::_loadConfiguration()
 {
-
+	_log->trace("Load configuration");
 	if (_wifiConfig.hostName == "")
 	{
 		_wifiConfig.hostName = _getDeviceName();
@@ -167,10 +165,11 @@ void JBWoprWiFiDevice::_loadConfiguration()
 		return;
 	}
 
-	DynamicJsonDocument jsonDoc(512);
+	DynamicJsonDocument jsonDoc(1024);
 	DeserializationError error = deserializeJson(jsonDoc, settingsFile);
 	settingsFile.close();
 serializeJson(jsonDoc, Serial);
+Serial.println();
 	if (error) {
 		_log->error("Error parsing settings JSON file!");
 		return;
@@ -203,6 +202,7 @@ serializeJson(jsonDoc, Serial);
 }
 
 void JBWoprWiFiDevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jsonDoc) {
+	_log->trace("JBWoprWiFiDevice: Setting configuration from JSON document");
 	if (!jsonDoc[JSON_KEY_TIME_FORMAT].isNull()) {
 		_config.timeFormat = jsonDoc[JSON_KEY_TIME_FORMAT].as<std::string>();
 	}
@@ -250,6 +250,7 @@ WiFiManager* JBWoprWiFiDevice::_getWiFiManager() {
 }
 
 void JBWoprWiFiDevice::_setupWiFiManager() {
+	_log->debug("Setup WiFiManager");
 	_wifiManager = new WiFiManager();
 	_wifiManager->setConfigPortalBlocking(false);
 	_wifiManager->setHostname(_wifiConfig.hostName.c_str());

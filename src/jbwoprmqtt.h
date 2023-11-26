@@ -332,6 +332,8 @@ protected:
 	PubSubClient* _mqttClient;						///< MQTT client
 	bool _mqttActive = false;						///< MQTT active flag, set tp true after initialization
 
+	const char* ENTITY_NAME_DEVICE = "device";						///< Device entity name
+	const char* ENTITY_NAME_CONFIG = "config";						///< Config entity name
 	const char* ENTITY_NAME_EFFECT = "effect";						///< Effect entity name
 	const char* ENTITY_NAME_DISPLAY = "display";					///< Display text entity name
 	const char* ENTITY_NAME_DEFCON = "defcon";						///< DEFCON LED entity name
@@ -348,6 +350,13 @@ protected:
 	const char* SUBENTITY_NAME_EVENT = "event";				///< Event subentity name
 	const char* SUBENTITY_NAME_LEVEL = "level";				///< Level subentity name
 	const char* SUBENTITY_NAME_NAME = "name";				///< Effect subentity name
+	const char* SUBENTITY_NAME_EFFECTS_TIMEOUT = "effects_timeout";		///< Effects timeout key name
+	const char* SUBENTITY_NAME_TIME_FORMAT = "time_format";				///< Time format key name
+	const char* SUBENTITY_NAME_DATE_FORMAT = "date_format";				///< Date Format key name
+	const char* SUBENTITY_NAME_DEFCON_BRIGHTNESS = "defcon_brightness";	///< DEFCON LEDs brightness key name
+	const char* SUBENTITY_NAME_DISPLAY_BRIGHTNESS = "display_brightness";	///< Display brightness key name
+	const char* SUBENTITY_NAME_WIFI_HOST_NAME = "host_name";               ///< Host name key name
+	const char* SUBENTITY_NAME_WIFI_USE_WEB_PORTAL = "use_web_portal";		///< Use portal key name
 
 	const char* STATE_ON = "ON";							///< State ON
 	const char* STATE_OFF = "OFF";							///< State OFF
@@ -396,6 +405,22 @@ protected:
 	/// @param command Command
 	/// @param payload Payload
 	virtual void _handleCommand(const std::string& entity, const std::string& subEntity, const std::string& command, const std::string& payload);
+
+	/// @brief Handle MQTT device command message
+	/// @ingroup MqttGroup
+	/// @details This method will handle incoming MQTT device command messages.
+	/// @param subEntity Sub entity name
+	/// @param command Command
+	/// @param payload Payload
+	virtual void _handleDeviceCommand(const std::string& subEntity, const std::string& command, const std::string& payload);
+
+	/// @brief Handle MQTT config command message
+	/// @ingroup MqttGroup
+	/// @details This method will handle incoming MQTT config command messages.
+	/// @param subEntity Sub entity name
+	/// @param command Command
+	/// @param payload Payload
+	virtual void _handleConfigCommand(const std::string& subEntity, const std::string& command, const std::string& payload);
 
 	/// @brief Handle MQTT effect command message
 	/// @ingroup MqttGroup

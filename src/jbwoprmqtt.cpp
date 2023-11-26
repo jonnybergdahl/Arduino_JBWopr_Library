@@ -35,16 +35,20 @@ bool JBWoprMqttDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins)
 	}
 
 	// MQTT
-	if (_mqttConfig.useMqtt) {
-		_log->info("Starting MQTT");
-		displayShowText("Start MQTT");
-		defconLedsSetColor(0x0000FF);
-
-		if (!_mqttStart()) {
-			_log->error("Failed to start MQTT");
-			return false;
-		}
+	if (!_mqttConfig.useMqtt) {
+		_log->trace("MQTT is not enabled");
+		return true;
 	}
+
+	_log->info("Starting MQTT");
+	displayShowText("Start MQTT");
+	defconLedsSetColor(0x0000FF);
+
+	if (!_mqttStart()) {
+		_log->error("Failed to start MQTT");
+		return false;
+	}
+
 	return true;
 }
 
@@ -399,21 +403,84 @@ void JBWoprMqttDevice::_mqttCallback(const char* topic, const byte* payload, uns
 
 void JBWoprMqttDevice::_handleCommand(const std::string& entity, const std::string& subEntity, const std::string& command, const std::string& payload)
 {
-	if (entity == ENTITY_NAME_EFFECT) {
+	if (entity == ENTITY_NAME_DEVICE) {
+		_handleDeviceCommand(subEntity, command, payload);
+	} else if (entity == ENTITY_NAME_EFFECT) {
 		_handleEffectCommand(subEntity, command, payload);
 	} else if (entity == ENTITY_NAME_DISPLAY) {
 		_handleDisplayCommand(subEntity, command, payload);
 	} else if (entity == ENTITY_NAME_DEFCON) {
 		_handleDefconCommand(subEntity, command, payload);
+	} else if (entity == ENTITY_NAME_CONFIG) {
+		_handleConfigCommand(subEntity, command, payload);
 	} else {
-		_log->error("Unsupported entity: %s", entity.c_str());
+		_log->error("Unsupported entity: %s, %s, %s", entity.c_str(), subEntity.c_str(), command.c_str());
 	}
 }
 
-void JBWoprMqttDevice::_handleEffectCommand(const std::string& subEntity, const std::string& command, const std::string& payload) {
+void JBWoprMqttDevice::_handleDeviceCommand(const std::string &subEntity,
+											const std::string &command,
+											const std::string &payload) {
 	if (subEntity == SUBENTITY_NAME_STATE) {
 		if (command == COMMAND_SET) {
+			if (payload == "restart") {
+				_log->info("Restarting device");
+				displayShowText("Restarting");
+				defconLedsSetColor(0x0000FF);
+				delay(1000);
+				ESP.restart();
+			} else {
+				_log->error("Unsupported payload: %s, %s: %s", subEntity.c_str(), command.c_str(), payload.c_str());
+			}
+		} else {
+			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
+		}
+	} else {
+		_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
+	}
+
+}
+
+void JBWoprMqttDevice::_handleConfigCommand(const std::string &subEntity,
+											const std::string &command,
+											const std::string &payload) {
+	if (command == COMMAND_SET) {
+		if (subEntity == SUBENTITY_NAME_DATE_FORMAT) {
+			_config.timeFormat = payload;
+			_saveConfiguration();
+		} else if (subEntity == SUBENTITY_NAME_TIME_FORMAT) {
+			_config.dateFormat = payload;
+			_saveConfiguration();
+		} else if (subEntity == SUBENTITY_NAME_DISPLAY_BRIGHTNESS) {
+			_config.displayBrightness = atoi(payload.c_str());
+			_saveConfiguration();
+		} else if (subEntity == SUBENTITY_NAME_DEFCON_BRIGHTNESS) {
+			_config.defconLedsBrightness = atoi(payload.c_str());
+			_saveConfiguration();
+		} else if (subEntity == SUBENTITY_NAME_EFFECTS_TIMEOUT) {
+			_config.effectsTimeout = atoi(payload.c_str());
+			_saveConfiguration();
+		} else if (subEntity == SUBENTITY_NAME_WIFI_USE_WEB_PORTAL) {
+			_wifiConfig.useWebPortal = payload == STATE_ON;
+			_saveConfiguration();
+		} else {
+			_log->error("Unsupported sub entity: %s", subEntity.c_str());
+		}
+	} else {
+		_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
+	}
+}
+
+void JBWoprMqttDevice::_handleEffectCommand(const std::string& subEntity,
+											const std::string& command,
+											const std::string& payload) {
+	if (subEntity == SUBENTITY_NAME_STATE) {
+		if (command == COMMAND_SET) {
+			if (!payload.empty()) {
 				effectsStartEffect(payload);
+			} else {
+				effectsStopCurrentEffect();
+			}
 		} else {
 			_log->error("Unsupported command: %s %s", subEntity.c_str(), command.c_str());
 		}
@@ -428,7 +495,9 @@ void JBWoprMqttDevice::_handleEffectCommand(const std::string& subEntity, const 
 	}
 }
 
-void JBWoprMqttDevice::_handleDisplayCommand(const std::string& subEntity, const std::string& command, const std::string& payload) {
+void JBWoprMqttDevice::_handleDisplayCommand(const std::string& subEntity,
+											 const std::string& command,
+											 const std::string& payload) {
 	if (subEntity == SUBENTITY_NAME_STATE) {
 		if (command == COMMAND_SET) {
 			if (payload == STATE_ON) {
@@ -465,7 +534,9 @@ void JBWoprMqttDevice::_handleDisplayCommand(const std::string& subEntity, const
 	}
 }
 
-void JBWoprMqttDevice::_handleDefconCommand(const std::string& subEntity, const std::string& command, const std::string& payload) {
+void JBWoprMqttDevice::_handleDefconCommand(const std::string& subEntity,
+											const std::string& command,
+											const std::string& payload) {
 	if (subEntity == SUBENTITY_NAME_STATE) {
 		if (command == COMMAND_SET) {
 			if (payload == STATE_ON) {

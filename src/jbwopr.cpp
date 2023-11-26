@@ -252,7 +252,7 @@ std::array<Adafruit_AlphaNum4, 3> JBWoprDevice::getDisplay() {
 void JBWoprDevice::displaySetState(bool state) {
 	_displayState = state;
 	for (int x = 0; x < 3; x++) {
-		_display[x].setState(state);
+		//_display[x].setState(state);
 	}
 }
 

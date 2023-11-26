@@ -16,6 +16,7 @@ const char* MDI_ICON_MEMORY = "mdi:memory";
 const char* MDI_ICON_NUMERIC_5_BOX_OUTLINE = "mdi:numeric-5-box-outline";
 const char* MDI_ICON_IP_NETWORK = "mdi:ip-network";
 const char* MDI_ICON_SCRIPT_OUTLINE = "mdi:script-outline";
+const char* MDI_ICON_RESTART = "mdi:restart";
 const char* MDI_ICON_TEXT_SHADOW = "mdi:text-shadow";
 const char* MDI_ICON_TIMER_OUTLINE = "mdi:timer-outline";
 const char* MDI_ICON_WEB = "mdi:web";
