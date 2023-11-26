@@ -111,6 +111,11 @@ bool JBWoprMqttDevice::mqttPublishMessage(const char* configTopic, const char* v
 // ====================================================================
 // Display
 //
+void JBWoprMqttDevice::displaySetState(bool state) {
+	JBWoprWiFiDevice::displaySetState(state);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_DISPLAY, SUBENTITY_NAME_STATE), state ? STATE_ON : STATE_OFF);
+}
+
 void JBWoprMqttDevice::displayClear() {
 	JBWoprWiFiDevice::displayClear();
 	mqttPublishMessage(_getTopic(ENTITY_NAME_DISPLAY, SUBENTITY_NAME_TEXT), "");
@@ -174,6 +179,11 @@ void JBWoprMqttDevice::displayScrollText(const String& text) {
 // ====================================================================
 // Defcon
 //
+void JBWoprMqttDevice::defconLedsSetState(bool state) {
+	JBWoprWiFiDevice::defconLedsSetState(state);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_DEFCON, SUBENTITY_NAME_STATE), state ? STATE_ON : STATE_OFF);
+}
+
 void JBWoprMqttDevice::defconLedsSetDefconLevel(JBDefconLevel level) {
 	JBWoprWiFiDevice::defconLedsSetDefconLevel(level);
 	mqttPublishMessage(_getTopic(ENTITY_NAME_DEFCON, SUBENTITY_NAME_LEVEL), DEFCON_STRINGS[level]);
@@ -421,11 +431,10 @@ void JBWoprMqttDevice::_handleEffectCommand(const std::string& subEntity, const 
 void JBWoprMqttDevice::_handleDisplayCommand(const std::string& subEntity, const std::string& command, const std::string& payload) {
 	if (subEntity == SUBENTITY_NAME_STATE) {
 		if (command == COMMAND_SET) {
-			// TODO: Handle state
 			if (payload == STATE_ON) {
-				displayShowText("ON");
+				displaySetState(true);
 			} else if (payload == STATE_OFF) {
-				displayShowText("OFF");
+				displaySetState(false);
 			} else {
 				_log->error("Unsupported payload: %s, %s: %s", subEntity.c_str(), command.c_str(), payload.c_str());
 			}
@@ -459,11 +468,10 @@ void JBWoprMqttDevice::_handleDisplayCommand(const std::string& subEntity, const
 void JBWoprMqttDevice::_handleDefconCommand(const std::string& subEntity, const std::string& command, const std::string& payload) {
 	if (subEntity == SUBENTITY_NAME_STATE) {
 		if (command == COMMAND_SET) {
-			// TODO: Handle state
 			if (payload == STATE_ON) {
-				defconLedsSetDefconLevel(JBDefconLevel::DEFCON_5);
+				defconLedsSetState(true);
 			} else if (payload == STATE_OFF) {
-				defconLedsSetDefconLevel(JBDefconLevel::DEFCON_NONE);
+				defconLedsSetState(false);
 			} else {
 				_log->error("Unsupported payload: %s, %s: %s", subEntity.c_str(), command.c_str(), payload.c_str());
 			}

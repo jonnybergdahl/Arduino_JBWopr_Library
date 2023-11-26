@@ -249,12 +249,19 @@ std::array<Adafruit_AlphaNum4, 3> JBWoprDevice::getDisplay() {
 	return _display;
 }
 
+void JBWoprDevice::displaySetState(bool state) {
+	_displayState = state;
+	for (int x = 0; x < 3; x++) {
+		_display[x].setState(state);
+	}
+}
+
 void JBWoprDevice::displaySetBrightness(uint8_t value)
 {
 	value = constrain(value, 0, 100);
-	value = map(value, 0, 100, 0, 15);
+	_displayBrightness = map(value, 0, 100, 0, 15);;
 	for (int x = 0; x < 3; x++) {
-		_display[x].setBrightness(value);
+		_display[x].setBrightness(_displayState ? _displayBrightness : 0);
 	}
 }
 
@@ -410,6 +417,12 @@ Adafruit_NeoPixel* JBWoprDevice::getDefconLeds() {
 	return &_defconLeds;
 }
 
+void JBWoprDevice::defconLedsSetState(bool state) {
+	_defconState = state;
+	_defconLeds.setBrightness(state ? _defconBrigthtness : 0);
+	_defconLeds.show();
+}
+
 void JBWoprDevice::defconLedsSetDefconLevel(JBDefconLevel level) {
 	_log->trace("defconLedsSetDefconLevel %s", _getDefconLevelString(level).c_str());
 	uint32_t led = _getDefconLedsPixel(level);
@@ -423,7 +436,7 @@ void JBWoprDevice::defconLedsSetDefconLevel(JBDefconLevel level) {
 			_defconLeds.setPixelColor(i, 0);
 		}
 	}
-	_defconLeds.setBrightness(_defconBrigthtness);
+	_defconLeds.setBrightness(_defconState ? _defconBrigthtness : 0);
 	_defconLeds.show();
 }
 
@@ -434,19 +447,18 @@ void JBWoprDevice::defconLedsSetColor(uint32_t color)
 		_defconPixels[i] = color;
 		_defconLeds.setPixelColor(i, color);
 	}
-	_defconLeds.setBrightness(_defconBrigthtness);
+	_defconLeds.setBrightness(_defconState ? _defconBrigthtness : 0);
 	_defconLeds.show();
 }
 
 void JBWoprDevice::defconLedsSetBrightness(uint8_t brightness) {
 	_log->trace("defconLedsSetBrightness %i", brightness);
 	brightness = constrain(brightness, 0, 100);
-	brightness = map(brightness, 0, 100, 0, 255);
-	_defconBrigthtness = brightness;
+ 	_defconBrightness = map(brightness, 0, 100, 0, 255);
 	for (int i = 0; i < 5; i++) {
 		_defconLeds.setPixelColor(i, _defconPixels[i]);
 	}
-	_defconLeds.setBrightness(brightness);
+	_defconLeds.setBrightness(_defconState ? _defconBrightness : 0);
 	_defconLeds.show();
 }
 

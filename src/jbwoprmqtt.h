@@ -110,6 +110,13 @@ public:
 	// ====================================================================
 	// Display
 	//
+	/// @brief Display set state
+	/// @ingroup DisplayGroup
+	/// @details This method will set the display state and publish to
+	/// to the MQTT broker.
+	/// @param state State
+	void displaySetState(bool state) override;
+
 	/// @brief Display clear
 	/// @ingroup DisplayGroup
 	/// @details This method will clear the display and publish to
@@ -231,6 +238,13 @@ public:
 	// ====================================================================
 	// Defcon
 	//
+	/// @brief DEFCON LEDs set state
+	/// @ingroup DefconGroup
+	/// @details This method will set the state for the DEFCON LEDs.
+	/// It will also publish the state to the MQTT broker.
+	/// @param state State
+	void defconLedsSetState(bool state) override;
+
 	/// @brief DEFCON LEDs set DEFCON level
 	/// @ingroup DefconGroup
 	/// @details This method will set the DEFCON level for the DEFCON LEDs.

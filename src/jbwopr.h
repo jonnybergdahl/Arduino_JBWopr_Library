@@ -203,6 +203,11 @@ public:
 	/// @return Display as an array of Adafruit_AlphaNum4 instances
 	std::array<Adafruit_AlphaNum4, 3> getDisplay();
 
+	/// @brief Set display state
+	/// @ingroup DisplayGroup
+	/// @param state True to turn display on, false to turn it off
+	virtual void displaySetState(bool state);
+
 	/// @brief Clear display
 	/// @ingroup DisplayGroup
 	virtual void displayClear();
@@ -309,6 +314,11 @@ public:
 	/// @ingroup DefconGroup
 	/// @return Defcon LEDs
 	Adafruit_NeoPixel* getDefconLeds();
+
+	/// @brief Set DEFCON state
+	/// @ingroup DefconGroup
+	/// @param state True to turn DEFCON LEDs on, false to turn them off
+	virtual void defconLedsSetState(bool state);
 
 	/// @brief Set DEFCON level
 	/// @ingroup DefconGroup
@@ -454,21 +464,25 @@ protected:
 	// Display
 	//
 	std::array<Adafruit_AlphaNum4, 3> _display;		///< Display
+	bool _displayState = true;						///< Display state
+	uint32_t _displayBrightness = 100;				///< Display brightness
 
 	// ====================================================================
 	// Defcon LEDs
 	//
-	JBDefconLevel _getDefconLevel(std::string value);
-	std::string _getDefconLevelString(JBDefconLevel level);
-	uint32_t _getDefconLedsPixel(JBDefconLevel level);
-
 	Adafruit_NeoPixel _defconLeds = Adafruit_NeoPixel(5, 1, NEO_GRB + NEO_KHZ800);	///< DEFCON LEDs
-	uint32_t _defconColors[5];				///< DEFCON colors
+	bool _defconState = true;						///< DEFCON state
+	uint32_t _defconColors[5];						///< DEFCON colors
+	uint32_t _defconBrightness = 100;				///< DEFCON brightness
+
 	// Note - due to how Adafruit_Neopixel handles brigthness, we buffer the LED colors into the
 	// _defconPixels variable together with the current brightness value.
 	// We then apply them both before calling show().
 	uint32_t _defconPixels[5] { 0,0,0,0,0};	///< DEFCON buffered pixel colors
 	uint32_t _defconBrigthtness = 100;		///< DEFCON brightness
+	JBDefconLevel _getDefconLevel(std::string value);
+	std::string _getDefconLevelString(JBDefconLevel level);
+	uint32_t _getDefconLedsPixel(JBDefconLevel level);
 
 	// ====================================================================
 	// Buttons
