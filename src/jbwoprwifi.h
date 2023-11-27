@@ -139,7 +139,7 @@ protected:
 	WiFiManager* _wifiManager;										///< WiFi manager
 	std::string _apName = "";										///< AP name
 
-	const char* WEB_PORTAL_PASSWORD = "woprwopr";       			///< AP portal password
+	const char* WEB_PORTAL_PASSWORD = "wopr1234";       			///< AP portal password
 	const char* JSON_KEY_EFFECTS_TIMEOUT = "effectsTimeout";		///< Effects timeout key name
 	const char* JSON_KEY_TIME_FORMAT = "timeFormat";				///< Time format key name
 	const char* JSON_KEY_DATE_FORMAT = "dateFormat";				///< Date Format key name
