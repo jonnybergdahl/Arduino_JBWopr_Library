@@ -168,11 +168,11 @@ public:
 
 	/// @brief Start current effect
 	/// @ingroup EffectsGroup
-	void effectsStartCurrentEffect();
+	virtual void effectsStartCurrentEffect();
 
 	/// @brief Stop current effect
 	/// @ingroup EffectsGroup
-	void effectsStopCurrentEffect();
+	virtual void effectsStopCurrentEffect();
 
 	/// @brief Check if current effect is running
 	/// @ingroup EffectsGroup
@@ -188,7 +188,7 @@ public:
 	/// @brief Start named effect
 	/// @ingroup EffectsGroup
 	/// @param name Name of effect to start
-	virtual void effectsStartEffect(std::string name);
+	virtual void effectsStartEffect(const std::string& name);
 
 	/// @brief Start named effect
 	/// @ingroup EffectsGroup
@@ -320,6 +320,11 @@ public:
 	/// @param state True to turn DEFCON LEDs on, false to turn them off
 	virtual void defconLedsSetState(bool state);
 
+	/// @brief Set DEFCON LED's brightness level
+	/// @ingroup DefconGroup
+	/// @param brightness Brightness value, 0 - 100
+	virtual void defconLedsSetBrightness(uint8_t brightness);
+
 	/// @brief Set DEFCON level
 	/// @ingroup DefconGroup
 	/// @param level DEFCON level
@@ -329,11 +334,6 @@ public:
 	/// @ingroup DefconGroup
 	/// @param color Color value
 	virtual void defconLedsSetColor(uint32_t color);
-
-	/// @brief Set DEFCON LED's brightness level
-	/// @ingroup DefconGroup
-	/// @param brightness Brightness value, 0 - 100
-	virtual void defconLedsSetBrightness(uint8_t brightness);
 
 	/// @brief Clear all DEFCON LEDs
 	/// @ingroup DefconGroup
@@ -472,8 +472,10 @@ protected:
 	//
 	Adafruit_NeoPixel _defconLeds = Adafruit_NeoPixel(5, 1, NEO_GRB + NEO_KHZ800);	///< DEFCON LEDs
 	bool _defconState = true;						///< DEFCON state
+	JBDefconLevel _defconLevel = JBDefconLevel::DEFCON_NONE;	///< DEFCON level
 	uint32_t _defconColors[5];						///< DEFCON colors
 	uint32_t _defconBrightness = 100;				///< DEFCON brightness
+	uint32_t _defconLedsColor = 0;					///< DEFCON LED's color
 
 	// Note - due to how Adafruit_Neopixel handles brigthness, we buffer the LED colors into the
 	// _defconPixels variable together with the current brightness value.

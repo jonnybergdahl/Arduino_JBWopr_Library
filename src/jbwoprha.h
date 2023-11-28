@@ -140,6 +140,8 @@ protected:
 	const char* JSON_KEY_HA_DIAG_ENTITY_RAM = "ram";							///< RAM entity key name
 	const char* JSON_KEY_HA_DIAG_ENTITY_VERSION = "version";					///< Version entity key name
 
+	const std::vector<std::string> _defconNames { "None", "DEFCON 5", "DEFCON 4", "DEFCON 3", "DEFCON 2", "DEFCON 1" };	///< DEFCON names
+
 	/// @brief Send Home Assistant discovery
 	bool _homeAssistantSendDiscovery();
 

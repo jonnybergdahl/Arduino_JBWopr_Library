@@ -53,6 +53,10 @@ bool JBWoprMqttDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins)
 }
 
 void JBWoprMqttDevice::loop() {
+	if (!effectsCurrentEffectIsRunning() && _effectsCounter == 0) {
+		mqttPublishMessage(_getTopic(ENTITY_NAME_EFFECT, SUBENTITY_NAME_STATE), STATE_OFF);
+	}
+
 	JBWoprWiFiDevice::loop();
 
 	if (_mqttActive) {
@@ -110,6 +114,37 @@ bool JBWoprMqttDevice::mqttPublishMessage(const char* configTopic, const char* v
 	_log->traceAsciiDump(value, strlen(value));
 
 	return true;
+}
+
+// ====================================================================
+// Effects
+//
+void JBWoprMqttDevice::effectsStartCurrentEffect() {
+	JBWoprWiFiDevice::effectsStartCurrentEffect();
+	mqttPublishMessage(_getTopic(ENTITY_NAME_EFFECT, SUBENTITY_NAME_STATE), STATE_ON);
+}
+
+void JBWoprMqttDevice::effectsStopCurrentEffect() {
+	JBWoprWiFiDevice::effectsStopCurrentEffect();
+	mqttPublishMessage(_getTopic(ENTITY_NAME_EFFECT, SUBENTITY_NAME_STATE), STATE_OFF);
+}
+
+void JBWoprMqttDevice::effectsStartEffect(JBWoprEffectBase *effect) {
+	JBWoprWiFiDevice::effectsStartEffect(effect);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_EFFECT, SUBENTITY_NAME_NAME), effect->getName());
+	mqttPublishMessage(_getTopic(ENTITY_NAME_EFFECT, SUBENTITY_NAME_STATE), STATE_ON);
+}
+
+void JBWoprMqttDevice::effectsStartEffect(const std::string& effect) {
+	JBWoprWiFiDevice::effectsStartEffect(effect);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_EFFECT, SUBENTITY_NAME_NAME), effect);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_EFFECT, SUBENTITY_NAME_STATE), STATE_ON);
+}
+
+void JBWoprMqttDevice::effectsStartEffect(const char* effect) {
+	JBWoprWiFiDevice::effectsStartEffect(effect);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_EFFECT, SUBENTITY_NAME_NAME), effect);
+	mqttPublishMessage(_getTopic(ENTITY_NAME_EFFECT, SUBENTITY_NAME_STATE), STATE_ON);
 }
 
 // ====================================================================
@@ -660,6 +695,8 @@ void JBWoprMqttDevice::_buttonBackBottomDoubleClick()
 		mqttPublishMessage(_getTopic(ENTITY_NAME_BUTTON_BACK_BOTTOM, SUBENTITY_NAME_EVENT), EVENT_DOUBLE_CLICK);
 	}
 }
+
+
 
 
 

@@ -226,7 +226,7 @@ void JBWoprDevice::effectsStartEffect(JBWoprEffectBase* effect) {
 	_currentEffect->start();
 }
 
-void JBWoprDevice::effectsStartEffect(std::string name) {
+void JBWoprDevice::effectsStartEffect(const std::string& name) {
 	for (const auto& effect : _effects) {
 		if (effect->getName() == name) {
 			effectsStartEffect(effect);
@@ -420,12 +420,17 @@ Adafruit_NeoPixel* JBWoprDevice::getDefconLeds() {
 void JBWoprDevice::defconLedsSetState(bool state) {
 	_defconState = state;
 	_defconLeds.setBrightness(state ? _defconBrigthtness : 0);
+	for (int i = 0; i < 5; i++) {
+		_defconLeds.setPixelColor(i, _defconPixels[i]);
+	}
 	_defconLeds.show();
 }
 
 void JBWoprDevice::defconLedsSetDefconLevel(JBDefconLevel level) {
 	_log->trace("defconLedsSetDefconLevel %s", _getDefconLevelString(level).c_str());
+	_defconLevel = level;
 	uint32_t led = _getDefconLedsPixel(level);
+	_defconLeds.setBrightness(_defconState ? _defconBrigthtness : 0);
 	for (uint32_t i = 0; i < 5; i++) {
 		if (i == led) {
 			_defconPixels[i] = _defconColors[int(level)];
@@ -436,18 +441,18 @@ void JBWoprDevice::defconLedsSetDefconLevel(JBDefconLevel level) {
 			_defconLeds.setPixelColor(i, 0);
 		}
 	}
-	_defconLeds.setBrightness(_defconState ? _defconBrigthtness : 0);
 	_defconLeds.show();
 }
 
 void JBWoprDevice::defconLedsSetColor(uint32_t color)
 {
 	_log->trace("defconLedsSetColor %s", JBStringHelper::rgbToString(color).c_str());
+	_defconLedsColor = color;
+	_defconLeds.setBrightness(_defconState ? _defconBrigthtness : 0);
 	for (int i = 0; i < 5; i++) {
 		_defconPixels[i] = color;
 		_defconLeds.setPixelColor(i, color);
 	}
-	_defconLeds.setBrightness(_defconState ? _defconBrigthtness : 0);
 	_defconLeds.show();
 }
 
@@ -455,10 +460,10 @@ void JBWoprDevice::defconLedsSetBrightness(uint8_t brightness) {
 	_log->trace("defconLedsSetBrightness %i", brightness);
 	brightness = constrain(brightness, 0, 100);
  	_defconBrightness = map(brightness, 0, 100, 0, 255);
+	_defconLeds.setBrightness(_defconState ? _defconBrightness : 0);
 	for (int i = 0; i < 5; i++) {
 		_defconLeds.setPixelColor(i, _defconPixels[i]);
 	}
-	_defconLeds.setBrightness(_defconState ? _defconBrightness : 0);
 	_defconLeds.show();
 }
 

@@ -13,6 +13,7 @@
 #include <PubSubClient.h>				   	// https://github.com/knolleary/pubsubclient
 #include <WiFiManager.h>
 #include <JBLogger.h>
+#include "effects/jbwopreffects.h"
 
 #define DEFAULT_MQTT_PREFIX	"wopr"			///< Default MQTT prefix
 #define DEFAULT_MQTT_PORT 1883				///< Default MQTT port
@@ -106,6 +107,35 @@ public:
 	/// @param retain Retain message, default value is false
 	/// @return True if successful
 	bool mqttPublishMessage(const char* topic, const char* value, bool retain = false);
+
+	// ====================================================================
+	// Effects
+	//
+	/// @brief Effects start current effect
+	/// @ingroup EffectsGroup
+	void effectsStartCurrentEffect() override;
+
+	/// @brief Stop current effect
+	/// @ingroup EffectsGroup
+	virtual void effectsStopCurrentEffect();
+
+	/// @brief Effects start effect
+	/// @ingroup EffectsGroup
+	/// @details This method will start the specified effect.
+	/// @param effect Effect
+	void effectsStartEffect(JBWoprEffectBase* effect) override;
+
+	/// @brief Effects start effect
+	/// @ingroup EffectsGroup
+	/// @details This method will start the name effect.
+	/// @param effect Effect name
+	void effectsStartEffect(const std::string& effect) override;
+
+	/// @brief Effects start effect
+	/// @ingroup EffectsGroup
+	/// @details This method will start the named effect.
+	/// @param effect Effect name
+	void effectsStartEffect(const char* effect) override;
 
 	// ====================================================================
 	// Display
