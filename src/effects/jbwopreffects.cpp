@@ -263,18 +263,6 @@ void JBWoprTimeDisplayEffect::loop() {
 	}
 
 	JBWoprEffectBase::loop();
-	if (_nextLedTick > millis()) {
-		return;
-	}
-
-	auto leds = _woprDevice->getDefconLeds();
-	_pixelHue += 256;
-	for (uint32_t i = 0; i < 5; i++) {
-		uint16_t pixelHue = _pixelHue + (i * 65536L / 5);
-		leds->setPixelColor(i, leds->gamma32(leds->ColorHSV(pixelHue)));
-	}
-	leds->show();
-	_nextLedTick = millis() + 40;
 
 	if (_nextTick > millis()) {
 		return;
@@ -321,9 +309,42 @@ std::string JBWoprTimeDisplayEffect::_getOddTimeFormat(const std::string &format
 
 // ============================================
 //
+// TimeDisplayEffect
+//
+JBWoprTimeDisplayRainbowEffect::JBWoprTimeDisplayRainbowEffect(JBWoprDevice *woprDevice,
+												 std::string  timeFormat,
+												 uint32_t duration,
+												 const std::string& name) :
+	JBWoprTimeDisplayEffect(woprDevice, timeFormat, duration, name) {
+}
+
+void JBWoprTimeDisplayRainbowEffect::loop() {
+	char timeChars[12];
+	tm timeinfo {};
+
+	if (!_isRunning) {
+		return;
+	}
+
+	JBWoprTimeDisplayEffect::loop();
+	if (_nextLedTick > millis()) {
+		return;
+	}
+
+	auto leds = _woprDevice->getDefconLeds();
+	_pixelHue += 256;
+	for (uint32_t i = 0; i < 5; i++) {
+		uint16_t pixelHue = _pixelHue + (i * 65536L / 5);
+		leds->setPixelColor(i, leds->gamma32(leds->ColorHSV(pixelHue)));
+	}
+	leds->show();
+	_nextLedTick = millis() + 40;
+}
+
+// ============================================
+//
 // DateDisplayEffect
 //
-// Constructor
 JBWoprDateDisplayEffect::JBWoprDateDisplayEffect(JBWoprDevice *woprDevice,
 												 std::string dateFormat,
 												 uint32_t duration,
@@ -347,16 +368,6 @@ void JBWoprDateDisplayEffect::loop() {
 	}
 
 	JBWoprEffectBase::loop();
-	if (_nextLedTick < millis()) {
-		auto leds = _woprDevice->getDefconLeds();
-		_pixelHue += 256;
-		for (uint32_t i = 0; i < 5; i++) {
-			uint16_t pixelHue = _pixelHue + (i * 65536L / 5);
-			leds->setPixelColor(i, leds->gamma32(leds->ColorHSV(pixelHue)));
-		}
-		leds->show();
-		_nextLedTick = millis() + 40;
-	}
 
 	if (_nextTick > millis()) {
 		return;
@@ -382,6 +393,38 @@ void JBWoprDateDisplayEffect::setDateFormat(const std::string& dateFormat) {
 		format = "%Y-%m-%d";
 	}
 	_dateFormat = format;
+}
+
+// ============================================
+//
+// JBWoprDateDisplayRainbowEffect
+//
+JBWoprDateDisplayRainbowEffect::JBWoprDateDisplayRainbowEffect(JBWoprDevice *woprDevice,
+												 std::string dateFormat,
+												 uint32_t duration,
+												 const std::string& name) :
+		JBWoprDateDisplayEffect(woprDevice, dateFormat, duration, name) {
+}
+
+void JBWoprDateDisplayRainbowEffect::loop() {
+	char text[12];
+	tm timeinfo{};
+
+	if (!_isRunning) {
+		return;
+	}
+
+	JBWoprDateDisplayEffect::loop();
+	if (_nextLedTick < millis()) {
+		auto leds = _woprDevice->getDefconLeds();
+		_pixelHue += 256;
+		for (uint32_t i = 0; i < 5; i++) {
+			uint16_t pixelHue = _pixelHue + (i * 65536L / 5);
+			leds->setPixelColor(i, leds->gamma32(leds->ColorHSV(pixelHue)));
+		}
+		leds->show();
+		_nextLedTick = millis() + 40;
+	}
 }
 
 // ============================================
@@ -414,18 +457,6 @@ void JBWoprDateTimeDisplayEffect::loop() {
 	}
 
 	JBWoprEffectBase::loop();
-	if (_nextLedTick > millis()) {
-		return;
-	}
-
-	auto leds = _woprDevice->getDefconLeds();
-	_pixelHue += 256;
-	for (uint32_t i = 0; i < 5; i++) {
-		uint16_t pixelHue = _pixelHue + (i * 65536L / 5);
-		leds->setPixelColor(i, leds->gamma32(leds->ColorHSV(pixelHue)));
-	}
-	leds->show();
-	_nextLedTick = millis() + 40;
 
 	if (_nextTick > millis()) {
 		return;
@@ -480,7 +511,7 @@ void JBWoprDateTimeDisplayEffect::setDateFormat(const std::string& dateFormat) {
 }
 
 std::string JBWoprDateTimeDisplayEffect::_getOddTimeFormat(const std::string &format) {
-	std::string result = "";
+	std::string result;
 	for (char ch: format) {
 		if (ch == '%' || std::isalpha(ch)) {
 			result += ch;
@@ -490,6 +521,42 @@ std::string JBWoprDateTimeDisplayEffect::_getOddTimeFormat(const std::string &fo
 	}
 	return result;
 }
+
+// ============================================
+//
+// DateTimeDisplayEffect
+//
+JBWoprDateTimeDisplayRainbowEffect::JBWoprDateTimeDisplayRainbowEffect(JBWoprDevice *woprDevice,
+														 std::string  timeFormat,
+														 std::string  dateFormat,
+														 uint32_t duration,
+														 const std::string& name) :
+		JBWoprDateTimeDisplayEffect(woprDevice, timeFormat, dateFormat, duration, name) {
+}
+
+void JBWoprDateTimeDisplayRainbowEffect::loop() {
+	char text[12];
+	tm timeinfo{};
+
+	if (!_isRunning) {
+		return;
+	}
+
+	JBWoprDateTimeDisplayEffect::loop();
+	if (_nextLedTick > millis()) {
+		return;
+	}
+
+	auto leds = _woprDevice->getDefconLeds();
+	_pixelHue += 256;
+	for (uint32_t i = 0; i < 5; i++) {
+		uint16_t pixelHue = _pixelHue + (i * 65536L / 5);
+		leds->setPixelColor(i, leds->gamma32(leds->ColorHSV(pixelHue)));
+	}
+	leds->show();
+	_nextLedTick = millis() + 40;
+}
+
 
 // ============================================
 //

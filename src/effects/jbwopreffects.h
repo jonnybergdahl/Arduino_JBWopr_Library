@@ -21,8 +21,11 @@ class JBWoprDevice;
 #define JBWOPR_EFFECT_NAME_TEXT 			"Text"             	///< Name of JBWoprDisplayTextEffect
 #define JBWOPR_EFFECT_NAME_SCROLLTEXT 		"Scroll text"		///< Name of JBWoprDisplayScrollTextEffect
 #define JBWOPR_EFFECT_NAME_TIME 			"Time"             	///< Name of JBWoprDisplayTimeEffect
+#define JBWOPR_EFFECT_NAME_TIME_RAINBOW		"Time R"           	///< Name of JBWoprDisplayTimeRainbowEffect
 #define JBWOPR_EFFECT_NAME_DATE 			"Date"             	///< Name of JBWoprDisplayDateEffect
+#define JBWOPR_EFFECT_NAME_DATETIME_RAINBOW	"Date Time R"		///< Name of JBWoprDisplayDateTimeRainbowEffect
 #define JBWOPR_EFFECT_NAME_DATETIME 		"Date Time"			///< Name of JBWoprDisplayDateTimeEffect
+#define JBWOPR_EFFECT_NAME_DATETIME_RAINBOW	"Date Time R"		///< Name of JBWoprDisplayDateTimeRainbowEffect
 #define JBWOPR_EFFECT_NAME_XMAS_SECONDS		"Xmas seconds"     	///< Name of JBWoprDisplayXmasSecondsEffect
 #define JBWOPR_EFFECT_NAME_CODE_SOLVE 		"Code Solve" 		///< Name of JBWoprWOPRMovieSolveEffect
 #define JBWOPR_EFFECT_NAME_DEFCON_RAINBOW 	"Rainbow"			///< Name of JBWoprDefconRainbowEffect
@@ -217,6 +220,30 @@ protected:
 	std::string _rawTimeFormat;			///< Raw time format
 	std::string _timeFormatEven;		///< Time format for even
 	std::string _timeFormatOdd;			///< Time format for odd
+
+private:
+	JBLogger _log {"time" };			///< Logger instance
+};
+
+/// @brief Display effect for showing the current time
+class JBWoprTimeDisplayRainbowEffect : public JBWoprTimeDisplayEffect {
+public:
+	/// @brief Constructor
+	/// @ingroup EffectGroup
+	/// @param woprDevice JBWoprDevice instance
+	/// @param timeFormat (optional) Time format, default is fetched from config
+	/// @param duration (optional) Duration of effect in milliseconds, default is -1 (infinite)
+	/// @param name (optional) Name of effect
+	explicit JBWoprTimeDisplayRainbowEffect(JBWoprDevice *woprDevice,
+									 std::string  timeFormat = "",
+									 uint32_t duration = -1,
+									 const std::string& name=JBWOPR_EFFECT_NAME_TIME);
+
+	/// @brief Run loop
+	/// @ingroup EffectGroup
+	void loop() override;
+
+protected:
 	uint64_t _nextLedTick = 0;			///< Next LED tick
 	uint16_t _pixelHue = 0;				///< Pixel hue
 
@@ -257,6 +284,31 @@ protected:
 	std::string _timeFormatOdd;			///< Time format for odd
 	std::string _rawDateFormat;			///< Raw date format
 	std::string _dateFormat;			///< Date format
+
+private:
+	JBLogger _log {"date" };	///< Logger instance
+};
+
+/// @brief Display effect for showing the current date, with rainbow colors
+/// @ingroup EffectGroup
+class JBWoprDateDisplayRainbowEffect : public JBWoprDateDisplayEffect {
+public:
+	/// @brief Constructor
+	/// @ingroup EffectGroup
+	/// @param woprDevice JBWoprDevice instance
+	/// @param dateFormat (optional) Date format, default is fetched from config
+	/// @param duration (optional) Duration of effect in milliseconds, default is -1 (infinite)
+	/// @param name (optional) Name of effect
+	explicit JBWoprDateDisplayRainbowEffect(JBWoprDevice *woprDevice,
+									 std::string  dateFormat = "",
+									 uint32_t duration = -1,
+									 const std::string& name=JBWOPR_EFFECT_NAME_DATE);
+
+	/// @brief Get name of effect
+	/// @ingroup EffectGroup
+	void loop() override;
+
+protected:
 	uint64_t _nextLedTick = 0;			///< Next LED tick
 	uint16_t _pixelHue = 0;				///< Pixel hue
 
@@ -313,6 +365,32 @@ private:
 	/// @param format
 	/// @return Time format
 	virtual std::string _getOddTimeFormat(const std::string& format);
+};
+
+/// @brief Display effect for showing the current date and time, with rainbow colors
+/// @ingroup EffectGroup
+/// @details Shows date for 2 seconds, then time for 8 seconds
+class JBWoprDateTimeDisplayRainbowEffect : public JBWoprDateTimeDisplayEffect {
+public:
+	/// @brief Constructor
+	/// @ingroup EffectGroup
+	/// @param woprDevice JBWoprDevice instance
+	explicit JBWoprDateTimeDisplayRainbowEffect(JBWoprDevice *woprDevice,
+												std::string  timeFormat = "",
+												std::string  dateFormat = "",
+												uint32_t duration = -1,
+												const std::string& name=JBWOPR_EFFECT_NAME_DATETIME);
+
+	/// @brief Get name of effect
+	/// @ingroup EffectGroup
+	void loop() override;
+
+protected:
+	uint64_t _nextLedTick = 0;						///< Next LED tick
+	uint16_t _pixelHue = 0;							///< Pixel hue
+
+private:
+	JBLogger _log {"datetime" };		///< Logger instance
 };
 
 /// @brief Display effect for showing seconds un til Xmas

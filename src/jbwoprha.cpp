@@ -360,6 +360,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/defcon/state/set";
 		jsonDoc["brightness_state_topic"] = "wopr/" + _getDeviceName() + "/defcon/brightness";
 		jsonDoc["brightness_command_topic"] = "wopr/" + _getDeviceName() + "/defcon/brightness/set";
+		jsonDoc["rgb_state_topic"] = "wopr/" + _getDeviceName() + "/defcon/color";
 		jsonDoc["rgb_command_topic"] = "wopr/" + _getDeviceName() + "/defcon/color/set";
 		jsonDoc["brightness_scale"] = 100;
 		jsonDoc["icon"] = MDI_ICON_NUMERIC_5_BOX_OUTLINE;

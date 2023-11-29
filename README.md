@@ -3,13 +3,6 @@
 JBWopr is a helper library for the Arduino platform that allows you to easily interface with the 
 Unexpected Maker W.O.P.R. board.
 
-> Note - The Home Assistant support is still a work in progress. 
-
-## Work in progress
-
- - Add support for state on/off for display/defcon
- - Add support for discovery in Home Asssistant
-
 ## Installation
 
 Install using the library manager in the Arduino IDE.

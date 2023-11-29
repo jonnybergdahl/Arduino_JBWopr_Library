@@ -22,7 +22,7 @@
 #include "effects/jbwopreffects.h"
 #include "jbwoprhelpers.h"
 
-#define LIBRARY_VERSION "1.0.0-beta3";
+#define LIBRARY_VERSION "1.0.0-beta4";
 
 /// @brief W.O.P.R. board version
 enum JBWoprBoardVariant {
@@ -156,7 +156,7 @@ public:
 	/// @param effect Effect to register
 	void effectsRegisterEffect(JBWoprEffectBase* effect);
 
-	/// @brief Get list of registered effects
+	/// @brief Get a list of registered effects
 	/// @ingroup EffectsGroup
 	/// @return Default effects
 	std::vector<JBWoprEffectBase*> effectsGetRegisteredEffects();
