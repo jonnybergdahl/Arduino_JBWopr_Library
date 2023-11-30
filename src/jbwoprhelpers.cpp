@@ -5,7 +5,7 @@
 /// This code is distributed under the MIT License. See LICENSE for details.
 /// @date Created: 2023-10-02
 /// @copyright Copyright© 2023, Jonny Bergdahl
-///#include "jbwoprhelpers.h"
+#include "jbwoprhelpers.h"
 #include <JBLogger.h>
 #include <WiFi.h>
 #include <HTTPClient.h>

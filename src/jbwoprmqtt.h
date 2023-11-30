@@ -330,7 +330,7 @@ protected:
 	// ====================================================================
 	// WiFi
 	//
-	WiFiClient _wifiClient;								/			//< WiFi client
+	WiFiClient _wifiClient;											///< WiFi client
 
 	const char* HTML_MQTT_TITLE = "<h2>MQTT settings</h2>";			///< MQTT title
 	char _mqttServerPortValue[6];									///< MQTT server port value

@@ -23,8 +23,8 @@
 // Uncomment one of the WoprDevice variants below.
 //
 //#define FIRMWARE_VARIANT_WIFI
-#define FIRMWARE_VARIANT_MQTT
-//#define FIRMWARE_VARIANT_HA
+//#define FIRMWARE_VARIANT_MQTT
+#define FIRMWARE_VARIANT_HA
 //
 // Set the log level to LOG_LEVEL_TRACE in case you run into problems
 #define LOG_LEVEL LogLevel::LOG_LEVEL_INFO
