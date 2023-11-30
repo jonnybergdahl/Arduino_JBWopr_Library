@@ -274,7 +274,6 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 							 MDI_ICON_WEB);
 		jsonDoc["payload_on"] = "True";
 		jsonDoc["payload_off"] = "False";
-		jsonDoc[HA_NAMES_STATE_TOPIC] = "wopr/" + _getDeviceName() + "/defcon/brightness";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/config/use_web_portal/set";
 		mqttPublishMessage(topic, jsonDoc, true);
 	}
