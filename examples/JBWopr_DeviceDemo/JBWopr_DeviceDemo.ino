@@ -5,6 +5,10 @@
 // This example shows how to use the JBWoprDevice class to create a simple
 // device that can display text and scroll text on the display.
 //
+// NOTE: Set your WiFi SSID and Password in the secrets.h file.
+//
+//  Use the left and right buttons to switch between effects.
+//
 // -----------------------------------------------------------------------------
 //
 // JBWopr Library - https://github.com/jonnybergdahl/Arduino_JBWopr_Library
@@ -17,7 +21,9 @@
 #include <WiFi.h>
 #include <jbwopr.h>
 #include <jbwoprhelpers.h>
-#include "effects/jbwopreffects.h"
+#include <effects/jbwopreffects.h>
+#include <effects/jbwoprtherickeffect.h>
+#include <effects/jbwoprnokiatune.h>
 #include "secrets.h"
 
 #define BOARD_VERSION JBWoprBoardVariant::ORIGINAL
@@ -53,7 +59,7 @@ void setup() {
 	config->effectsTimeout = 2;
 
 	// We are setting log level to max log level
-	wopr.getLogger()->setLogLevel(LogLevel::LOG_LEVEL_TRACE);
+	wopr.setLogLevel(LogLevel::LOG_LEVEL_TRACE);
 
 	// Setting up the devicee
 	wopr.begin(BOARD_VERSION);
@@ -90,10 +96,11 @@ void setup() {
 		delay(1000);
 
 		// Use the JBTimeHelper class to get the local time zone and get the local time
+		Serial.println("Get time");
 		wopr.displayShowText("Get time", JBTextAlignment::CENTER);
 		tm timeinfo;
 		if (!JBTimeHelper::getTime(&timeinfo)) {
-			Serial.println("Failed to obtain time");
+			Serial.println("Failed to obtain time - effects that needs time will retry");
 			wopr.displayShowText("Time failed", JBTextAlignment::CENTER);
 		}
 	}
@@ -114,13 +121,13 @@ void loop() {
 	if (resetEffect) {
 		Serial.print("currentEffect: ");
 		Serial.println(currentEffect);
-		wopr.effectStopCurrent();
+		wopr.effectsStopCurrentEffect();
 		resetEffect = false;
 		startEffect();
 	}
 
 	// If we are not running, just display a "pause" text
-	if (!wopr.effectIsRunning())
+	if (!wopr.effectsCurrentEffectIsRunning())
 	{
 		wopr.displayShowText("<- SWITCH ->");
 	}
@@ -153,33 +160,39 @@ void startEffect() {
 	Serial.printf("Running effect %i: %s for %i ms\n", currentEffect, effect->getName().c_str(), duration);
 	wopr.displayShowText(effect->getName());
 	delay(1000);
-	wopr.effectStart(effect, duration);
+	wopr.effectsStartEffect(effect);
 }
 
 void setupEffects() {
 	// Now we create all effects and put them in a vector
 	// Simple text display
-	JBWoprTextDisplayEffect* textDisplay = new JBWoprTextDisplayEffect(&wopr);
-	textDisplay->setText("SOME TEXT");
+	JBWoprTextDisplayEffect* textDisplay = new JBWoprTextDisplayEffect(&wopr, "SOME TEXT");
 	effects.push_back(textDisplay);
 
 	// Centered text display
-	textDisplay = new JBWoprTextDisplayEffect(&wopr, JBTextAlignment::CENTER);
+	textDisplay = new JBWoprTextDisplayEffect(&wopr, "CENTERED", JBTextAlignment::CENTER);
 	textDisplay->setText("CENTERED");
 	effects.push_back(textDisplay);
 
 	// Scrolling text effect
-	JBWoprScrollTextDisplayEffect* scrollTextDisplay = new JBWoprScrollTextDisplayEffect(&wopr);
-	scrollTextDisplay->setText("This is some scrolling text that is longer than 12 characters");
+	JBWoprScrollTextDisplayEffect* scrollTextDisplay = new JBWoprScrollTextDisplayEffect(&wopr, "This is some scrolling text that is longer than 12 characters");
 	effects.push_back(scrollTextDisplay);
 
 	// Clock display, time only
 	JBWoprTimeDisplayEffect* timeEffect = new JBWoprTimeDisplayEffect(&wopr);
 	effects.push_back(timeEffect);
 
+	// Clock display, time only, with rainbow effect
+	JBWoprTimeDisplayRainbowEffect* timeRainbowEffect = new JBWoprTimeDisplayRainbowEffect(&wopr);
+	effects.push_back(timeRainbowEffect);
+
 	// Clock display, date only
 	JBWoprDateDisplayEffect* dateEffect = new JBWoprDateDisplayEffect(&wopr);
 	effects.push_back(dateEffect);
+
+	// Clock display, date only, with rainbow effect
+	JBWoprDateDisplayRainbowEffect* dateRainbowEffect = new JBWoprDateDisplayRainbowEffect(&wopr);
+	effects.push_back(dateRainbowEffect);
 
 	// Clock display, time and date
 	JBWoprDateTimeDisplayEffect* dateTimeEffect = new JBWoprDateTimeDisplayEffect(&wopr);
@@ -194,13 +207,11 @@ void setupEffects() {
 	effects.push_back(missileCodeSolve1);
 
 	// Missile solve effect, message version
-	JBWoprMissileCodeSolveEffect* missileCodeSolve2 = new JBWoprMissileCodeSolveEffect(&wopr);
-	missileCodeSolve2->setCodeSolveVariant(CodeSolveVariant::MESSAGE);
+	JBWoprMissileCodeSolveEffect* missileCodeSolve2 = new JBWoprMissileCodeSolveEffect(&wopr, CodeSolveVariant::MESSAGE, -1, "Msge solve");
 	effects.push_back(missileCodeSolve2);
 
 	// Missile solve effect, random version
-	JBWoprMissileCodeSolveEffect* missileCodeSolve3 = new JBWoprMissileCodeSolveEffect(&wopr);
-	missileCodeSolve2->setCodeSolveVariant(CodeSolveVariant::RANDOM);
+	JBWoprMissileCodeSolveEffect* missileCodeSolve3 = new JBWoprMissileCodeSolveEffect(&wopr, CodeSolveVariant::RANDOM, -1, "Rnd solve");
 	effects.push_back(missileCodeSolve3);
 
 	// Defcon LED rainbow effect

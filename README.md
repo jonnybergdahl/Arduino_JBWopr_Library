@@ -1,4 +1,7 @@
-# JBWOPR
+# JBWopr
+
+[![arduino-library-badge](https://www.ardu-badge.com/badge/JBWopr.svg?)](https://www.ardu-badge.com/JBWopr)
+![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
 
 JBWopr is a helper library for the Arduino platform that allows you to easily interface with the 
 Unexpected Maker W.O.P.R. board.
@@ -39,7 +42,7 @@ that you can also use as a starting point for your own firmware.
 
 Full code documentation is available at https://jonnybergdahl.github.io/jbwopr/
 
-## JBWoprDevicee
+## JBWoprDevice
 
 Create an instance of the `JBWoprDevice` class. Do any configuration you need to do then 
 and call `begin()` in your `setup()` function. Then call `loop()` in your `loop()` function.
@@ -153,7 +156,7 @@ The following settings are available in the web portal:
 
 ![MQTT](images/mqttconfig.png "MQTT configuration")
 
-## MQTT Topics
+### MQTT Topics
 
 At startup, the device will publish an availability message to the `<mqtt_prefix>/<device_id>/availability` topic
 with the payload `online`. It will also set the last will topic to the same topic with the payload `offline`.
@@ -162,7 +165,30 @@ You can use that to check if the device is online or not.
 Current device state is posted to the `<mqtt_prefix>/<device_id>/<entity>/state` topic, it is posted when 
 state is changed.
 
-### Effects
+#### Device
+
+The device will listen to messages on the following topic to restart the device.
+
+| Topic                                      | Example payload | Comment   |
+|--------------------------------------------|-----------------|-----------|
+| <mqtt_prefix>/<device_id>/device/state/set | `restart`       | `restart` |
+
+#### Configuration
+
+The device will listen to messages on the following topic to change configuration.
+
+| Topic                                                   | Example payload | Comment            |
+|---------------------------------------------------------|-----------------|--------------------|
+| <mqtt_prefix>/<device_id>/config/date_format/set        | `%Y-%m-%d`      | Date format        |
+| <mqtt_prefix>/<device_id>/config/time_format/set        | `%H %M %S`      | Time format        |
+| <mqtt_prefix>/<device_id>/config/defcon_brightness/set  | 50              | DEFCON brightness  |
+| <mqtt_prefix>/<device_id>/config/display_brightness/set | 50              | Display brightness |
+| <mqtt_prefix>/<device_id>/config/effects_timeout/set    | 30              | Effects timeout    |
+| <mqtt_prefix>/<device_id>/config/use_web_portal/set     | `True`          | Use web portal     |
+
+> The other settings defines the MQTT configuration so can't be set over MQTT.
+ 
+#### Effects
 
 The device will post a message to the following topics when an effect state is changed.
 
@@ -178,7 +204,7 @@ The device will listen to messages on the following topics.
 | <mqtt_prefix>/<device_id>/effect/state/set | `ON`            | `ON` / `OFF`                               |
 | <mqtt_prefix>/<device_id>/effect/name/set  | `Rainbow`       | Registered name, will start effect as well |
 
-### Display
+#### Display
 
 The device will post a message to the following topics when the display state is changed.
 
@@ -198,7 +224,7 @@ The device will listen to command messages on the following topics.
 | <mqtt_prefix>/<device_id>/display/scrolltext/set | `Hello scrolling world` | ASCII characters only |
 | <mqtt_prefix>/<device_id>/display/brightness/set | `50`                    | `0` to `100`          |
 
-### DEFCON LED's
+#### DEFCON LED's
 
 The device will post a message to the following topics when the DEFCON LED's state is changed.
 
@@ -218,7 +244,7 @@ The device will listen to command messages on the following topics.
 | <mqtt_prefix>/<device_id>/display/brightness/set | `50`            | `0` to `100`                      |
 | <mqtt_prefix>/<device_id>/defcon/color/set       | `0,0,128`       | RGB byte values in format `R,G,B` |
 
-### Buttons
+#### Buttons
 
 The device will post a message to the following topics when a button is clicked or double-clicked.
 
@@ -231,72 +257,84 @@ The device will post a message to the following topics when a button is clicked 
 
 ## JBWoprHomeAssistantDevice
 
-TODO
+The `JBWoprHomeAssistantDevice` class adds Home Assistant support to the `JBWoprMqttDevice` class. It will publish
+discovery data to the Home Assistant MQTT discovery topic when connected to the MQTT server.
 
-### Topics
+When a connection to the MQTT server is established, the device will publish a message to the 
+`<mqtt_prefix>/<homeassistant prefix>/status` topic with the payload `online`, and also set the last will topic 
+to the same topic with the payload `offline`. Home Assistant will use that to check if the device is online or not.
+
+It will then proceed to publish discovery data to the `<mqtt_prefix>/<homeassistant prefix>/<entity>/config` topic,
+followed by publishing diagnostics and configuration state in the form of JSON messages. It will finally publish
+the individual entity states.
+
+The following settings are available in the web portal:
+
+![WiFiManager](images/haconfig.png "Home Assistant configuration")
+
+### Home Assistant
+
+Once the device has published discovery data to Home Assistant, it will be available under the 
+MQTT integration.
+
+If web portal is enabled, the _Visit_ section will be active. 
+
+![Home Assistant Device](images/hadeviceinfo.png "Device info")
+
+The following entities will be available under _Controls_.
+
+![Home Assistant Controls](images/hacontrols.png "Controls")
+
+The following entities will be available under _Configuration_.
+
+![Home Assistant Configuration](images/haconfiguration.png "Configuration")
+
+The following entities will be available under _Diagnostics_.
+
+![Home Assistant Diagnostics](images/hadiagnostics.png "Diagnostics")
+
+### MQTT Topics
+
+`JBWoprHomeAssistantDevice` uses the same topics as the `JBWoprMqttDevice` class, and adds the following topics.
+
+### Diagnostics
 
 | Topic                                       | Example payload         | Comment       |
 |---------------------------------------------|-------------------------|---------------|
 | <mqtt_prefix>/<device_id>/diagnostics/state | JSON payload, See below | Diagnostics   |
-| <mqtt_prefix>/<device_id>/config/state      | JSON payload, See below | Configuration |
-| <mqtt_prefix>/<device_id>/device/set        | JSON payload, See below | Device state  |
-
-### Diagnostics
-
-Diagnostic information is posted at startup.
 
 ```json
 {
-  "ipAddress": "172.30.2.210",
-  "rssi": -50,
-  "version": "1.0.0-beta3"
+  "ipAddress": "172.30.2.110",
+  "rssi": -52,
+  "ram": 201728,
+  "version": "1.0.0"
 }
-
 ```
 
 ### Configuration
 
-Current configuration is posted at startup.
+| Topic                                       | Example payload         | Comment       |
+|---------------------------------------------|-------------------------|---------------|
+| <mqtt_prefix>/<device_id>/config/state      | JSON payload, See below | Configuration |
 
 ```json
 {
-  "timeFormat": "%H %M %s",
+  "timeFormat": "%H %M %S",
   "dateFormat": "%Y-%m-%d",
+  "defconBrightness": 50,
   "displayBrightness": 50,
-  "defconLedsBrightness": 50,
   "effectsTimeout": 30,
-  "wifiHostname": "wopr-5ccf7f2b9b2c",
+  "hostName": "wopr-461da0d8",
   "useWebPortal": true,
   "useMqtt": true,
-  "mqttServerName": "servername.local",
+  "mqttServerName": "172.30.2.64",
   "mqttServerPort": 1883,
-  "mqttUserName": "username",
-  "mqttPassword": "password",
-  "mqttPrefix": "wopr"
+  "mqttUserName": "user",
+  "mqttPassword": "pass",
+  "mqttPrefix": "wopr",
+  "useHomeAssistant": true,
+  "discoveryPrefix": "homeassistant"
 }
 ```
 
-### Device state
-
-Current device state is posted when state is changed.
-
-```json
-{
-  "effect": {
-    "state": "ON",
-    "name": "Rainbow"
-  },
-  "display": {
-    "state": "ON",
-    "text": "Hello World",
-    "scrollText": "Hello scrolling world",
-    "brightness": 50
-  },
-  "defcon": {
-    "state": "ON",
-    "level": 1,
-    "brightness": 50,
-    "color": "255,0,0"
-  }
-}
-```

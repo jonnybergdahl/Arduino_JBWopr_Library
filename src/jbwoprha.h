@@ -86,14 +86,14 @@ protected:
 	// ====================================================================
 	// Wifi
 	//
-	const char* HTML_HOME_ASSISTANT_TITLE = "<h2>Home Assistant settings</h2>";			///< MQTT title
-	const char* HTML_CHECKBOX_TRUE = "type=\"checkbox\" checked";   ///< HTML checkbox true
-	const char* HTML_CHECKBOX_FALSE = "type=\"checkbox\"";          ///< HTML checkbox false
+	const char* HTML_HOME_ASSISTANT_TITLE = "<h2>Home Assistant settings</h2>";	///< MQTT title
+	const char* HTML_CHECKBOX_TRUE = "type=\"checkbox\" checked"; 			///< HTML checkbox true
+	const char* HTML_CHECKBOX_FALSE = "type=\"checkbox\"";         			///< HTML checkbox false
 
-	WiFiManagerParameter* _homeAssistantTitleParam;				///< Home Assistant title
-	WiFiManagerParameter* _useHomeAssistantParam;				///< Use Home Assistant
-	WiFiManagerParameter* _homeAssistantDiscoveryPrefixParam;	///< Home Assistant discovery prefix
-	WiFiManagerParameter* _break3Param;							///< Break
+	WiFiManagerParameter* _homeAssistantTitleParam;							///< Home Assistant title
+	WiFiManagerParameter* _useHomeAssistantParam;							///< Use Home Assistant
+	WiFiManagerParameter* _homeAssistantDiscoveryPrefixParam;				///< Home Assistant discovery prefix
+	WiFiManagerParameter* _break3Param;										///< Break
 
 	void _setupWiFiManager() override;
 	void _saveParamsCallback() override;
@@ -101,8 +101,8 @@ protected:
 	// ====================================================================
 	// MQTT
 	//
-	const char* ENTITY_NAME_DIAGNOSTIC = "diagnostic";		///< Diagnostics entity name
-	const char* ENTITY_NAME_CONFIG = "config";					///< Config entity name
+	const char* ENTITY_NAME_DIAGNOSTIC = "diagnostic";						///< Diagnostics entity name
+	const char* ENTITY_NAME_CONFIG = "config";								///< Config entity name
 
 	/// @brief Called when MQTT client get connected
 	/// @ingroup MQTTGroup
@@ -112,28 +112,26 @@ protected:
 	// ====================================================================
 	// Home Assistant
 	//
-	bool _publishHomeAssistantDiscovery;				///< True if Home Assistant discovery should be published
+	const char* HA_DIAG_PREFIX = "diagnostic";									///< Diagnostic discovery prefix
+	const char* HA_CONFIG_PREFIX = "config";									///< Config discovery prefix
 
-	const char* HA_DIAG_PREFIX = "diagnostic";							///< Diagnostic discovery prefix
-	const char* HA_CONFIG_PREFIX = "config";							///< Config discovery prefix
+	const char* HA_COMPONENT_LIGHT = "light";									///< Light component
+	const char* HA_COMPONENT_NUMBER = "number";									///< Number component
+	const char* HA_COMPONENT_SELECT = "select";									///< Select component
+	const char* HA_COMPONENT_SENSOR = "sensor";									///< Sensor component
+	const char* HA_COMPONENT_SWITCH = "switch";									///< Switch component
+	const char* HA_COMPONENT_BUTTON = "button";									///< Button component
 
-	const char* HA_COMPONENT_LIGHT = "light";						///< Light component
-	const char* HA_COMPONENT_NUMBER = "number";						///< Number component
-	const char* HA_COMPONENT_SELECT = "select";						///< Select component
-	const char* HA_COMPONENT_SENSOR = "sensor";						///< Sensor component
-	const char* HA_COMPONENT_SWITCH = "switch";						///< Switch component
-	const char* HA_COMPONENT_BUTTON = "button";						///< Button component
-
-	const char* HA_DIAG_ENTITY_IP = "ip";								///< IP entity name
-	const char* HA_DIAG_ENTITY_RSSI = "rssi";							///< RSSI entity name
-	const char* HA_DIAG_ENTITY_RAM = "ram";								///< RAM entity name
-	const char* HA_CONF_ENTITY_DATE_FORMAT = "date_format";				///< Date format entity name
-	const char* HA_CONF_ENTITY_TIME_FORMAT = "time_format";				///< Time format entity name
-	const char* HA_CONF_ENTITY_DISPLAY_BRIGHTNESS = "display_brightness";	///< Display brightness entity name
-	const char* HA_CONF_ENTITY_DEFCON_BRIGHTNESS = "defcon_brightness";	///< DEFCON brightness entity name
-	const char* HA_CONF_ENTITY_EFFECTS_TIMEOUT = "effects_timeout";		///< Effects timeout entity name
-	const char* HA_CONF_ENTITY_WIFI_USE_WEB_PORTAL = "use_web_portal";	///< Use web portal entity name
-	const char* HA_CONF_ENTITY_RESTART = "restart";						///< Restart entity name
+	const char* HA_DIAG_ENTITY_IP = "ip";										///< IP entity name
+	const char* HA_DIAG_ENTITY_RSSI = "rssi";									///< RSSI entity name
+	const char* HA_DIAG_ENTITY_RAM = "ram";										///< RAM entity name
+	const char* HA_CONF_ENTITY_DATE_FORMAT = "date_format";						///< Date format entity name
+	const char* HA_CONF_ENTITY_TIME_FORMAT = "time_format";						///< Time format entity name
+	const char* HA_CONF_ENTITY_DISPLAY_BRIGHTNESS = "display_brightness";		///< Display brightness entity name
+	const char* HA_CONF_ENTITY_DEFCON_BRIGHTNESS = "defcon_brightness";			///< DEFCON brightness entity name
+	const char* HA_CONF_ENTITY_EFFECTS_TIMEOUT = "effects_timeout";				///< Effects timeout entity name
+	const char* HA_CONF_ENTITY_WIFI_USE_WEB_PORTAL = "use_web_portal";			///< Use web portal entity name
+	const char* HA_CONF_ENTITY_RESTART = "restart";								///< Restart entity name
 
 	const char* JSON_KEY_HA_DIAG_ENTITY_IP = "ipAddress";						///< IP entity key name
 	const char* JSON_KEY_HA_DIAG_ENTITY_RSSI = "rssi";							///< RSSI entity key name
@@ -153,10 +151,6 @@ protected:
 
 	/// @brief Publish Home Assistant state
 	bool _homeAssistantPublishState();
-
-
-	/// @brief Handle Home Assistant command
-	void _homeAssistantHandleCommand(std::string entity, std::string subEntity, std::string command, std::string payload);
 
 	/// @brief Get Home Assistant discovery topic
 	/// @param entity Entity

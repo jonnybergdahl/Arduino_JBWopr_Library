@@ -1,6 +1,11 @@
-//
-// Created by Jonny Bergdahl on 2023-11-22.
-//
+/// @file ha_abbr.h
+/// @author Jonny Bergdahl
+/// @brief Header file for the JBWopr library
+/// @details Contains declarations for the Home Assistant abbreviated discovery names.
+/// This code is distributed under the MIT License. See LICENSE for details.
+/// @date Created: 2023-10-02
+/// @copyright Copyright© 2023, Jonny Bergdahl
+///
 /*'act_t':               'action_topic',
 'act_tpl':             'action_template',
 'atype':               'automation_type',

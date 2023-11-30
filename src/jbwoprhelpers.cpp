@@ -1,8 +1,14 @@
-#include "jbwoprhelpers.h"
+/// @file jbwoprhelpers.cpp
+/// @author Jonny Bergdahl
+/// @brief Source file for the JBWopr library.
+/// @details Contains declarations for the base JBWoprDevice class.
+/// This code is distributed under the MIT License. See LICENSE for details.
+/// @date Created: 2023-10-02
+/// @copyright Copyright© 2023, Jonny Bergdahl
+///#include "jbwoprhelpers.h"
 #include <JBLogger.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
-
 
 bool JBTimeHelper::_isInitialized = false;
 

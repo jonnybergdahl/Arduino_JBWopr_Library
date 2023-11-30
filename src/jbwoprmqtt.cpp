@@ -496,8 +496,13 @@ void JBWoprMqttDevice::_handleConfigCommand(const std::string &subEntity,
 			_config.effectsTimeout = atoi(payload.c_str());
 			_saveConfiguration();
 		} else if (subEntity == SUBENTITY_NAME_WIFI_USE_WEB_PORTAL) {
-			_wifiConfig.useWebPortal = payload == STATE_ON;
+			_wifiConfig.useWebPortal = payload == "True";
 			_saveConfiguration();
+			if (_wifiConfig.useWebPortal) {
+				webPortalStart();
+			} else {
+				webPortalStop();
+			}
 		} else {
 			_log->error("Unsupported sub entity: %s", subEntity.c_str());
 		}

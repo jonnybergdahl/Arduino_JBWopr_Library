@@ -66,10 +66,6 @@ bool JBWoprDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 	_woprVariant = variant;
 	_log->info("JBWoprDevice begin, variant: %i", variant);
 
-	_defaultEffect = new JBWoprDateTimeDisplayEffect(this,
-													 _config.timeFormat,
-													 _config.dateFormat);
-
 	// Buttons
 	_log->trace("Button pins: %i, %i, %i, %i", pins.buttonFrontLeftPin, pins.buttonFrontRightPin, pins.buttonBackTopPin, pins.buttonBackBottomPin);
 	_buttonFrontLeft = new OneButton(pins.buttonFrontLeftPin, false);

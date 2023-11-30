@@ -52,6 +52,7 @@ add_executable(Arduino_WOPR
         examples/JBWopr_Firmware/JBWopr_Firmware.ino
         src/ha/ha_abbr.h
         src/ha/mdi_consts.h
+        examples/JBWopr_DeviceDemo/secrets.h
 
 )
 

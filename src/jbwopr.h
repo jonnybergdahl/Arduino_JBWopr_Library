@@ -471,37 +471,49 @@ protected:
 	// Defcon LEDs
 	//
 	Adafruit_NeoPixel _defconLeds = Adafruit_NeoPixel(5, 1, NEO_GRB + NEO_KHZ800);	///< DEFCON LEDs
-	bool _defconState = true;						///< DEFCON state
-	JBDefconLevel _defconLevel = JBDefconLevel::DEFCON_NONE;	///< DEFCON level
-	uint32_t _defconColors[5];						///< DEFCON colors
-	uint32_t _defconBrightness = 100;				///< DEFCON brightness
-	uint32_t _defconLedsColor = 0;					///< DEFCON LED's color
+	bool _defconState = true;										///< DEFCON state
+	JBDefconLevel _defconLevel = JBDefconLevel::DEFCON_NONE;		///< DEFCON level
+	uint32_t _defconColors[5];										///< DEFCON colors
+	uint32_t _defconBrightness = 100;								///< DEFCON brightness
+	uint32_t _defconLedsColor = 0;									///< DEFCON LED's color
 
 	// Note - due to how Adafruit_Neopixel handles brigthness, we buffer the LED colors into the
 	// _defconPixels variable together with the current brightness value.
 	// We then apply them both before calling show().
 	uint32_t _defconPixels[5] { 0,0,0,0,0};	///< DEFCON buffered pixel colors
-	uint32_t _defconBrigthtness = 100;		///< DEFCON brightness
+	uint32_t _defconBrigthtness = 100;								///< DEFCON brightness
+
+	/// @brief Get DEFCON level from string value
+	/// @param value String value
+	/// @return DEFCON level
 	JBDefconLevel _getDefconLevel(std::string value);
+
+	/// @brief Get DEFCON level string from DEFCON level
+	/// @param level DEFCON level
+	/// @return DEFCON level string
 	std::string _getDefconLevelString(JBDefconLevel level);
+
+	/// @brief Get DEFCON LED strip pixel from DEFCON level
+	/// @param level DEFCON level
+	/// @return DEFCON LED strip pixel
 	uint32_t _getDefconLedsPixel(JBDefconLevel level);
 
 	// ====================================================================
 	// Buttons
 	//
-	OneButton* _buttonFrontLeft;			///< Front left button
-	OneButton* _buttonFrontRight;			///< Front right button
-	OneButton* _buttonBackTop;				///< Back to
-	OneButton* _buttonBackBottom;			///< Back bottom button
+	OneButton* _buttonFrontLeft;										///< Front left button
+	OneButton* _buttonFrontRight;										///< Front right button
+	OneButton* _buttonBackTop;											///< Back to
+	OneButton* _buttonBackBottom;										///< Back bottom button
 
-	std::function<void()> _buttonFrontLeftClickCallback;			///< Front left button click callback
-	std::function<void()> _buttonFrontLeftDoubleClickCallback;		///< Front left button double click callback
-	std::function<void()> _buttonFrontRightClickCallback;			///< Front right button click callback
-	std::function<void()> _buttonFrontRightDoubleClickCallback;		///< Front right button double click callback
-	std::function<void()> _buttonBackTopClickCallback;				///< Back top button click callback
-	std::function<void()> _buttonBackTopDoubleClickCallback;		///< Back top button double click callback
-	std::function<void()> _buttonBackBottomClickCallback;			///< Back bottom button click callback
-	std::function<void()> _buttonBackBottomDoubleClickCallback;		///< Back bottom button double click callback
+	std::function<void()> _buttonFrontLeftClickCallback;				///< Front left button click callback
+	std::function<void()> _buttonFrontLeftDoubleClickCallback;			///< Front left button double click callback
+	std::function<void()> _buttonFrontRightClickCallback;				///< Front right button click callback
+	std::function<void()> _buttonFrontRightDoubleClickCallback;			///< Front right button double click callback
+	std::function<void()> _buttonBackTopClickCallback;					///< Back top button click callback
+	std::function<void()> _buttonBackTopDoubleClickCallback;			///< Back top button double click callback
+	std::function<void()> _buttonBackBottomClickCallback;				///< Back bottom button click callback
+	std::function<void()> _buttonBackBottomDoubleClickCallback;			///< Back bottom button double click callback
 
 	static void _staticButtonFrontLeftClickCallback(void* data);		///< Front left button internal click callback
 	static void _staticButtonFrontLeftDoubleClickCallback(void* data);	///< Front left button internal double click callback

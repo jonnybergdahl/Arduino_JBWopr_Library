@@ -838,6 +838,7 @@ void JBWoprSongEffect::loop() {
 	}
 
 	if (_step >= _song->size()) {
+Serial.println("Song done");
 		_woprDevice->audioClear();
 		_done = true;
 		_isRunning = false;
@@ -847,7 +848,7 @@ void JBWoprSongEffect::loop() {
 	// calculates the duration of each note
 	Note note = _song->at(_step);
 	int32_t divider = note.duration;
-	uint32_t noteDuration = 0;
+	uint32_t noteDuration;
 	if (divider == 0)
 	{
 		noteDuration = 0;
@@ -860,7 +861,9 @@ void JBWoprSongEffect::loop() {
 		noteDuration *= 1.5; // increases the duration in half for dotted notes
 	}
 
-	_woprDevice->audioPlayNote((note_t)note.note, note.octave);
+	if (note.note != 0) {
+		_woprDevice->audioPlayNote((note_t)note.note, note.octave);
+	}
 
 	std::string text = note.text;
 

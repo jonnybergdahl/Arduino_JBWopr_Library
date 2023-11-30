@@ -308,13 +308,13 @@ protected:
 	// ====================================================================
 	// Configuration
 	//
-	JBWoprMqttConfig _mqttConfig;				///< MQTT configuration
+	JBWoprMqttConfig _mqttConfig;										///< MQTT configuration
 
-	const char* JSON_KEY_MQTT_USE_MQTT = "useMqtt";					///< Use MQTT key name
-	const char* JSON_KEY_MQTT_SERVER_NAME = "mqttServerName";		///< MQTT server name key name
-	const char* JSON_KEY_MQTT_SERVER_PORT = "mqttServerPort";		///< MQTT server port key name
-	const char* JSON_KEY_MQTT_USER_NAME = "mqttUserName";			///< MQTT user name key name
-	const char* JSON_KEY_MQTT_PASSWORD = "mqttPassword";			///< MQTT password key name
+	const char* JSON_KEY_MQTT_USE_MQTT = "useMqtt";						///< Use MQTT key name
+	const char* JSON_KEY_MQTT_SERVER_NAME = "mqttServerName";			///< MQTT server name key name
+	const char* JSON_KEY_MQTT_SERVER_PORT = "mqttServerPort";			///< MQTT server port key name
+	const char* JSON_KEY_MQTT_USER_NAME = "mqttUserName";				///< MQTT user name key name
+	const char* JSON_KEY_MQTT_PASSWORD = "mqttPassword";				///< MQTT password key name
 	const char* JSON_KEY_CONF_MQTT_PREFIX = "mqttPrefix";				///< MQTT prefix key name
 
 	/// @brief Set JBWoprMqttDevice specific config values from JSON document
@@ -330,20 +330,20 @@ protected:
 	// ====================================================================
 	// WiFi
 	//
-	WiFiClient _wifiClient;								///< WiFi client
+	WiFiClient _wifiClient;								/			//< WiFi client
 
 	const char* HTML_MQTT_TITLE = "<h2>MQTT settings</h2>";			///< MQTT title
 	char _mqttServerPortValue[6];									///< MQTT server port value
 
 	// WifiManager parameters
-	WiFiManagerParameter* _mqttTitleParam;					///< MQTT title WiFiManager parameter
-	WiFiManagerParameter* _useMqttParam;					///< Use MQTT WiFiManager parameter
-	WiFiManagerParameter* _mqttServerNameParam;				///< MQTT server name WiFiManager parameter
-	WiFiManagerParameter* _mqttServerPortParam;				///< MQTT server port WiFiManager parameter
-	WiFiManagerParameter* _mqttUserNameParam;				///< MQTT user name WiFiManager parameter
-	WiFiManagerParameter* _mqttPasswordParam;				///< MQTT password WiFiManager parameter
-	WiFiManagerParameter* _mqttPrefixParam;					///< MQTT prefix WiFiManager parameter
-	WiFiManagerParameter* _break2Param;						///< Break  WiFiManagerparameter
+	WiFiManagerParameter* _mqttTitleParam;							///< MQTT title WiFiManager parameter
+	WiFiManagerParameter* _useMqttParam;							///< Use MQTT WiFiManager parameter
+	WiFiManagerParameter* _mqttServerNameParam;						///< MQTT server name WiFiManager parameter
+	WiFiManagerParameter* _mqttServerPortParam;						///< MQTT server port WiFiManager parameter
+	WiFiManagerParameter* _mqttUserNameParam;						///< MQTT user name WiFiManager parameter
+	WiFiManagerParameter* _mqttPasswordParam;						///< MQTT password WiFiManager parameter
+	WiFiManagerParameter* _mqttPrefixParam;							///< MQTT prefix WiFiManager parameter
+	WiFiManagerParameter* _break2Param;								///< Break  WiFiManagerparameter
 
 	/// @brief Setup WiFiManager
 	/// @ingroup WiFiGroup
@@ -359,42 +359,42 @@ protected:
 	// ====================================================================
 	// MQTT
 	//
-	PubSubClient* _mqttClient;						///< MQTT client
-	bool _mqttActive = false;						///< MQTT active flag, set tp true after initialization
+	PubSubClient* _mqttClient;											///< MQTT client
+	bool _mqttActive = false;											///< MQTT active flag, set tp true after initialization
 
-	const char* ENTITY_NAME_DEVICE = "device";						///< Device entity name
-	const char* ENTITY_NAME_CONFIG = "config";						///< Config entity name
-	const char* ENTITY_NAME_EFFECT = "effect";						///< Effect entity name
-	const char* ENTITY_NAME_DISPLAY = "display";					///< Display text entity name
-	const char* ENTITY_NAME_DEFCON = "defcon";						///< DEFCON LED entity name
-	const char* ENTITY_NAME_BUTTON_FRONT_LEFT = "button_front_left";		///< Button front left entity name
+	const char* ENTITY_NAME_DEVICE = "device";							///< Device entity name
+	const char* ENTITY_NAME_CONFIG = "config";							///< Config entity name
+	const char* ENTITY_NAME_EFFECT = "effect";							///< Effect entity name
+	const char* ENTITY_NAME_DISPLAY = "display";						///< Display text entity name
+	const char* ENTITY_NAME_DEFCON = "defcon";							///< DEFCON LED entity name
+	const char* ENTITY_NAME_BUTTON_FRONT_LEFT = "button_front_left";	///< Button front left entity name
 	const char* ENTITY_NAME_BUTTON_FRONT_RIGHT = "button_front_right";	///< Button front right entity name
-	const char* ENTITY_NAME_BUTTON_BACK_TOP = "button_back_top";			///< Button back top entity name
-	const char* ENTITY_NAME_BUTTON_BACK_BOTTOM = "button_back_bottom";		///< Button back bottom entity name
+	const char* ENTITY_NAME_BUTTON_BACK_TOP = "button_back_top";		///< Button back top entity name
+	const char* ENTITY_NAME_BUTTON_BACK_BOTTOM = "button_back_bottom";	///< Button back bottom entity name
 
-	const char* SUBENTITY_NAME_STATE = "state";				///< State subentity name
-	const char* SUBENTITY_NAME_BRIGHTNESS = "brightness";	///< Brightness subentity name
-	const char* SUBENTITY_NAME_COLOR = "color";				///< Color subentity name
-	const char* SUBENTITY_NAME_TEXT = "text";				///< Text subentity name
-	const char* SUBENTITY_NAME_SCROLLTEXT = "scrolltext";	///< Scroll text subentity name
-	const char* SUBENTITY_NAME_EVENT = "event";				///< Event subentity name
-	const char* SUBENTITY_NAME_LEVEL = "level";				///< Level subentity name
-	const char* SUBENTITY_NAME_NAME = "name";				///< Effect subentity name
+	const char* SUBENTITY_NAME_STATE = "state";							///< State subentity name
+	const char* SUBENTITY_NAME_BRIGHTNESS = "brightness";				///< Brightness subentity name
+	const char* SUBENTITY_NAME_COLOR = "color";							///< Color subentity name
+	const char* SUBENTITY_NAME_TEXT = "text";							///< Text subentity name
+	const char* SUBENTITY_NAME_SCROLLTEXT = "scrolltext";				///< Scroll text subentity name
+	const char* SUBENTITY_NAME_EVENT = "event";							///< Event subentity name
+	const char* SUBENTITY_NAME_LEVEL = "level";							///< Level subentity name
+	const char* SUBENTITY_NAME_NAME = "name";							///< Effect subentity name
 	const char* SUBENTITY_NAME_EFFECTS_TIMEOUT = "effects_timeout";		///< Effects timeout key name
 	const char* SUBENTITY_NAME_TIME_FORMAT = "time_format";				///< Time format key name
 	const char* SUBENTITY_NAME_DATE_FORMAT = "date_format";				///< Date Format key name
 	const char* SUBENTITY_NAME_DEFCON_BRIGHTNESS = "defcon_brightness";	///< DEFCON LEDs brightness key name
 	const char* SUBENTITY_NAME_DISPLAY_BRIGHTNESS = "display_brightness";	///< Display brightness key name
-	const char* SUBENTITY_NAME_WIFI_HOST_NAME = "host_name";               ///< Host name key name
-	const char* SUBENTITY_NAME_WIFI_USE_WEB_PORTAL = "use_web_portal";		///< Use portal key name
+	const char* SUBENTITY_NAME_WIFI_HOST_NAME = "host_name";            ///< Host name key name
+	const char* SUBENTITY_NAME_WIFI_USE_WEB_PORTAL = "use_web_portal";	///< Use portal key name
 
-	const char* STATE_ON = "ON";							///< State ON
-	const char* STATE_OFF = "OFF";							///< State OFF
+	const char* STATE_ON = "ON";										///< State ON
+	const char* STATE_OFF = "OFF";										///< State OFF
 
-	const char* EVENT_CLICK = "click";						///< Click event
-	const char* EVENT_DOUBLE_CLICK = "double_click";		///< Double click event
+	const char* EVENT_CLICK = "click";									///< Click event
+	const char* EVENT_DOUBLE_CLICK = "double_click";					///< Double click event
 
-	const char* COMMAND_SET = "set";							///< Set command
+	const char* COMMAND_SET = "set";									///< Set command
 
 	/// @brief Start MQTT
 	/// @ingroup MqttGroup

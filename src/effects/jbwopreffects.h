@@ -23,7 +23,7 @@ class JBWoprDevice;
 #define JBWOPR_EFFECT_NAME_TIME 			"Time"             	///< Name of JBWoprDisplayTimeEffect
 #define JBWOPR_EFFECT_NAME_TIME_RAINBOW		"Time R"           	///< Name of JBWoprDisplayTimeRainbowEffect
 #define JBWOPR_EFFECT_NAME_DATE 			"Date"             	///< Name of JBWoprDisplayDateEffect
-#define JBWOPR_EFFECT_NAME_DATETIME_RAINBOW	"Date Time R"		///< Name of JBWoprDisplayDateTimeRainbowEffect
+#define JBWOPR_EFFECT_NAME_DATE_RAINBOW		"Date Time R"		///< Name of JBWoprDisplayDateTimeRainbowEffect
 #define JBWOPR_EFFECT_NAME_DATETIME 		"Date Time"			///< Name of JBWoprDisplayDateTimeEffect
 #define JBWOPR_EFFECT_NAME_DATETIME_RAINBOW	"Date Time R"		///< Name of JBWoprDisplayDateTimeRainbowEffect
 #define JBWOPR_EFFECT_NAME_XMAS_SECONDS		"Xmas seconds"     	///< Name of JBWoprDisplayXmasSecondsEffect
@@ -237,7 +237,7 @@ public:
 	explicit JBWoprTimeDisplayRainbowEffect(JBWoprDevice *woprDevice,
 									 std::string  timeFormat = "",
 									 uint32_t duration = -1,
-									 const std::string& name=JBWOPR_EFFECT_NAME_TIME);
+									 const std::string& name=JBWOPR_EFFECT_NAME_TIME_RAINBOW);
 
 	/// @brief Run loop
 	/// @ingroup EffectGroup
@@ -302,7 +302,7 @@ public:
 	explicit JBWoprDateDisplayRainbowEffect(JBWoprDevice *woprDevice,
 									 std::string  dateFormat = "",
 									 uint32_t duration = -1,
-									 const std::string& name=JBWOPR_EFFECT_NAME_DATE);
+									 const std::string& name=JBWOPR_EFFECT_NAME_DATE_RAINBOW);
 
 	/// @brief Get name of effect
 	/// @ingroup EffectGroup
@@ -379,7 +379,7 @@ public:
 												std::string  timeFormat = "",
 												std::string  dateFormat = "",
 												uint32_t duration = -1,
-												const std::string& name=JBWOPR_EFFECT_NAME_DATETIME);
+												const std::string& name=JBWOPR_EFFECT_NAME_DATETIME_RAINBOW);
 
 	/// @brief Get name of effect
 	/// @ingroup EffectGroup

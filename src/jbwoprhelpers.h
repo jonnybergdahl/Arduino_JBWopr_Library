@@ -1,6 +1,6 @@
 /// @file timehelper.h
 /// @author Jonny Bergdahl
-/// @brief Main header file for the JBWopr library.
+/// @brief Header file for the JBWopr library.
 /// @details Contains helper class declarations for the JBWopr library.
 /// This code is distributed under the MIT License. See LICENSE for details.
 /// @date Created: 2023-10-27

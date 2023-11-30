@@ -463,15 +463,7 @@ bool JBWoprHADevice::_homeAssistantPublishState() {
 	mqttPublishMessage(_getTopic(ENTITY_NAME_DEFCON, SUBENTITY_NAME_BRIGHTNESS), std::to_string(_defconBrightness));
 	mqttPublishMessage(_getTopic(ENTITY_NAME_DEFCON, SUBENTITY_NAME_COLOR), JBStringHelper::rgbToString(_defconLedsColor));
 
-	_log->error("HA State not implemented");
-	return false;
-}
-
-void JBWoprHADevice::_homeAssistantHandleCommand(std::string entity, std::string subEntity, std::string command, std::string payload) {
-	_log->error("HA Command not implemented");
-	_log->trace("Home Assistant command: %s/%s/%s:", entity.c_str(), subEntity.c_str(), command.c_str());
-	_log->traceDump(payload.c_str(), payload.length());
-
+	return true;
 }
 
 std::string JBWoprHADevice::_getDiscoveryTopic(const std::string& component, const std::string& prefix,  const std::string& entity) {
@@ -511,6 +503,9 @@ void JBWoprHADevice::_addDeviceData(DynamicJsonDocument& jsonDoc) {
 	device["manufacturer"] = "Unexpected Maker";
 	device["model"] = _woprVariant == JBWoprBoardVariant::ORIGINAL ? "W.O.P.R" : "W.O.P.R. Haxorz";
 	device["sw_version"] = LIBRARY_VERSION;
+	if (_wifiConfig.useWebPortal) {
+		device["configuration_url"] = "http://" + WiFi.localIP().toString();
+	}
 }
 
 void JBWoprHADevice::_addAvailabilityData(DynamicJsonDocument& jsonDoc) {

@@ -153,21 +153,21 @@ protected:
 	const char* HTML_CHECKBOX_TRUE = "type=\"checkbox\" checked";   ///< HTML checkbox true
 	const char* HTML_CHECKBOX_FALSE = "type=\"checkbox\"";          ///< HTML checkbox false
 
-	WiFiManagerParameter* _woprTitleParam;					///< W.O.P.R. title parameter
-	WiFiManagerParameter* _networkTitleParam;				///< Network title parameter
-	WiFiManagerParameter* _breakParam;						///< Break parameter
-	WiFiManagerParameter* _effectsTimeoutParam;				///< Effects timeout parameter
-	WiFiManagerParameter* _timeFormatParam;					///< Time format parameter
-	WiFiManagerParameter* _dateFormatParam;					///< Date format parameter
-	WiFiManagerParameter* _displayBrightnessParam;			///< Display brightness parameter
-	WiFiManagerParameter* _defconLedsBrightnessParam;		///< DEFCON LEDs brightness parameter
+	WiFiManagerParameter* _woprTitleParam;							///< W.O.P.R. title parameter
+	WiFiManagerParameter* _networkTitleParam;						///< Network title parameter
+	WiFiManagerParameter* _breakParam;								///< Break parameter
+	WiFiManagerParameter* _effectsTimeoutParam;						///< Effects timeout parameter
+	WiFiManagerParameter* _timeFormatParam;							///< Time format parameter
+	WiFiManagerParameter* _dateFormatParam;							///< Date format parameter
+	WiFiManagerParameter* _displayBrightnessParam;					///< Display brightness parameter
+	WiFiManagerParameter* _defconLedsBrightnessParam;				///< DEFCON LEDs brightness parameter
 
-	WiFiManagerParameter* _hostNameParam;					///< Host name parameter
-	WiFiManagerParameter* _useWebPortalParam;				///< Use web portal parameter
+	WiFiManagerParameter* _hostNameParam;							///< Host name parameter
+	WiFiManagerParameter* _useWebPortalParam;						///< Use web portal parameter
 
-	char _effectsTimeoutValue[3];							///< Effects timeout value, set in WiFiManager callback
-	char _defconLedsBrightnessValue[3];						///< DEFCON LEDs brightness value, set in WiFiManager callback
-	char _displayBrightnessValue[3];						///< Display brightness value, set in WiFiManager callback
+	char _effectsTimeoutValue[3];									///< Effects timeout value, set in WiFiManager callback
+	char _defconLedsBrightnessValue[3];								///< DEFCON LEDs brightness value, set in WiFiManager callback
+	char _displayBrightnessValue[3];								///< Display brightness value, set in WiFiManager callback
 
 	/// @brief Get device name
 	/// @ingroup WiFiGroup

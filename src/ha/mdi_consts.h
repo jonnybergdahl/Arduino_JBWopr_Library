@@ -1,7 +1,11 @@
-//
-// Created by Jonny Bergdahl on 2023-10-16.
-//
-
+/// @file md_consts.h
+/// @author Jonny Bergdahl
+/// @brief Header file for the JBWopr library
+/// @details Contains declarations for Home Assistant icon names.
+/// This code is distributed under the MIT License. See LICENSE for details.
+/// @date Created: 2023-10-16
+/// @copyright Copyright© 2023, Jonny Bergdahl
+///
 #ifndef ARDUINO_WOPR_MDI_CONSTS_H
 #define ARDUINO_WOPR_MDI_CONSTS_H
 
