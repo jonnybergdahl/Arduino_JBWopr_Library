@@ -480,10 +480,10 @@ void JBWoprMqttDevice::_handleConfigCommand(const std::string &subEntity,
 											const std::string &command,
 											const std::string &payload) {
 	if (command == COMMAND_SET) {
-		if (subEntity == SUBENTITY_NAME_DATE_FORMAT) {
+		if (subEntity == SUBENTITY_NAME_TIME_FORMAT) {
 			_config.timeFormat = payload;
 			_saveConfiguration();
-		} else if (subEntity == SUBENTITY_NAME_TIME_FORMAT) {
+		} else if (subEntity == SUBENTITY_NAME_DATE_FORMAT) {
 			_config.dateFormat = payload;
 			_saveConfiguration();
 		} else if (subEntity == SUBENTITY_NAME_DISPLAY_BRIGHTNESS) {
