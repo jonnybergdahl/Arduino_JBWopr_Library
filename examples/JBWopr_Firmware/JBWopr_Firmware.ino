@@ -69,6 +69,9 @@ void setup() {
 	// Set log level
 	wopr.setLogLevel(LOG_LEVEL);
 
+	// Load and get the list of registered effects
+	registerEffects();
+
 	// Initialize wopr
 	wopr.begin(JBWoprBoardVariant::HAXORZ);
 
@@ -77,9 +80,6 @@ void setup() {
 	wopr.buttonFrontLeftSetClickCallback(buttonFrontLeftClick);
 	wopr.buttonBackTopSetClickCallback(buttonBackTopClick);
 	wopr.buttonBackBottomSetClickCallback(buttonBackBottomClick);
-
-	// Load and get the list of registred effects
-	registerEffects();
 
 	// Show instructions
 	wopr.displayScrollText("Left - Select effect, Right - Run effect");

@@ -255,7 +255,7 @@ void JBWoprTimeDisplayEffect::start() {
 }
 
 void JBWoprTimeDisplayEffect::loop() {
-	char timeChars[12];
+	char timeChars[13];
 	tm timeinfo {};
 
 	if (!_isRunning) {
@@ -275,7 +275,7 @@ void JBWoprTimeDisplayEffect::loop() {
 	} else {
 		_evenFormat = !_evenFormat;
 		auto timeFormat = _evenFormat ? _timeFormatEven : _timeFormatOdd;
-		strftime(timeChars, 12, timeFormat.c_str(), &timeinfo);
+		strftime(timeChars, sizeof(timeChars), timeFormat.c_str(), &timeinfo);
 		_displayText(timeChars, JBTextAlignment::CENTER);
 	}
 
@@ -315,13 +315,10 @@ JBWoprTimeDisplayRainbowEffect::JBWoprTimeDisplayRainbowEffect(JBWoprDevice *wop
 												 std::string  timeFormat,
 												 uint32_t duration,
 												 const std::string& name) :
-	JBWoprTimeDisplayEffect(woprDevice, timeFormat, duration, name) {
+	JBWoprTimeDisplayEffect(woprDevice, std::move(timeFormat), duration, name) {
 }
 
 void JBWoprTimeDisplayRainbowEffect::loop() {
-	char timeChars[12];
-	tm timeinfo {};
-
 	if (!_isRunning) {
 		return;
 	}
@@ -354,13 +351,12 @@ JBWoprDateDisplayEffect::JBWoprDateDisplayEffect(JBWoprDevice *woprDevice,
 }
 
 void JBWoprDateDisplayEffect::start() {
-	auto config = _woprDevice->getConfiguration();
 	setDateFormat(_rawDateFormat);
 	JBWoprEffectBase::start();
 }
 
 void JBWoprDateDisplayEffect::loop() {
-	char text[12];
+	char text[13];
 	tm timeinfo{};
 
 	if (!_isRunning) {
@@ -377,7 +373,7 @@ void JBWoprDateDisplayEffect::loop() {
 		_log.error("Failed to obtain time");
 		_displayText("Time failed");
 	} else {
-		strftime(text, 12, _dateFormat.c_str(), &timeinfo);
+		strftime(text, sizeof(text), _dateFormat.c_str(), &timeinfo);
 		_displayText(text, JBTextAlignment::CENTER);
 	}
 
@@ -403,13 +399,10 @@ JBWoprDateDisplayRainbowEffect::JBWoprDateDisplayRainbowEffect(JBWoprDevice *wop
 												 std::string dateFormat,
 												 uint32_t duration,
 												 const std::string& name) :
-		JBWoprDateDisplayEffect(woprDevice, dateFormat, duration, name) {
+		JBWoprDateDisplayEffect(woprDevice, std::move(dateFormat), duration, name) {
 }
 
 void JBWoprDateDisplayRainbowEffect::loop() {
-	char text[12];
-	tm timeinfo{};
-
 	if (!_isRunning) {
 		return;
 	}
@@ -449,7 +442,7 @@ void JBWoprDateTimeDisplayEffect::start() {
 }
 
 void JBWoprDateTimeDisplayEffect::loop() {
-	char text[12];
+	char text[13];
 	tm timeinfo{};
 
 	if (!_isRunning) {
@@ -474,11 +467,11 @@ void JBWoprDateTimeDisplayEffect::loop() {
 		if (_displayCounter < 7) {
 			_evenFormat = !_evenFormat;
 			auto timeFormat = _evenFormat ? _timeFormatEven : _timeFormatOdd;
-			strftime(text, 12, timeFormat.c_str(), &timeinfo);
+			strftime(text, sizeof(text), timeFormat.c_str(), &timeinfo);
 			_displayText(text, JBTextAlignment::CENTER);
 
 		} else {
-			strftime(text, 12, _dateFormat.c_str(), &timeinfo);
+			strftime(text, sizeof(text), _dateFormat.c_str(), &timeinfo);
 			_displayText(text, JBTextAlignment::CENTER);
 		}
 	}
@@ -531,13 +524,10 @@ JBWoprDateTimeDisplayRainbowEffect::JBWoprDateTimeDisplayRainbowEffect(JBWoprDev
 														 std::string  dateFormat,
 														 uint32_t duration,
 														 const std::string& name) :
-		JBWoprDateTimeDisplayEffect(woprDevice, timeFormat, dateFormat, duration, name) {
+		JBWoprDateTimeDisplayEffect(woprDevice, std::move(timeFormat), std::move(dateFormat), duration, name) {
 }
 
 void JBWoprDateTimeDisplayRainbowEffect::loop() {
-	char text[12];
-	tm timeinfo{};
-
 	if (!_isRunning) {
 		return;
 	}
@@ -838,7 +828,6 @@ void JBWoprSongEffect::loop() {
 	}
 
 	if (_step >= _song->size()) {
-Serial.println("Song done");
 		_woprDevice->audioClear();
 		_done = true;
 		_isRunning = false;

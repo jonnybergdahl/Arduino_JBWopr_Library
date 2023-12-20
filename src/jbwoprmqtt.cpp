@@ -276,6 +276,17 @@ void JBWoprMqttDevice::_setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) 
 	jsonDoc[JSON_KEY_CONF_MQTT_PREFIX] = _mqttConfig.mqttPrefix;
 }
 
+void JBWoprMqttDevice::_dumpConfig() {
+	JBWoprWiFiDevice::_dumpConfig();
+	_log->trace("MQTT configuration:");
+	_log->trace("  Use MQTT: %s", _mqttConfig.useMqtt ? "True" : "False");
+	_log->trace("  MQTT server name: %s", _mqttConfig.mqttServerName.c_str());
+	_log->trace("  MQTT server port: %i", _mqttConfig.mqttServerPort);
+	_log->trace("  MQTT user name: %s", _mqttConfig.mqttUserName.c_str());
+	_log->trace("  MQTT password: ----------");
+	_log->trace("  MQTT prefix: %s", _mqttConfig.mqttPrefix.c_str());
+}
+
 // ====================================================================
 // WiFi
 //

@@ -77,6 +77,12 @@ void JBWoprHADevice::_setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) {
 	jsonDoc[JSON_KEY_HA_DISCOVERY_PREFIX] = _haConfig.homeAssistantDiscoveryPrefix;
 }
 
+void JBWoprHADevice::_dumpConfig() {
+	JBWoprMqttDevice::_dumpConfig();
+	_log->trace("Home Assistant configuration:");
+	_log->trace("  Use Home Assistant: %s", _haConfig.useHomeAssistant ? "true" : "false");
+	_log->trace("  Discovery prefix: %s", _haConfig.homeAssistantDiscoveryPrefix.c_str());
+}
 // ====================================================================
 // WiFiManager
 //
@@ -208,8 +214,8 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		dateOptions.add("%Y-%m-%d");
 		dateOptions.add("%m/%d/%Y");
 		dateOptions.add("%d/%m/%Y");
-		dateOptions.add("%D-%M-%Y");
-		dateOptions.add("%D.%M.%Y");
+		dateOptions.add("%d-%m-%Y");
+		dateOptions.add("%d.%m.%Y");
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/config/date_format/set";
 		mqttPublishMessage(topic, jsonDoc, true);
 	}
@@ -314,8 +320,8 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		topic = "homeassistant/select/" + _getDeviceName() + "/effect/config";
 		jsonDoc["name"] = "Effect";
 		_addDeviceData(jsonDoc);
-		jsonDoc["unique_id"] = _getDeviceName() + "_effect";
-		jsonDoc["object_id"] = _getDeviceName() + "_effect";
+		jsonDoc["unique_id"] = _getDeviceName() + "_effect_name";
+		jsonDoc["object_id"] = _getDeviceName() + "_effect_name";
 		_addAvailabilityData(jsonDoc);
 		jsonDoc["state_topic"] = "wopr/" + _getDeviceName() + "/effect/name";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/effect/name/set";

@@ -327,6 +327,11 @@ protected:
 	/// @param jsonDoc JSON document
 	void _setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc);
 
+	/// @brief Dump configuration to logger
+	/// @ingroup ConfigurationGroup
+	/// @details Called when configuration is to be written to the logger.
+	void _dumpConfig() override;
+
 	// ====================================================================
 	// WiFi
 	//

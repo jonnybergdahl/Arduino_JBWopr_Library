@@ -154,7 +154,7 @@ void JBWoprWiFiDevice::webPortalStop()
 void JBWoprWiFiDevice::_loadConfiguration()
 {
 	_log->trace("Load configuration");
-	if (_wifiConfig.hostName == "")
+	if (_wifiConfig.hostName.empty())
 	{
 		_wifiConfig.hostName = _getDeviceName();
 	}
@@ -168,8 +168,6 @@ void JBWoprWiFiDevice::_loadConfiguration()
 	DynamicJsonDocument jsonDoc(1024);
 	DeserializationError error = deserializeJson(jsonDoc, settingsFile);
 	settingsFile.close();
-serializeJson(jsonDoc, Serial);
-Serial.println();
 	if (error) {
 		_log->error("Error parsing settings JSON file!");
 		return;
@@ -180,6 +178,7 @@ Serial.println();
 		return;
 	}
 	_setConfigFromJsonDocument(jsonDoc);
+	_dumpConfig();
 }
 
 void JBWoprWiFiDevice::_saveConfiguration()
@@ -190,8 +189,7 @@ void JBWoprWiFiDevice::_saveConfiguration()
 
 	// Set the values in the JSON document
 	_setJsonDocumentFromConfig(jsonDoc);
-
-serializeJson(jsonDoc, Serial);
+	_dumpConfig();
 	File settingsFile = LittleFS.open(CONFIG_FILE_NAME, "w");
 	if (!settingsFile) {
 		_log->error("Failed to open configuration file for writing!");
@@ -234,6 +232,17 @@ void JBWoprWiFiDevice::_setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) 
 	jsonDoc[JSON_KEY_EFFECTS_TIMEOUT] = _config.effectsTimeout;
 	jsonDoc[JSON_KEY_WIFI_HOST_NAME] = _wifiConfig.hostName;
 	jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL] = _wifiConfig.useWebPortal;
+}
+
+void JBWoprWiFiDevice::_dumpConfig() {
+	_log->trace("Current configuration");
+	_log->trace("  Time format: %s", _config.timeFormat.c_str());
+	_log->trace("  Date format: %s", _config.dateFormat.c_str());
+	_log->trace("  DEFCON LEDs brightness: %d", _config.defconLedsBrightness);
+	_log->trace("  Display brightness: %d", _config.displayBrightness);
+	_log->trace("  Effects timeout: %d", _config.effectsTimeout);
+	_log->trace("  Host name: %s", _wifiConfig.hostName.c_str());
+	_log->trace("  Use web portal: %s", _wifiConfig.useWebPortal ? "true" : "false");
 }
 
 // ====================================================================
