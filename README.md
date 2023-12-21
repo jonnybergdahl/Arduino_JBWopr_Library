@@ -57,20 +57,20 @@ JBWoprDevice wopr;
 void setup() {
 	// Configure the JBWoprDevice class
 	JBWoprConfiguration* config = wopr.getConfiguration();
-    config->timeFormat = "%H %M %s";
+    	config->timeFormat = "%H %M %s";
 	config->dateFormat = "%Y-%m-%d";
-    config->displayBrightness = 50;
-    config->defconLedsBrightness = 50;
+    	config->displayBrightness = 50;
+    	config->defconLedsBrightness = 50;
 	
-    // Initialize the JBWoprDevice class, passing in the board version 
-    // JBWoprBoardVariant::HAXORZ or JBWoprBoardVariant::ORIGINAL
-    wopr.begin(JBWoprBoardVariant::HAXORZ);
+    	// Initialize the JBWoprDevice class, passing in the board version 
+    	// JBWoprBoardVariant::HAXORZ or JBWoprBoardVariant::ORIGINAL
+	wopr.begin(JBWoprBoardVariant::HAXORZ);
 }
 
 void loop() {
-    wopr.loop();
+    	wopr.loop();
 
-    // Add your code here
+    	// Add your code here
 }
 ```
 
@@ -104,11 +104,11 @@ but you can also create your own effects by inheriting from the `JBWoprEffectBas
 #include <jbwopr.h>
 #include <effects/jbwopreffets.h>
 begin() {
-    ...
-    wopr.effectsRegisterEffect(new JBWoprMissileCodeSolveEffect(&wopr,
-                               CodeSolveVariant::MOVIE,
-                               1000,
-                               "Movie solve"));
+    	...
+    	wopr.effectsRegisterEffect(new JBWoprMissileCodeSolveEffect(&wopr,
+                  	           CodeSolveVariant::MOVIE,
+                   	           1000,
+                   	           "Movie solve"));
 }
 
 loop() {
