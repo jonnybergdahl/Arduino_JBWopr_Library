@@ -10,6 +10,8 @@ Unexpected Maker W.O.P.R. board.
 
 Install using the library manager in the Arduino IDE.
 
+This library is compatible with the ESP32 Arduino core version 2.x and 3.x.
+
 ## Usage
 
 The library exposes several classes that you can use to interact with the board.
@@ -18,6 +20,31 @@ The library exposes several classes that you can use to interact with the board.
  - `JBWoprWifiDevice` - This adds WiFiManager and web configuration portal support to the `JBWoprDevice` class.
  - `JBWoprMqttDevice` - This adds MQTT support to the `JBWoprWifiDevice` class.
  - `JBWoprHomeAssistantDevice` - This adds Home Assistant support to the `JBWoprMqttDevice` class.
+
+## Dependencies
+
+Depending on the class used the following libraries need to be installed. They can all be installed using the Library Manager.
+
+### JBWoprDevice
+
+ - [JBLogger](https://github.com/jonnybergdahl/Arduino_JBLogger_Library)
+ - [Adafruit_GFX>](https://github.com/adafruit/Adafruit-GFX-Library)
+ - [Adafruit_LEDBackpack](https://github.com/adafruit/Adafruit_LED_Backpack)
+ - [Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)
+ - [OneButton](https://github.com/mathertel/OneButton)
+ - [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
+
+### JBWoprWifiDevice
+
+The above, plus: 
+
+ - [WiFiManager](https://github.com/tzapu/WiFiManager)
+
+### JBWoprMqttDevice
+
+The above, plus: 
+
+ - [WiFiManager](https://github.com/tzapu/WiFiManager)
 
 ### Compiling the examples
 
@@ -57,20 +84,20 @@ JBWoprDevice wopr;
 void setup() {
 	// Configure the JBWoprDevice class
 	JBWoprConfiguration* config = wopr.getConfiguration();
-    	config->timeFormat = "%H %M %s";
+    config->timeFormat = "%H %M %s";
 	config->dateFormat = "%Y-%m-%d";
-    	config->displayBrightness = 50;
-    	config->defconLedsBrightness = 50;
+    config->displayBrightness = 50;
+    config->defconLedsBrightness = 50;
 	
-    	// Initialize the JBWoprDevice class, passing in the board version 
-    	// JBWoprBoardVariant::HAXORZ or JBWoprBoardVariant::ORIGINAL
-	wopr.begin(JBWoprBoardVariant::HAXORZ);
+    // Initialize the JBWoprDevice class, passing in the board version 
+    // JBWoprBoardVariant::HAXORZ or JBWoprBoardVariant::ORIGINAL
+    wopr.begin(JBWoprBoardVariant::HAXORZ);
 }
 
 void loop() {
-    	wopr.loop();
+    wopr.loop();
 
-    	// Add your code here
+    // Add your code here
 }
 ```
 
@@ -104,11 +131,11 @@ but you can also create your own effects by inheriting from the `JBWoprEffectBas
 #include <jbwopr.h>
 #include <effects/jbwopreffets.h>
 begin() {
-    	...
-    	wopr.effectsRegisterEffect(new JBWoprMissileCodeSolveEffect(&wopr,
-                  	           CodeSolveVariant::MOVIE,
-                   	           1000,
-                   	           "Movie solve"));
+    ...
+    wopr.effectsRegisterEffect(new JBWoprMissileCodeSolveEffect(&wopr,
+                               CodeSolveVariant::MOVIE,
+                               1000,
+                               "Movie solve"));
 }
 
 loop() {

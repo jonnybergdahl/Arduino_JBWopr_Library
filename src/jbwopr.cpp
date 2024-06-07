@@ -66,6 +66,8 @@ bool JBWoprDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 	_woprVariant = variant;
 	_log->info("JBWoprDevice begin, variant: %i", variant);
 
+	_pins = pins;
+
 	// Buttons
 	_log->trace("Button pins: %i, %i, %i, %i", pins.buttonFrontLeftPin, pins.buttonFrontRightPin, pins.buttonBackTopPin, pins.buttonBackBottomPin);
 	_buttonFrontLeft = new OneButton(pins.buttonFrontLeftPin, false);
@@ -100,12 +102,15 @@ bool JBWoprDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 
 	// Audio
 	pinMode(pins.dacPin, OUTPUT);
+#if ESP_ARDUINO_VERSION_MAJOR < 3
 	if (ledcSetup(_audioChannel, _audioFreq, _audioResolution) == 0) {
 		_log->error("Audio setup failed");
 		return false;
 	};
 	ledcAttachPin(pins.dacPin, _audioChannel);
-
+#else
+	ledcAttachChannel(pins.dacPin, _audioFreq, _audioResolution, _audioChannel);
+#endif
 	// Buttons
 	_buttonFrontLeft->attachClick(&JBWoprDevice::_staticButtonFrontLeftClickCallback, this);
 	_buttonFrontLeft->attachDoubleClick(&JBWoprDevice::_staticButtonFrontLeftDoubleClickCallback, this);
@@ -498,17 +503,29 @@ void JBWoprDevice::defconLedSetDefconStateColor(JBDefconLevel level, uint32_t co
 
 void JBWoprDevice::audioPlayTone(uint16_t freq)
 {
+#if ESP_ARDUINO_VERSION_MAJOR < 3	
 	ledcWriteTone(_audioChannel, freq);
+#else
+	ledcWriteTone(_pins.dacPin, freq);
+#endif	
 }
 
 void JBWoprDevice::audioPlayNote(note_t note, uint8_t octave)
 {
+#if ESP_ARDUINO_VERSION_MAJOR < 3	
 	ledcWriteNote(_audioChannel, note, octave);
+#else
+	ledcWriteNote(_pins.dacPin, note, octave);
+#endif	
 }
 
 void JBWoprDevice::audioClear()
 {
+#if ESP_ARDUINO_VERSION_MAJOR < 3
 	ledcWrite(_audioChannel, 0);
+#else
+	ledcWrite(_pins.dacPin, 0);
+#endif	
 }
 
 // ------------------------------------------------------------------

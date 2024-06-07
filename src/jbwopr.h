@@ -12,7 +12,7 @@
 #include <Arduino.h>
 #include <map>
 #include <list>
-#include <driver/i2s.h>
+//#include <driver/i2s.h>
 #include <jblogger.h>
 #include <Adafruit_GFX.h>                  	// https://github.com/adafruit/Adafruit-GFX-Library
 #include <Adafruit_LEDBackpack.h>          	// https://github.com/adafruit/Adafruit_LED_Backpack
@@ -451,6 +451,7 @@ protected:
 	//
 	JBWoprBoardVariant _woprVariant;				///< W.O.P.R. board version
 	JBWoprConfiguration _config;					///< JBWoprDevice configuration
+	JBWoprBoardPins _pins;							///< W.O.P.R. board pin assignements
 
 	// ====================================================================
 	// Effects
