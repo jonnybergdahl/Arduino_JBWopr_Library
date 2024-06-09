@@ -27,7 +27,7 @@ public:
 	/// @brief Get UTC offset in seconds
 	/// @details Uses https://ipapi.co/timezone/ to get the local UTC offset
 	/// @return UTC offset in seconds
-	static uint32_t getUtcOffsetInSeconds();
+	static int64_t getUtcOffsetInSeconds();
 
 	/// @brief Get local time
 	/// @param info Pointer to tm struct

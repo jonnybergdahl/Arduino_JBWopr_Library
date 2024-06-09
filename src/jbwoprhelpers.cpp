@@ -12,7 +12,7 @@
 
 bool JBTimeHelper::_isInitialized = false;
 
-uint32_t JBTimeHelper::getUtcOffsetInSeconds() {
+int64_t JBTimeHelper::getUtcOffsetInSeconds() {
 	HTTPClient client;
 	JBLogger log("timehelper");
 
@@ -31,7 +31,7 @@ uint32_t JBTimeHelper::getUtcOffsetInSeconds() {
 	char sign = offset[0];
 	int hours = std::stoi(offset.substr(1, 2));
 	int minutes = std::stoi(offset.substr(4, 2));
-	float result = hours * 3600 +  + minutes * 60.0;
+	int64_t result = hours * 3600 +  + minutes * 60.0;
 	if (sign == '-') {
 		result = -result;
 	}
