@@ -21,6 +21,10 @@ The library exposes several classes that you can use to interact with the board.
  - `JBWoprMqttDevice` - This adds MQTT support to the `JBWoprWifiDevice` class.
  - `JBWoprHomeAssistantDevice` - This adds Home Assistant support to the `JBWoprMqttDevice` class.
 
+## Documentation
+
+Full library code documentation [is available here](https://jonnybergdahl.github.io/jbwopr/topics.html).
+
 ## Dependencies
 
 Depending on the class used the following libraries need to be installed. They can all be installed using the Library Manager.
@@ -28,7 +32,7 @@ Depending on the class used the following libraries need to be installed. They c
 ### JBWoprDevice
 
  - [JBLogger](https://github.com/jonnybergdahl/Arduino_JBLogger_Library)
- - [Adafruit_GFX>](https://github.com/adafruit/Adafruit-GFX-Library)
+ - [Adafruit_GFX](https://github.com/adafruit/Adafruit-GFX-Library)
  - [Adafruit_LEDBackpack](https://github.com/adafruit/Adafruit_LED_Backpack)
  - [Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel)
  - [OneButton](https://github.com/mathertel/OneButton)
