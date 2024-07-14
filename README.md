@@ -86,10 +86,10 @@ See the example 'JBWopr_DeviceDemo' for more information on the basic `JBWoprDev
 JBWoprDevice wopr;
 
 void setup() {
-	// Configure the JBWoprDevice class
-	JBWoprConfiguration* config = wopr.getConfiguration();
+    // Configure the JBWoprDevice class
+    JBWoprConfiguration* config = wopr.getConfiguration();
     config->timeFormat = "%H %M %s";
-	config->dateFormat = "%Y-%m-%d";
+    config->dateFormat = "%Y-%m-%d";
     config->displayBrightness = 50;
     config->defconLedsBrightness = 50;
 	
