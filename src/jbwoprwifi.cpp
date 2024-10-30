@@ -19,7 +19,7 @@
 //
 JBWoprWiFiDevice::JBWoprWiFiDevice() :
 	JBWoprDevice(),
-	_wifiConfig { "", true }
+	_wifiConfig { "", WIFI_NTP_SERVER, "", true }
 {
 	_wifiConfig.hostName = _getDeviceName();
 	_log = new JBLogger("woprwifi", LogLevel::LOG_LEVEL_TRACE);
@@ -44,6 +44,7 @@ bool JBWoprWiFiDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 		_loadConfiguration();
 	}
 
+	JBTimeHelper::configure(_log, _wifiConfig.ntpServer, _wifiConfig.timeOffsetString);
 	_setupWiFiManager();
 
 	displayShowText("Start WiFi");
@@ -64,6 +65,11 @@ bool JBWoprWiFiDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 		_log->info("MDNS started: %s.local", _wifiConfig.hostName.c_str());
 	}
 
+	if (_wifiConfig.useWebPortal) {
+		_log->debug("Start web portal");
+		webPortalStart();
+	}
+
 	tm info;
 	_log->trace("Get time");
 	displayShowText("Get time");
@@ -72,10 +78,6 @@ bool JBWoprWiFiDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 		return false;
 	}
 
-	if (_wifiConfig.useWebPortal) {
-		_log->debug("Start web portal");
-		webPortalStart();
-	}
 	return true;
 }
 
@@ -154,8 +156,7 @@ void JBWoprWiFiDevice::webPortalStop()
 void JBWoprWiFiDevice::_loadConfiguration()
 {
 	_log->trace("Load configuration");
-	if (_wifiConfig.hostName.empty())
-	{
+	if (_wifiConfig.hostName.empty()) {
 		_wifiConfig.hostName = _getDeviceName();
 	}
 
@@ -219,6 +220,12 @@ void JBWoprWiFiDevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jso
 	if (!jsonDoc[JSON_KEY_WIFI_HOST_NAME].isNull()) {
 		_wifiConfig.hostName = jsonDoc[JSON_KEY_WIFI_HOST_NAME].as<std::string>();
 	}
+	if (!jsonDoc[JSON_KEY_WIFI_NTP_SERVER].isNull()) {
+		_wifiConfig.ntpServer = jsonDoc[JSON_KEY_WIFI_NTP_SERVER].as<std::string>();
+	}
+	if (!jsonDoc[JSON_KEY_WIFI_TIME_OFFSET].isNull()) {
+		_wifiConfig.timeOffsetString = jsonDoc[JSON_KEY_WIFI_TIME_OFFSET].as<std::string>();
+	}
 	if (!jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL].isNull()) {
 		_wifiConfig.useWebPortal = jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL].as<bool>();
 	}
@@ -231,6 +238,8 @@ void JBWoprWiFiDevice::_setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) 
 	jsonDoc[JSON_KEY_DISPLAY_BRIGHTNESS] = _config.displayBrightness;
 	jsonDoc[JSON_KEY_EFFECTS_TIMEOUT] = _config.effectsTimeout;
 	jsonDoc[JSON_KEY_WIFI_HOST_NAME] = _wifiConfig.hostName;
+	jsonDoc[JSON_KEY_WIFI_NTP_SERVER] = _wifiConfig.ntpServer;
+	jsonDoc[JSON_KEY_WIFI_TIME_OFFSET] = _wifiConfig.timeOffsetString;
 	jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL] = _wifiConfig.useWebPortal;
 }
 
@@ -242,6 +251,8 @@ void JBWoprWiFiDevice::_dumpConfig() {
 	_log->trace("  Display brightness: %d", _config.displayBrightness);
 	_log->trace("  Effects timeout: %d", _config.effectsTimeout);
 	_log->trace("  Host name: %s", _wifiConfig.hostName.c_str());
+	_log->trace("  NTP server: %s", _wifiConfig.ntpServer.c_str());
+	_log->trace("  Time offset string: %s", _wifiConfig.timeOffsetString.c_str());
 	_log->trace("  Use web portal: %s", _wifiConfig.useWebPortal ? "true" : "false");
 }
 
@@ -279,6 +290,8 @@ void JBWoprWiFiDevice::_setupWiFiManager() {
 	_effectsTimeoutParam = new WiFiManagerParameter(JSON_KEY_EFFECTS_TIMEOUT, "Effects timeout (s)", _effectsTimeoutValue, 3);
 
 	_hostNameParam = new WiFiManagerParameter(JSON_KEY_WIFI_HOST_NAME, "Host name", _wifiConfig.hostName.c_str(), 40);
+	_ntpServerNameParam = new WiFiManagerParameter(JSON_KEY_WIFI_NTP_SERVER, "NTP server", _wifiConfig.ntpServer.c_str(), 40);
+	_timeOffsetParam = new WiFiManagerParameter(JSON_KEY_WIFI_TIME_OFFSET, "Time offset (leave empty for auto)", _wifiConfig.timeOffsetString.c_str(), 5);
 	_useWebPortalParam = new WiFiManagerParameter(JSON_KEY_WIFI_USE_WEB_PORTAL, "Use web portal", "T", 2, _wifiConfig.useWebPortal ? HTML_CHECKBOX_TRUE : HTML_CHECKBOX_FALSE, WFM_LABEL_AFTER);
 
 	_wifiManager->addParameter(_woprTitleParam);
@@ -289,6 +302,8 @@ void JBWoprWiFiDevice::_setupWiFiManager() {
 	_wifiManager->addParameter(_effectsTimeoutParam);
 	_wifiManager->addParameter(_networkTitleParam);
 	_wifiManager->addParameter(_hostNameParam);
+	_wifiManager->addParameter(_ntpServerNameParam);
+	_wifiManager->addParameter(_timeOffsetParam);
 	_wifiManager->addParameter(_useWebPortalParam);
 
 	_wifiManager->setAPCallback(std::bind(&JBWoprWiFiDevice::_apCallback, this, std::placeholders::_1));
@@ -304,6 +319,8 @@ void JBWoprWiFiDevice::_saveParamsCallback () {
 	_config.defconLedsBrightness = atoi(_defconLedsBrightnessParam->getValue());
 	_config.effectsTimeout = atoi(_effectsTimeoutParam->getValue());
 	_wifiConfig.hostName = _hostNameParam->getValue();
+	_wifiConfig.ntpServer = _ntpServerNameParam->getValue();
+	_wifiConfig.timeOffsetString = _timeOffsetParam->getValue();
 	_wifiConfig.useWebPortal = strncmp(_useWebPortalParam->getValue(), "T", 1) == 0;
 	_shouldSaveConfig = true;
 }

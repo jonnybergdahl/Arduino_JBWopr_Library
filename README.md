@@ -86,7 +86,7 @@ See the example 'JBWopr_DeviceDemo' for more information on the basic `JBWoprDev
 JBWoprDevice wopr;
 
 void setup() {
-	// Configure the JBWoprDevice class
+	// configure the JBWoprDevice class
 	JBWoprConfiguration* config = wopr.getConfiguration();
     config->timeFormat = "%H %M %s";
 	config->dateFormat = "%Y-%m-%d";

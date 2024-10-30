@@ -12,6 +12,7 @@
 #include <string>
 #include <sstream>
 #include <time.h>
+#include <jblogger.h>
 
 /// @brief This enum contains text alignment options
 enum JBTextAlignment {
@@ -24,19 +25,27 @@ enum JBTextAlignment {
 /// @brief This class contains helper functions for time related tasks
 class JBTimeHelper {
 public:
+	/// @brief configure helper
+	/// @param config WiFi configuration
+	static void configure(JBLogger* log, std::string ntpServer, std::string timeOffsetString);
+
 	/// @brief Get UTC offset in seconds
 	/// @details Uses https://ipapi.co/timezone/ to get the local UTC offset
 	/// @return UTC offset in seconds
 	static int64_t getUtcOffsetInSeconds();
 
 	/// @brief Get local time
+	/// @param ntpServer NTP server address
 	/// @param info Pointer to tm struct
 	/// @details Uses NTP server pool.ntp.org to set local time
 	/// @return True if successful
 	static bool getTime(tm* info);
 
 private:
-	static bool _isInitialized;					///< True if done initializing
+	static bool _isInitialized;						///< True if done initializing
+	static std::string _ntpServer;					///< NTP server
+	static std::string _timeOffsetString;			///< Time offset string
+	static JBLogger* _log;							///< Local logger
 };
 
 /// @brief This class contains helper functions for string related tasks
@@ -46,7 +55,7 @@ public:
 	/// @param str String to center
 	/// @param length Length of centered string
 	/// @param padChar Character to pad with, default is space
-	static std::string getCenteredString(std::string str, uint32_t length, char padChar = ' ');
+	static std::string getCenteredString(const std::string str, const uint32_t length, char padChar = ' ');
 
 	/// @brief Get right aligned string
 	/// @param str String to right align

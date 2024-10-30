@@ -27,6 +27,7 @@
 #include "secrets.h"
 
 #define BOARD_VERSION JBWoprBoardVariant::ORIGINAL
+#define NTP_SERVER "pool.ntp.org"
 
 JBWoprDevice wopr;
 uint32_t connectionTimeout = 10000;
@@ -99,7 +100,7 @@ void setup() {
 		Serial.println("Get time");
 		wopr.displayShowText("Get time", JBTextAlignment::CENTER);
 		tm timeinfo;
-		if (!JBTimeHelper::getTime(&timeinfo)) {
+		if (!JBTimeHelper::getTime(NTP_SERVER, &timeinfo)) {
 			Serial.println("Failed to obtain time - effects that needs time will retry");
 			wopr.displayShowText("Time failed", JBTextAlignment::CENTER);
 		}
