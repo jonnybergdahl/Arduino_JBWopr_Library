@@ -82,11 +82,11 @@ LogLevel JBWoprMqttDevice::getLogLevel() {
 // ====================================================================
 // MQTT
 //
-bool JBWoprMqttDevice::mqttPublishMessage(const std::string& configTopic, const DynamicJsonDocument& jsonDoc, bool retain) {
+bool JBWoprMqttDevice::mqttPublishMessage(const std::string& topic, JsonDocument &jsonDoc, bool retain) {
 	char payload[1024];
 	serializeJson(jsonDoc, payload);
 
-	return mqttPublishMessage(configTopic.c_str(), payload, retain);
+	return mqttPublishMessage(topic.c_str(), payload, retain);
 }
 
 bool JBWoprMqttDevice::mqttPublishMessage(const std::string& topic, const std::string& payload, bool retain) {
@@ -244,7 +244,7 @@ void JBWoprMqttDevice::defconLedSetColor(JBDefconLevel level, uint32_t color) {
 // ====================================================================
 // Configuration
 //
-void JBWoprMqttDevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jsonDoc) {
+void JBWoprMqttDevice::_setConfigFromJsonDocument(const JsonDocument &jsonDoc) {
 	JBWoprWiFiDevice::_setConfigFromJsonDocument(jsonDoc);
 	if (!jsonDoc[JSON_KEY_MQTT_USE_MQTT].isNull()) {
 		_mqttConfig.useMqtt = jsonDoc[JSON_KEY_MQTT_USE_MQTT].as<bool>();
@@ -266,7 +266,7 @@ void JBWoprMqttDevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jso
 	}
 }
 
-void JBWoprMqttDevice::_setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) {
+void JBWoprMqttDevice::_setJsonDocumentFromConfig(JsonDocument &jsonDoc) {
 	JBWoprWiFiDevice::_setJsonDocumentFromConfig(jsonDoc);
 	jsonDoc[JSON_KEY_MQTT_USE_MQTT] = _mqttConfig.useMqtt;
 	jsonDoc[JSON_KEY_MQTT_SERVER_NAME] = _mqttConfig.mqttServerName;
@@ -294,7 +294,7 @@ void JBWoprMqttDevice::_setupWiFiManager(){
 	JBWoprWiFiDevice::_setupWiFiManager();
 
 	auto wifiManager = _getWiFiManager();
-	snprintf(_mqttServerPortValue, sizeof(_mqttServerPortValue), "%d", _mqttConfig.mqttServerPort);
+	snprintf(_mqttServerPortValue, sizeof(_mqttServerPortValue), "%u", _mqttConfig.mqttServerPort);
 
 	_mqttTitleParam = new WiFiManagerParameter(HTML_MQTT_TITLE);
 	_break2Param = new WiFiManagerParameter("<br/>");
@@ -328,7 +328,7 @@ void JBWoprMqttDevice::_saveParamsCallback() {
 	_mqttConfig.mqttServerPort = atoi(_mqttServerPortParam->getValue());
 	_mqttConfig.mqttUserName = std::string(_mqttUserNameParam->getValue());
 	_mqttConfig.mqttPassword = std::string(_mqttPasswordParam->getValue());
-	_mqttConfig.mqttPrefix == std::string(_mqttPrefixParam->getValue());
+	_mqttConfig.mqttPrefix = std::string(_mqttPrefixParam->getValue());
 }
 
 // ====================================================================

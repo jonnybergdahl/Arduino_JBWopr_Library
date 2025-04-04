@@ -166,7 +166,7 @@ void JBWoprWiFiDevice::_loadConfiguration()
 		return;
 	}
 
-	DynamicJsonDocument jsonDoc(1024);
+	JsonDocument jsonDoc;
 	DeserializationError error = deserializeJson(jsonDoc, settingsFile);
 	settingsFile.close();
 	if (error) {
@@ -186,7 +186,7 @@ void JBWoprWiFiDevice::_saveConfiguration()
 {
 	_log->trace("Saving configuration");
 	// Create a JSON document to hold the settings
-	DynamicJsonDocument jsonDoc(512);  // Adjust the size according to your needs
+	JsonDocument jsonDoc;  // Adjust the size according to your needs
 
 	// Set the values in the JSON document
 	_setJsonDocumentFromConfig(jsonDoc);
@@ -200,7 +200,7 @@ void JBWoprWiFiDevice::_saveConfiguration()
 	settingsFile.close();
 }
 
-void JBWoprWiFiDevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jsonDoc) {
+void JBWoprWiFiDevice::_setConfigFromJsonDocument(const JsonDocument &jsonDoc) {
 	_log->trace("JBWoprWiFiDevice: Setting configuration from JSON document");
 	if (!jsonDoc[JSON_KEY_TIME_FORMAT].isNull()) {
 		_config.timeFormat = jsonDoc[JSON_KEY_TIME_FORMAT].as<std::string>();
@@ -231,7 +231,7 @@ void JBWoprWiFiDevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jso
 	}
 }
 
-void JBWoprWiFiDevice::_setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) {
+void JBWoprWiFiDevice::_setJsonDocumentFromConfig(JsonDocument &jsonDoc) {
 	jsonDoc[JSON_KEY_TIME_FORMAT] = _config.timeFormat;
 	jsonDoc[JSON_KEY_DATE_FORMAT] = _config.dateFormat;
 	jsonDoc[JSON_KEY_DEFCON_BRIGHTNESS] = _config.defconLedsBrightness;
@@ -247,9 +247,9 @@ void JBWoprWiFiDevice::_dumpConfig() {
 	_log->trace("Current configuration");
 	_log->trace("  Time format: %s", _config.timeFormat.c_str());
 	_log->trace("  Date format: %s", _config.dateFormat.c_str());
-	_log->trace("  DEFCON LEDs brightness: %d", _config.defconLedsBrightness);
-	_log->trace("  Display brightness: %d", _config.displayBrightness);
-	_log->trace("  Effects timeout: %d", _config.effectsTimeout);
+	_log->trace("  DEFCON LEDs brightness: %u", _config.defconLedsBrightness);
+	_log->trace("  Display brightness: %u", _config.displayBrightness);
+	_log->trace("  Effects timeout: %u", _config.effectsTimeout);
 	_log->trace("  Host name: %s", _wifiConfig.hostName.c_str());
 	_log->trace("  NTP server: %s", _wifiConfig.ntpServer.c_str());
 	_log->trace("  Time offset string: %s", _wifiConfig.timeOffsetString.c_str());
@@ -275,9 +275,9 @@ void JBWoprWiFiDevice::_setupWiFiManager() {
 	_wifiManager->setConfigPortalBlocking(false);
 	_wifiManager->setHostname(_wifiConfig.hostName.c_str());
 
-	snprintf(_defconLedsBrightnessValue, sizeof(_defconLedsBrightnessValue), "%d", _config.defconLedsBrightness);
-	snprintf(_displayBrightnessValue, sizeof(_displayBrightnessValue), "%d", _config.displayBrightness);
-	snprintf(_effectsTimeoutValue, sizeof(_effectsTimeoutValue), "%d", _config.effectsTimeout);
+	snprintf(_defconLedsBrightnessValue, sizeof(_defconLedsBrightnessValue), "%u", _config.defconLedsBrightness);
+	snprintf(_displayBrightnessValue, sizeof(_displayBrightnessValue), "%u", _config.displayBrightness);
+	snprintf(_effectsTimeoutValue, sizeof(_effectsTimeoutValue), "%u", _config.effectsTimeout);
 
 	_woprTitleParam = new WiFiManagerParameter(HTML_WOPR_TITLE);
 	_networkTitleParam = new WiFiManagerParameter(HTML_NETWORK_TITLE);

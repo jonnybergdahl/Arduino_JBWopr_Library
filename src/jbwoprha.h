@@ -77,11 +77,11 @@ protected:
 
 	/// @brief Set configuration from JSON document
 	/// @param jsonDoc JSON document
-	void _setConfigFromJsonDocument(const DynamicJsonDocument& jsonDoc) override;
+	void _setConfigFromJsonDocument(const JsonDocument &jsonDoc) override;
 
 	/// @brief Set JSON document from configuration
 	/// @param jsonDoc JSON document
-	void _setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) override;
+	void _setJsonDocumentFromConfig(JsonDocument &jsonDoc) override;
 
 	/// @brief Dump configuration to logger
 	/// @ingroup ConfigurationGroup
@@ -173,7 +173,7 @@ protected:
 	/// @param icon Icon
 	/// @param unitOfMeasurement Unit of measurement
 	/// @return JSON document
-	void _addDiscoveryPayload(DynamicJsonDocument& jsonDoc,
+	void _addDiscoveryPayload(JsonDocument &jsonDoc,
 							  const std::string& name,
 							  const std::string& prefix,
 							  const std::string& entity,
@@ -183,11 +183,11 @@ protected:
 
 	/// @brief Add device data to Home Assistant discovery message
 	/// @param jsonDoc JSON document
-	void _addDeviceData(DynamicJsonDocument& jsonDoc);
+	void _addDeviceData(JsonDocument &jsonDoc);
 
 	/// @brief Add availability data to Home Assistant discovery message
 	/// @param jsonDoc JSON document
-	void _addAvailabilityData(DynamicJsonDocument& jsonDoc);
+	void _addAvailabilityData(JsonDocument &jsonDoc);
 
 private:
 	// ====================================================================

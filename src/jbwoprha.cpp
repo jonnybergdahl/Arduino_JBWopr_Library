@@ -60,7 +60,7 @@ LogLevel JBWoprHADevice::getLogLevel() {
 // ====================================================================
 // Configuration
 //
-void JBWoprHADevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jsonDoc) {
+void JBWoprHADevice::_setConfigFromJsonDocument(const JsonDocument &jsonDoc) {
 	JBWoprMqttDevice::_setConfigFromJsonDocument(jsonDoc);
 
 	if (!jsonDoc[JSON_KEY_HA_USE_HOME_ASSISTANT].isNull()) {
@@ -71,7 +71,7 @@ void JBWoprHADevice::_setConfigFromJsonDocument(const DynamicJsonDocument& jsonD
 	}
 }
 
-void JBWoprHADevice::_setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc) {
+void JBWoprHADevice::_setJsonDocumentFromConfig(JsonDocument &jsonDoc) {
 	JBWoprMqttDevice::_setJsonDocumentFromConfig(jsonDoc);
 	jsonDoc[JSON_KEY_HA_USE_HOME_ASSISTANT] = _haConfig.useHomeAssistant;
 	jsonDoc[JSON_KEY_HA_DISCOVERY_PREFIX] = _haConfig.homeAssistantDiscoveryPrefix;
@@ -106,8 +106,7 @@ void JBWoprHADevice::_setupWiFiManager() {
 void JBWoprHADevice::_saveParamsCallback() {
 	JBWoprMqttDevice::_saveParamsCallback();
 	_haConfig.useHomeAssistant = strncmp(_useHomeAssistantParam->getValue(), "T", 1) == 0;
-	_haConfig.homeAssistantDiscoveryPrefix, std::string(_homeAssistantDiscoveryPrefixParam->getValue(), sizeof(_mqttConfig.mqttServerName));
-
+	_haConfig.homeAssistantDiscoveryPrefix = std::string(_homeAssistantDiscoveryPrefixParam->getValue(), sizeof(_mqttConfig.mqttServerName));
 }
 
 // ====================================================================
@@ -142,7 +141,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	// Diagnostics
 	// (We use nested scopes here to solve the memory issue)
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SENSOR, HA_DIAG_PREFIX, HA_DIAG_ENTITY_IP);
 		_addDiscoveryPayload(jsonDoc,
 							 "IP Address",
@@ -154,7 +153,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SENSOR, HA_DIAG_PREFIX, HA_DIAG_ENTITY_RSSI);
 		_addDiscoveryPayload(jsonDoc,
 							 "RSSI",
@@ -167,7 +166,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SENSOR, HA_DIAG_PREFIX, HA_DIAG_ENTITY_RAM);
 		_addDiscoveryPayload(jsonDoc,
 							 "Free memory",
@@ -181,7 +180,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 
 	// Config
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SELECT, HA_CONFIG_PREFIX, HA_CONF_ENTITY_TIME_FORMAT);
 		_addDiscoveryPayload(jsonDoc,
 							 "Time format",
@@ -189,7 +188,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 							 HA_CONF_ENTITY_TIME_FORMAT,
 							 JSON_KEY_TIME_FORMAT,
 							 MDI_ICON_CLOCK_DIGITAL);
-		auto timeOptions = jsonDoc.createNestedArray("options");
+		auto timeOptions = jsonDoc["options"].to<JsonArray>();
 		timeOptions.add("%H %M %S");
 		timeOptions.add("%H.%M.%S");
 		timeOptions.add("%H-%M-%S");
@@ -202,7 +201,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SELECT, HA_CONFIG_PREFIX, HA_CONF_ENTITY_DATE_FORMAT);
 		_addDiscoveryPayload(jsonDoc,
 							 "Date format",
@@ -210,7 +209,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 							 HA_CONF_ENTITY_DATE_FORMAT,
 							 JSON_KEY_DATE_FORMAT,
 							 MDI_ICON_CLOCK_DIGITAL);
-		auto dateOptions = jsonDoc.createNestedArray("options");
+		auto dateOptions = jsonDoc["options"].to<JsonArray>();
 		dateOptions.add("%Y-%m-%d");
 		dateOptions.add("%m/%d/%Y");
 		dateOptions.add("%d/%m/%Y");
@@ -221,7 +220,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_NUMBER, HA_CONFIG_PREFIX, HA_CONF_ENTITY_DISPLAY_BRIGHTNESS);
 		_addDiscoveryPayload(jsonDoc,
 							 "Display brightness",
@@ -238,7 +237,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_NUMBER, HA_CONFIG_PREFIX, HA_CONF_ENTITY_DEFCON_BRIGHTNESS);
 		_addDiscoveryPayload(jsonDoc,
 							 "DEFCON brightness",
@@ -255,7 +254,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_NUMBER, HA_CONFIG_PREFIX, HA_CONF_ENTITY_EFFECTS_TIMEOUT);
 		_addDiscoveryPayload(jsonDoc,
 							 "Effects timeout",
@@ -270,7 +269,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SWITCH, HA_CONFIG_PREFIX, HA_CONF_ENTITY_WIFI_USE_WEB_PORTAL);
 		_addDiscoveryPayload(jsonDoc,
 							 "Use web portal",
@@ -285,7 +284,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = "homeassistant/button/" + _getDeviceName() + "/device/config";
 		jsonDoc["name"] = "Restart";
 		_addDeviceData(jsonDoc);
@@ -301,7 +300,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 
 	// Effects
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = "homeassistant/switch/" + _getDeviceName() + "/effect/config";
 		jsonDoc["name"] = "Run effect";
 		_addDeviceData(jsonDoc);
@@ -316,7 +315,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = "homeassistant/select/" + _getDeviceName() + "/effect/config";
 		jsonDoc["name"] = "Effect";
 		_addDeviceData(jsonDoc);
@@ -326,7 +325,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		jsonDoc["state_topic"] = "wopr/" + _getDeviceName() + "/effect/name";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/effect/name/set";
 		auto effects = effectsGetRegisteredEffects();
-		auto options = jsonDoc.createNestedArray("options");
+		auto options = jsonDoc["options"].to<JsonArray>();
 		options.add("");
 		for (auto& effect : effects) {
 			options.add(effect->getName());
@@ -337,7 +336,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 
 	// Display
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = "homeassistant/light/" + _getDeviceName() + "/display/config";
 		jsonDoc["name"] = "Display";
 		_addDeviceData(jsonDoc);
@@ -354,7 +353,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 	// DEFCON
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = "homeassistant/light/" + _getDeviceName() + "/defcon/config";
 		jsonDoc["name"] = "DEFCON";
 		_addDeviceData(jsonDoc);
@@ -373,7 +372,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = "homeassistant/select/" + _getDeviceName() + "/defcon_level/config";
 		jsonDoc["name"] = "DEFCON Level";
 		_addDeviceData(jsonDoc);
@@ -382,7 +381,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		_addAvailabilityData(jsonDoc);
 		jsonDoc["state_topic"] = "wopr/" + _getDeviceName() + "/defcon/level";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/defcon/level/set";
-		auto options = jsonDoc.createNestedArray("options");
+		auto options = jsonDoc["options"].to<JsonArray>();
 		for (auto& level : _defconNames) {
 			options.add(level);
 		}
@@ -391,7 +390,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = "homeassistant/text/" + _getDeviceName() + "/display_text/config";
 		jsonDoc["name"] = "Display text";
 		_addDeviceData(jsonDoc);
@@ -405,7 +404,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 	}
 
 	{
-		DynamicJsonDocument jsonDoc(1024);
+		JsonDocument jsonDoc;
 		topic = "homeassistant/text/" + _getDeviceName() + "/display_scrolltext/config";
 		jsonDoc["name"] = "Display scroll text";
 		_addDeviceData(jsonDoc);
@@ -426,7 +425,7 @@ bool JBWoprHADevice::_homeAssistantPublishDiagnostics() {
 
 	std::string diagnosticsTopic = _getTopic(ENTITY_NAME_DIAGNOSTIC, SUBENTITY_NAME_STATE);
 
-	DynamicJsonDocument jsonDoc(128);
+	JsonDocument jsonDoc;
 	jsonDoc[JSON_KEY_HA_DIAG_ENTITY_IP] = WiFi.localIP().toString();
 	jsonDoc[JSON_KEY_HA_DIAG_ENTITY_RSSI] = WiFi.RSSI();
 	jsonDoc[JSON_KEY_HA_DIAG_ENTITY_RAM] = ESP.getFreeHeap();
@@ -442,7 +441,7 @@ bool JBWoprHADevice::_homeAssistantPublishDiagnostics() {
 }
 
 bool JBWoprHADevice::_homeAssistantPublishConfig() {
-	DynamicJsonDocument jsonDoc(512);  // Adjust the size according to your needs
+	JsonDocument jsonDoc;
 
 	_log->trace("Publishing Home Assistant configuration");
 
@@ -475,11 +474,11 @@ std::string JBWoprHADevice::_getDiscoveryTopic(const std::string& component, con
 	return _haConfig.homeAssistantDiscoveryPrefix + "/" + component + "/" + _getDeviceName() + "/" + prefix + "_" + entity + "/config";
 }
 
-void JBWoprHADevice::_addDiscoveryPayload(DynamicJsonDocument& jsonDoc,
+void JBWoprHADevice::_addDiscoveryPayload(JsonDocument &jsonDoc,
 										  const std::string& name,
 										  const std::string& prefix,
 										  const std::string& entity,
-										  const std::string& valueTemplate,
+										  const std::string& templateValue,
 										  const std::string& icon,
 										  const std::string& unitOfMeasurement) {
 	_addDeviceData(jsonDoc);
@@ -491,7 +490,7 @@ void JBWoprHADevice::_addDiscoveryPayload(DynamicJsonDocument& jsonDoc,
 	jsonDoc[HA_NAMES_UNIQUE_ID] = _getDeviceName() + "_" + prefix + "_" + entity;
 	jsonDoc[HA_NAMES_OBJECT_ID] = _getDeviceName() + "_" +prefix + "_" + entity;
 	jsonDoc[HA_NAMES_STATE_TOPIC] = _getTopic(prefix, SUBENTITY_NAME_STATE);
-	jsonDoc[HA_NAMES_VALUE_TEMPLATE] = "{{ value_json." + valueTemplate + "}}";
+	jsonDoc[HA_NAMES_VALUE_TEMPLATE] = "{{ value_json." + templateValue + "}}";
 	if (!icon.empty()) {
 		jsonDoc[HA_NAMES_ICON] = icon;
 	}
@@ -500,10 +499,10 @@ void JBWoprHADevice::_addDiscoveryPayload(DynamicJsonDocument& jsonDoc,
 	}
 }
 
-void JBWoprHADevice::_addDeviceData(DynamicJsonDocument& jsonDoc) {
-	JsonObject device = jsonDoc.createNestedObject("device");
+void JBWoprHADevice::_addDeviceData(JsonDocument &jsonDoc) {
+	JsonObject device = jsonDoc["device"];
 	device["name"] = _getDeviceName();
-	JsonArray identifiers = device.createNestedArray("identifiers");
+	JsonArray identifiers = device["identifiers"].to<JsonArray>();
 	identifiers.add(_getDeviceName());
 	device["manufacturer"] = "Unexpected Maker";
 	device["model"] = _woprVariant == JBWoprBoardVariant::ORIGINAL ? "W.O.P.R" : "W.O.P.R. Haxorz";
@@ -513,9 +512,9 @@ void JBWoprHADevice::_addDeviceData(DynamicJsonDocument& jsonDoc) {
 	}
 }
 
-void JBWoprHADevice::_addAvailabilityData(DynamicJsonDocument& jsonDoc) {
-	JsonArray availability = jsonDoc.createNestedArray("availability");
-	auto data = availability.createNestedObject();
+void JBWoprHADevice::_addAvailabilityData(JsonDocument &jsonDoc) {
+	JsonArray availability = jsonDoc["availability"].to<JsonArray>();
+	auto data = availability.add<JsonObject>();
 	data["topic"] = _getAvailabilityTopic();
 }
 

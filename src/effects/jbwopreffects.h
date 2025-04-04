@@ -348,7 +348,7 @@ public:
 	/// @param dateFormat Date format
 	void setDateFormat(const std::string& dateFormat);
 
-private:
+protected:
 	uint32_t _displayCounter = 0;		///< Display counter, for switching between Date and Time
 	std::string _rawDateFormat;			///< Raw date format
 	std::string _rawTimeFormat;			///< Raw time format
@@ -356,8 +356,9 @@ private:
 	bool _evenFormat = false;			///< True if even format
 	std::string _timeFormatEven;		///< Time format for even
 	std::string _timeFormatOdd;			///< Time format for odd
-	uint64_t _nextLedTick = 0;			///< Next LED tick
-	uint16_t _pixelHue = 0;				///< Pixel hue
+//	uint64_t _nextLedTick = 0;			///< Next LED tick
+//	uint16_t _pixelHue = 0;				///< Pixel hue
+private:
 	JBLogger _log {"datetime" };		///< Logger instance
 
 	/// @brief Get time format
@@ -409,11 +410,13 @@ public:
 	/// @param duration Duration of effect (after it is done) in milliseconds
 	void start() override;
 
-protected:
-	/// @brief Hide the method, as this effect uses it's own text
-	void setText(std::string& text);
-
 private:
+	/// @brief Hide the method, as this effect uses it's own text
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
+	void setText(std::string& text);
+#pragma GCC diagnostic pop
+
 	JBLogger _log {"xmas" };	///< Logger instance
 };
 

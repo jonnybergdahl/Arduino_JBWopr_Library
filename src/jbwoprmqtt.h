@@ -88,7 +88,7 @@ public:
 	/// @param jsonDoc JSON document
 	/// @param retain Retain message, default value is false
 	/// @return True if successful
-	bool mqttPublishMessage(const std::string& topic, const DynamicJsonDocument& jsonDoc, bool retain = false);
+	bool mqttPublishMessage(const std::string& topic, JsonDocument &jsonDoc, bool retain = false);
 
 	/// @brief MQTT publish message
 	/// @ingroup MqttGroup
@@ -320,12 +320,12 @@ protected:
 	/// @brief Set JBWoprMqttDevice specific config values from JSON document
 	/// @ingroup ConfigurationGroup
 	/// @param jsonDoc JSON document
-	void _setConfigFromJsonDocument(const DynamicJsonDocument& jsonDoc);
+	void _setConfigFromJsonDocument(const JsonDocument &jsonDoc);
 
 	/// @brief Set JSON document values with JBWoprMqttDevice specific config values
 	/// @ingroup ConfigurationGroup
 	/// @param jsonDoc JSON document
-	void _setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc);
+	void _setJsonDocumentFromConfig(JsonDocument &jsonDoc);
 
 	/// @brief Dump configuration to logger
 	/// @ingroup ConfigurationGroup

@@ -67,7 +67,7 @@ void JBWoprEffectBase::_displayText(const std::string& text, JBTextAlignment ali
 	std::string displayText = text;
 	size_t textLength = displayText.length();
 	uint32_t padSize = (12 - textLength) / 2;
-	uint32_t startIndex;
+	uint32_t startIndex = 0;
 	switch (alignment) {
 		case JBTextAlignment::LEFT:
 			startIndex = 0;
@@ -430,8 +430,8 @@ JBWoprDateTimeDisplayEffect::JBWoprDateTimeDisplayEffect(JBWoprDevice *woprDevic
 														 uint32_t duration,
 														 const std::string& name) :
 	JBWoprEffectBase(woprDevice, duration, name),
-	_rawTimeFormat(std::move(timeFormat)),
-	_rawDateFormat(std::move(dateFormat)) {
+	_rawDateFormat(std::move(dateFormat)),
+	_rawTimeFormat(std::move(timeFormat)) {
 }
 
 void JBWoprDateTimeDisplayEffect::start() {
@@ -569,7 +569,7 @@ void JBWoprXmasSecondsDisplayEffect::start() {
 	}
 	time_t now = mktime(&localTime);
 	int32_t nextXmasYear = localTime.tm_mon == 11 && localTime.tm_mday > 24 ? localTime.tm_year + 1 : localTime.tm_year;
-	tm christmas = {0, 0, 0, 25, 11, nextXmasYear};
+	tm christmas = {0, 0, 0, 25, 11, nextXmasYear, 0, 0, -1};
 	time_t nextChristmas = mktime(&christmas);
 	secondsUntilXmas = nextChristmas - now;
 	JBWoprScrollTextDisplayEffect::setText(std::to_string(secondsUntilXmas) + std::string(" Seconds until XMAS..."));

@@ -21,8 +21,8 @@ JBWoprDevice::JBWoprDevice() :
 		50,				// defconLedsBrightness
 		30					// effectsTimeout
 	},
-	_defconColors { 0xFFFFFF, 0xFF0000, 0xFFFF00, 0x00FF00, 0x0000FF },
-   _display { Adafruit_AlphaNum4(), Adafruit_AlphaNum4(), Adafruit_AlphaNum4() }
+   _display { Adafruit_AlphaNum4(), Adafruit_AlphaNum4(), Adafruit_AlphaNum4() },
+   _defconColors { 0xFFFFFF, 0xFF0000, 0xFFFF00, 0x00FF00, 0x0000FF }
 {
 	_log = new JBLogger("wopr", LogLevel::LOG_LEVEL_INFO);
 };
@@ -297,7 +297,7 @@ void JBWoprDevice::displayShowText(const char* text, JBTextAlignment alignment)
 	std::string displayText = text;
 	size_t textLength = displayText.length();
 	uint32_t padSize = (12 - textLength) / 2;
-	uint32_t startIndex;
+	uint32_t startIndex = 0;
 	switch (alignment) {
 		case JBTextAlignment::LEFT:
 			startIndex = 0;
@@ -491,7 +491,7 @@ void JBWoprDevice::defconLedSetDefconStateColor(JBDefconLevel level, uint32_t co
 	_log->trace("defconLedSetDefconStateColor %s, %s", _getDefconLevelString(level).c_str(), JBStringHelper::rgbToString(color).c_str());
 	if (level != JBDefconLevel::DEFCON_NONE) {
 		uint32_t pixel = _getDefconLedsPixel(level);
-		_defconColors[(int) level] = color;
+		_defconColors[pixel] = color;
 	}
 }
 
@@ -503,20 +503,20 @@ void JBWoprDevice::defconLedSetDefconStateColor(JBDefconLevel level, uint32_t co
 
 void JBWoprDevice::audioPlayTone(uint16_t freq)
 {
-#if ESP_ARDUINO_VERSION_MAJOR < 3	
+#if ESP_ARDUINO_VERSION_MAJOR < 3
 	ledcWriteTone(_audioChannel, freq);
 #else
 	ledcWriteTone(_pins.dacPin, freq);
-#endif	
+#endif
 }
 
 void JBWoprDevice::audioPlayNote(note_t note, uint8_t octave)
 {
-#if ESP_ARDUINO_VERSION_MAJOR < 3	
+#if ESP_ARDUINO_VERSION_MAJOR < 3
 	ledcWriteNote(_audioChannel, note, octave);
 #else
 	ledcWriteNote(_pins.dacPin, note, octave);
-#endif	
+#endif
 }
 
 void JBWoprDevice::audioClear()
@@ -525,7 +525,7 @@ void JBWoprDevice::audioClear()
 	ledcWrite(_audioChannel, 0);
 #else
 	ledcWrite(_pins.dacPin, 0);
-#endif	
+#endif
 }
 
 // ------------------------------------------------------------------

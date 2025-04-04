@@ -129,13 +129,13 @@ protected:
 	/// @ingroup ConfigurationGroup
 	/// @details Called when JSON document have been loaded from file.
 	/// @param jsonDoc JSON document
-	virtual void _setConfigFromJsonDocument(const DynamicJsonDocument& jsonDoc);
+	virtual void _setConfigFromJsonDocument(const JsonDocument &jsonDoc);
 
 	/// @brief Set configuration
 	/// @ingroup ConfigurationGroup
 	/// @details Called when JSON document is about to be saved to file.
 	/// @param jsonDoc JSON document
-	virtual void _setJsonDocumentFromConfig(DynamicJsonDocument& jsonDoc);
+	virtual void _setJsonDocumentFromConfig(JsonDocument &jsonDoc);
 
 	/// @brief Dump configuration to logger
 	/// @ingroup ConfigurationGroup
