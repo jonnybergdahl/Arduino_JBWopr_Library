@@ -84,6 +84,38 @@ bool JBTimeHelper::getTime(tm* info) {
 	return true;
 }
 
+bool JBTimeHelper::setTime(const std::string currentDateTime) {
+	struct tm tm = {};
+	_log->trace(currentDateTime);
+	// Parse ISO 8601: "YYYY-MM-DDTHH:MM:SS"
+	if (sscanf(currentDateTime.c_str(), "%4d-%2d-%2dT%2d:%2d:%2d",
+			   &tm.tm_year, &tm.tm_mon, &tm.tm_mday,
+			   &tm.tm_hour, &tm.tm_min, &tm.tm_sec) != 6) {
+		_log->error("Failed to parse currentDateTime value, check format");
+		return false; // Failed to parse
+	}
+	_log->trace("Parsed time: %04d-%02d-%02d %02d:%02d:%02d",
+				tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+				tm.tm_hour, tm.tm_min, tm.tm_sec);
+
+	tm.tm_year -= 1900; // tm_year is years since 1900
+	tm.tm_mon  -= 1;    // tm_mon is 0-based (0 = Jan)
+
+	time_t t = mktime(&tm);
+	if (t == -1) {
+		_log->error("Failed to set time, check value");
+		return false; // mktime failed
+	}
+
+	struct timeval now = { .tv_sec = t };
+	if (!settimeofday(&now, nullptr))
+	{
+		_log->error("settimeofday() failed");
+		return false;
+	}
+	return true;
+}
+
 std::string JBStringHelper::getCenteredString(std::string str, uint32_t length, char padChar) {
 	if (str.length() > length) {
 		return str;

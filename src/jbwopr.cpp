@@ -67,6 +67,7 @@ bool JBWoprDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 	_log->info("JBWoprDevice begin, variant: %i", variant);
 
 	_pins = pins;
+	JBTimeHelper::configure(_log);
 
 	// Buttons
 	_log->trace("Button pins: %i, %i, %i, %i", pins.buttonFrontLeftPin, pins.buttonFrontRightPin, pins.buttonBackTopPin, pins.buttonBackBottomPin);

@@ -22,12 +22,20 @@ enum JBTextAlignment {
 };
 
 
+/**
+ * @class JBTimeHelper
+ * @brief Provides utility methods for time management, including configuring an NTP server, retrieving UTC offset, and setting local time.
+ *
+ * This class allows for synchronization with an NTP server to obtain accurate time,
+ * calculates the UTC offset using external APIs, and provides methods to obtain or set
+ * the local time.
+ */
 /// @brief This class contains helper functions for time related tasks
 class JBTimeHelper {
 public:
-	/// @brief configure helper
+	/// @brief Configure helper with NTP Server and time offset
 	/// @param config WiFi configuration
-	static void configure(JBLogger* log, std::string ntpServer, std::string timeOffsetString);
+	static void configure(JBLogger* log, std::string ntpServer = "", std::string timeOffsetString = "");
 
 	/// @brief Get UTC offset in seconds
 	/// @details Uses https://ipapi.co/timezone/ to get the local UTC offset
@@ -40,6 +48,13 @@ public:
 	/// @details Uses NTP server pool.ntp.org to set local time
 	/// @return True if successful
 	static bool getTime(tm* info);
+
+
+	/// Sets the current date and time.
+	/// @param currentDateTime The current date/time as a string in ISO format.
+	/// @details Example date/time in ISO format:  2025-02-16T22:03:00
+	/// @return True if successful
+	static bool setTime(const std::string currentDateTime);
 
 private:
 	static bool _isInitialized;						///< True if done initializing
