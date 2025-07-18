@@ -21,7 +21,7 @@ JBWoprWiFiDevice::JBWoprWiFiDevice() :
 	JBWoprDevice(),
 	_wifiConfig { "", WIFI_NTP_SERVER, "", true }
 {
-	_wifiConfig.hostName = _getDeviceName();
+	_wifiConfig.hostName = _getInitialDeviceName();
 	_log = new JBLogger("woprwifi", LogLevel::LOG_LEVEL_TRACE);
 }
 
@@ -157,7 +157,7 @@ void JBWoprWiFiDevice::_loadConfiguration()
 {
 	_log->trace("Load configuration");
 	if (_wifiConfig.hostName.empty()) {
-		_wifiConfig.hostName = _getDeviceName();
+		_wifiConfig.hostName = _getInitialDeviceName();
 	}
 
 	File settingsFile = LittleFS.open(CONFIG_FILE_NAME, "r");
@@ -260,6 +260,10 @@ void JBWoprWiFiDevice::_dumpConfig() {
 // WiFi
 //
 std::string JBWoprWiFiDevice::_getDeviceName() {
+	return _wifiConfig.hostName;
+}
+
+std::string JBWoprWiFiDevice::_getInitialDeviceName() {
 	std::stringstream sstream;
 	sstream << "wopr-" << std::hex << (uint32_t)ESP.getEfuseMac();
 	return sstream.str();

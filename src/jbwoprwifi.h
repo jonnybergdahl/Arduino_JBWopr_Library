@@ -184,9 +184,13 @@ protected:
 
 	/// @brief Get device name
 	/// @ingroup WiFiGroup
-	/// @return Device name
+	/// @return Device name, from WiFi configuration
 	std::string _getDeviceName();
 
+	/// @brief Get initial device name
+	/// @ingroup WiFiGroup
+	/// @return Initial device name
+	std::string _getInitialDeviceName();
 	/// @brief Get WiFi manager
 	/// @ingroup WiFiGroup
 	/// @return WiFi manager
