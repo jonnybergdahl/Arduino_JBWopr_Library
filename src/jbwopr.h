@@ -55,8 +55,8 @@ struct JBWoprConfiguration {
 	std::string timeFormat;	                ///< Time format
 	std::string dateFormat;                 ///< Date format
 	uint8_t displayBrightness;              ///< Display brightness
-	uint32_t defconLedsBrightness;          ///< DEFCON LEDs brightness
-	uint32_t effectsTimeout;               	///< Effects timeout, seconds
+	uint8_t defconLedsBrightness;           ///< DEFCON LEDs brightness
+	uint8_t effectsTimeout;                 ///< Effects timeout, seconds
 };
 
 /// @defgroup DisplayGroup Display related methods

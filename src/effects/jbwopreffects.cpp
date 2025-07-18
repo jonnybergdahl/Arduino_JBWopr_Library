@@ -576,7 +576,7 @@ void JBWoprXmasSecondsDisplayEffect::start() {
 	JBWoprScrollTextDisplayEffect::start();
 }
 
-void JBWoprXmasSecondsDisplayEffect::setText(std::string &text) {
+void JBWoprXmasSecondsDisplayEffect::setText(const std::string &text) {
 	// Nothing to do
 }
 

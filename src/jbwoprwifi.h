@@ -175,12 +175,12 @@ protected:
 
 	WiFiManagerParameter* _hostNameParam;							///< Host name parameter
 	WiFiManagerParameter* _ntpServerNameParam;						///< NTP Server address
-	WiFiManagerParameter* _timeOffsetParam;								///< Time offset
+	WiFiManagerParameter* _timeOffsetParam;							///< Time offset
 	WiFiManagerParameter* _useWebPortalParam;						///< Use web portal parameter
 
-	char _effectsTimeoutValue[3];									///< Effects timeout value, set in WiFiManager callback
-	char _defconLedsBrightnessValue[3];								///< DEFCON LEDs brightness value, set in WiFiManager callback
-	char _displayBrightnessValue[3];								///< Display brightness value, set in WiFiManager callback
+	char _effectsTimeoutValue[4];									///< Effects timeout value, set in WiFiManager callback
+	char _defconLedsBrightnessValue[4];								///< DEFCON LEDs brightness value, set in WiFiManager callback
+	char _displayBrightnessValue[4];								///< Display brightness value, set in WiFiManager callback
 
 	/// @brief Get device name
 	/// @ingroup WiFiGroup

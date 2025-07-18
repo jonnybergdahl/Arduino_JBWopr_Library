@@ -414,7 +414,7 @@ private:
 	/// @brief Hide the method, as this effect uses it's own text
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual"
-	void setText(std::string& text);
+	void setText(const std::string& text);
 #pragma GCC diagnostic pop
 
 	JBLogger _log {"xmas" };	///< Logger instance
