@@ -106,7 +106,7 @@ void JBWoprHADevice::_setupWiFiManager() {
 void JBWoprHADevice::_saveParamsCallback() {
 	JBWoprMqttDevice::_saveParamsCallback();
 	_haConfig.useHomeAssistant = strncmp(_useHomeAssistantParam->getValue(), "T", 1) == 0;
-	_haConfig.homeAssistantDiscoveryPrefix = std::string(_homeAssistantDiscoveryPrefixParam->getValue(), sizeof(_mqttConfig.mqttServerName));
+	_haConfig.homeAssistantDiscoveryPrefix = std::string(_homeAssistantDiscoveryPrefixParam->getValue());
 }
 
 // ====================================================================
@@ -125,6 +125,7 @@ bool JBWoprHADevice::_onMqttConnect() {
 		_homeAssistantPublishDiagnostics();
 		_homeAssistantPublishConfig();
 		_homeAssistantPublishState();
+		mqttPublishMessage(_getAvailabilityTopic().c_str(), "online");
 	}
 
 	return true;
@@ -500,7 +501,7 @@ void JBWoprHADevice::_addDiscoveryPayload(JsonDocument &jsonDoc,
 }
 
 void JBWoprHADevice::_addDeviceData(JsonDocument &jsonDoc) {
-	JsonObject device = jsonDoc["device"];
+	JsonObject device = jsonDoc["device"].to<JsonObject>();
 	device["name"] = _getDeviceName();
 	JsonArray identifiers = device["identifiers"].to<JsonArray>();
 	identifiers.add(_getDeviceName());
