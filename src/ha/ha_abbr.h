@@ -273,7 +273,7 @@
 const char* HA_NAMES_ENTITY_CATEGORY = "ent_cat";
 const char* HA_NAMES_NAME = "name";
 const char* HA_NAMES_ICON = "icon";
-const char* HA_NAMES_OBJECT_ID = "obj_id";
+const char* HA_NAMES_DEFAULT_ENTITY_ID = "def_ent_id";
 const char* HA_NAMES_STATE_TOPIC = "stat_t";
 const char* HA_NAMES_VALUE_TEMPLATE = "val_tpl";
 const char* HA_NAMES_UNIQUE_ID = "uniq_id";

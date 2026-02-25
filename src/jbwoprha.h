@@ -166,6 +166,8 @@ protected:
 								   const std::string& entity);
 
 	/// @brief Generate basic discovery message
+	/// @param jsonDoc A reference to the JSON document
+	/// @param platform Platform
 	/// @param name Name
 	/// @param prefix Prefix
 	/// @param entity Entity
@@ -174,6 +176,7 @@ protected:
 	/// @param unitOfMeasurement Unit of measurement
 	/// @return JSON document
 	void _addDiscoveryPayload(JsonDocument &jsonDoc,
+							  const std::string& platform,
 							  const std::string& name,
 							  const std::string& prefix,
 							  const std::string& entity,

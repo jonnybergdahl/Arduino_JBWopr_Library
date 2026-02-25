@@ -145,6 +145,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SENSOR, HA_DIAG_PREFIX, HA_DIAG_ENTITY_IP);
 		_addDiscoveryPayload(jsonDoc,
+					HA_COMPONENT_SENSOR,
 							 "IP Address",
 							 HA_DIAG_PREFIX,
 							 HA_DIAG_ENTITY_IP,
@@ -157,6 +158,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SENSOR, HA_DIAG_PREFIX, HA_DIAG_ENTITY_RSSI);
 		_addDiscoveryPayload(jsonDoc,
+							 HA_COMPONENT_SENSOR,
 							 "RSSI",
 							 HA_DIAG_PREFIX,
 							 HA_DIAG_ENTITY_RSSI,
@@ -170,6 +172,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SENSOR, HA_DIAG_PREFIX, HA_DIAG_ENTITY_RAM);
 		_addDiscoveryPayload(jsonDoc,
+							 HA_COMPONENT_SENSOR,
 							 "Free memory",
 							 HA_DIAG_PREFIX,
 							 HA_DIAG_ENTITY_RAM,
@@ -184,6 +187,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SELECT, HA_CONFIG_PREFIX, HA_CONF_ENTITY_TIME_FORMAT);
 		_addDiscoveryPayload(jsonDoc,
+							 HA_COMPONENT_SELECT,
 							 "Time format",
 							 ENTITY_NAME_CONFIG,
 							 HA_CONF_ENTITY_TIME_FORMAT,
@@ -205,6 +209,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SELECT, HA_CONFIG_PREFIX, HA_CONF_ENTITY_DATE_FORMAT);
 		_addDiscoveryPayload(jsonDoc,
+							 HA_COMPONENT_SELECT,
 							 "Date format",
 							 HA_CONFIG_PREFIX,
 							 HA_CONF_ENTITY_DATE_FORMAT,
@@ -224,6 +229,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_NUMBER, HA_CONFIG_PREFIX, HA_CONF_ENTITY_DISPLAY_BRIGHTNESS);
 		_addDiscoveryPayload(jsonDoc,
+							 HA_COMPONENT_NUMBER,
 							 "Display brightness",
 							 HA_CONFIG_PREFIX,
 							 HA_CONF_ENTITY_DISPLAY_BRIGHTNESS,
@@ -241,6 +247,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_NUMBER, HA_CONFIG_PREFIX, HA_CONF_ENTITY_DEFCON_BRIGHTNESS);
 		_addDiscoveryPayload(jsonDoc,
+							 HA_COMPONENT_NUMBER,
 							 "DEFCON brightness",
 							 HA_CONFIG_PREFIX,
 							 HA_CONF_ENTITY_DEFCON_BRIGHTNESS,
@@ -258,6 +265,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_NUMBER, HA_CONFIG_PREFIX, HA_CONF_ENTITY_EFFECTS_TIMEOUT);
 		_addDiscoveryPayload(jsonDoc,
+							 HA_COMPONENT_NUMBER,
 							 "Effects timeout",
 							 HA_CONFIG_PREFIX,
 							 HA_CONF_ENTITY_EFFECTS_TIMEOUT,
@@ -273,6 +281,7 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		JsonDocument jsonDoc;
 		topic = _getDiscoveryTopic(HA_COMPONENT_SWITCH, HA_CONFIG_PREFIX, HA_CONF_ENTITY_WIFI_USE_WEB_PORTAL);
 		_addDiscoveryPayload(jsonDoc,
+							 HA_COMPONENT_SWITCH,
 							 "Use web portal",
 							 HA_CONFIG_PREFIX,
 							 HA_CONF_ENTITY_WIFI_USE_WEB_PORTAL,
@@ -286,44 +295,56 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 
 	{
 		JsonDocument jsonDoc;
-		topic = "homeassistant/button/" + _getDeviceName() + "/device/config";
-		jsonDoc["name"] = "Restart";
-		_addDeviceData(jsonDoc);
-		jsonDoc[HA_NAMES_ENTITY_CATEGORY] = HA_CONFIG_PREFIX;
-		jsonDoc["unique_id"] = _getDeviceName() + "_" +"device";
-		jsonDoc["object_id"] = _getDeviceName() + "_" +"device";
-		_addAvailabilityData(jsonDoc);
+		// Home Assistant: Restart button (config category)
+		topic = _getDiscoveryTopic(HA_COMPONENT_BUTTON, HA_CONFIG_PREFIX, HA_CONF_ENTITY_RESTART);
+		_addDiscoveryPayload(jsonDoc,
+						   HA_COMPONENT_BUTTON,
+						   "Restart",
+						   HA_CONFIG_PREFIX,
+						   HA_CONF_ENTITY_RESTART,
+						   HA_CONF_ENTITY_RESTART,
+						   MDI_ICON_RESTART);
+		// Remove default state/value template added by helper; button uses command only
+		jsonDoc.remove(HA_NAMES_STATE_TOPIC);
+		jsonDoc.remove(HA_NAMES_VALUE_TEMPLATE);
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/device/state/set";
 		jsonDoc["payload_press"] = "restart";
-		jsonDoc["icon"] = MDI_ICON_RESTART;
 		mqttPublishMessage(topic, jsonDoc, true);
 	}
 
 	// Effects
 	{
 		JsonDocument jsonDoc;
-		topic = "homeassistant/switch/" + _getDeviceName() + "/effect/config";
-		jsonDoc["name"] = "Run effect";
-		_addDeviceData(jsonDoc);
-		jsonDoc["unique_id"] = _getDeviceName() + "_" + "effect";
-		jsonDoc["object_id"] = _getDeviceName() + "_" + "effect";
-		_addAvailabilityData(jsonDoc);
-		jsonDoc["state_topic"] = "wopr/" + _getDeviceName() + "/effect/state";
+		// Discovery topic and base payload
+		topic = _getDiscoveryTopic(HA_COMPONENT_SWITCH, "", "effect");
+		_addDiscoveryPayload(jsonDoc,
+						   HA_COMPONENT_SWITCH,
+						   "Run effect",
+						   "",
+						   "effect",
+						   "state",
+						   MDI_ICON_SCRIPT_OUTLINE);
+		// Override topics for this entity
+		jsonDoc.remove(HA_NAMES_STATE_TOPIC);
+		jsonDoc.remove(HA_NAMES_VALUE_TEMPLATE);
+		jsonDoc[HA_NAMES_STATE_TOPIC] = "wopr/" + _getDeviceName() + "/effect/state";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/effect/state/set";
-		auto effects = effectsGetRegisteredEffects();
-		jsonDoc["icon"] = MDI_ICON_SCRIPT_OUTLINE;
 		mqttPublishMessage(topic, jsonDoc, true);
 	}
 
 	{
 		JsonDocument jsonDoc;
-		topic = "homeassistant/select/" + _getDeviceName() + "/effect/config";
-		jsonDoc["name"] = "Effect";
-		_addDeviceData(jsonDoc);
-		jsonDoc["unique_id"] = _getDeviceName() + "_effect_name";
-		jsonDoc["object_id"] = _getDeviceName() + "_effect_name";
-		_addAvailabilityData(jsonDoc);
-		jsonDoc["state_topic"] = "wopr/" + _getDeviceName() + "/effect/name";
+		topic = _getDiscoveryTopic(HA_COMPONENT_SELECT, "", "effect_name");
+		_addDiscoveryPayload(jsonDoc,
+						   HA_COMPONENT_SELECT,
+						   "Effect",
+						   "",
+						   "effect_name",
+						   "name",
+						   MDI_ICON_SCRIPT_OUTLINE);
+		jsonDoc.remove(HA_NAMES_STATE_TOPIC);
+		jsonDoc.remove(HA_NAMES_VALUE_TEMPLATE);
+		jsonDoc[HA_NAMES_STATE_TOPIC] = "wopr/" + _getDeviceName() + "/effect/name";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/effect/name/set";
 		auto effects = effectsGetRegisteredEffects();
 		auto options = jsonDoc["options"].to<JsonArray>();
@@ -331,90 +352,104 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		for (auto& effect : effects) {
 			options.add(effect->getName());
 		}
-		jsonDoc["icon"] = MDI_ICON_SCRIPT_OUTLINE;
 		mqttPublishMessage(topic, jsonDoc, true);
 	}
 
 	// Display
 	{
 		JsonDocument jsonDoc;
-		topic = "homeassistant/light/" + _getDeviceName() + "/display/config";
-		jsonDoc["name"] = "Display";
-		_addDeviceData(jsonDoc);
-		jsonDoc["unique_id"] = _getDeviceName() + "_display";
-		jsonDoc["object_id"] = _getDeviceName() + "_display";
-		_addAvailabilityData(jsonDoc);
-		jsonDoc["state_topic"] = "wopr/" + _getDeviceName() + "/display/state";
+		topic = _getDiscoveryTopic(HA_COMPONENT_LIGHT, "", "display");
+		_addDiscoveryPayload(jsonDoc,
+						   HA_COMPONENT_LIGHT,
+						   "Display",
+						   "",
+						   "display",
+						   "state",
+						   MDI_ICON_ALPHABETICAL_VARIANT);
+		jsonDoc.remove(HA_NAMES_STATE_TOPIC);
+		jsonDoc.remove(HA_NAMES_VALUE_TEMPLATE);
+		jsonDoc[HA_NAMES_STATE_TOPIC] = "wopr/" + _getDeviceName() + "/display/state";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/display/state/set";
 		jsonDoc["brightness_state_topic"] = "wopr/" + _getDeviceName() + "/display/brightness";
 		jsonDoc["brightness_command_topic"] = "wopr/" + _getDeviceName() + "/display/brightness/set";
 		jsonDoc["brightness_scale"] = 100;
-		jsonDoc["icon"] = MDI_ICON_ALPHABETICAL_VARIANT;
 		mqttPublishMessage(topic, jsonDoc, true);
 	}
 	// DEFCON
 	{
 		JsonDocument jsonDoc;
-		topic = "homeassistant/light/" + _getDeviceName() + "/defcon/config";
-		jsonDoc["name"] = "DEFCON";
-		_addDeviceData(jsonDoc);
-		jsonDoc["unique_id"] = _getDeviceName() + "_defcon";
-		jsonDoc["object_id"] = _getDeviceName() + "_defcon";
-		_addAvailabilityData(jsonDoc);
-		jsonDoc["state_topic"] = "wopr/" + _getDeviceName() + "/defcon/state";
+		topic = _getDiscoveryTopic(HA_COMPONENT_LIGHT, "", "defcon");
+		_addDiscoveryPayload(jsonDoc,
+						   HA_COMPONENT_LIGHT,
+						   "DEFCON",
+						   "",
+						   "defcon",
+						   "state",
+						   MDI_ICON_NUMERIC_5_BOX_OUTLINE);
+		jsonDoc.remove(HA_NAMES_STATE_TOPIC);
+		jsonDoc.remove(HA_NAMES_VALUE_TEMPLATE);
+		jsonDoc[HA_NAMES_STATE_TOPIC] = "wopr/" + _getDeviceName() + "/defcon/state";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/defcon/state/set";
 		jsonDoc["brightness_state_topic"] = "wopr/" + _getDeviceName() + "/defcon/brightness";
 		jsonDoc["brightness_command_topic"] = "wopr/" + _getDeviceName() + "/defcon/brightness/set";
 		jsonDoc["rgb_state_topic"] = "wopr/" + _getDeviceName() + "/defcon/color";
 		jsonDoc["rgb_command_topic"] = "wopr/" + _getDeviceName() + "/defcon/color/set";
 		jsonDoc["brightness_scale"] = 100;
-		jsonDoc["icon"] = MDI_ICON_NUMERIC_5_BOX_OUTLINE;
 		mqttPublishMessage(topic, jsonDoc, true);
 	}
 
 	{
 		JsonDocument jsonDoc;
-		topic = "homeassistant/select/" + _getDeviceName() + "/defcon_level/config";
-		jsonDoc["name"] = "DEFCON Level";
-		_addDeviceData(jsonDoc);
-		jsonDoc["unique_id"] = _getDeviceName() + "_defcon_level";
-		jsonDoc["object_id"] = _getDeviceName() + "_defcon_level";
-		_addAvailabilityData(jsonDoc);
-		jsonDoc["state_topic"] = "wopr/" + _getDeviceName() + "/defcon/level";
+		topic = _getDiscoveryTopic(HA_COMPONENT_SELECT, "", "defcon_level");
+		_addDiscoveryPayload(jsonDoc,
+						   HA_COMPONENT_SELECT,
+						   "DEFCON Level",
+						   "",
+						   "defcon_level",
+						   "level",
+						   MDI_ICON_NUMERIC_5_BOX_OUTLINE);
+		jsonDoc.remove(HA_NAMES_STATE_TOPIC);
+		jsonDoc.remove(HA_NAMES_VALUE_TEMPLATE);
+		jsonDoc[HA_NAMES_STATE_TOPIC] = "wopr/" + _getDeviceName() + "/defcon/level";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/defcon/level/set";
 		auto options = jsonDoc["options"].to<JsonArray>();
 		for (auto& level : _defconNames) {
 			options.add(level);
 		}
-		jsonDoc["icon"] = MDI_ICON_NUMERIC_5_BOX_OUTLINE;
 		mqttPublishMessage(topic, jsonDoc, true);
 	}
 
 	{
 		JsonDocument jsonDoc;
-		topic = "homeassistant/text/" + _getDeviceName() + "/display_text/config";
-		jsonDoc["name"] = "Display text";
-		_addDeviceData(jsonDoc);
-		jsonDoc["unique_id"] = _getDeviceName() + "_display_text";
-		jsonDoc["object_id"] = _getDeviceName() + "_display_text";
-		_addAvailabilityData(jsonDoc);
-		jsonDoc["state_topic"] = "wopr/" + _getDeviceName() + "/display/text";
+		topic = _getDiscoveryTopic("text", "", "display_text");
+		_addDiscoveryPayload(jsonDoc,
+						   "text",
+						   "Display text",
+						   "",
+						   "display_text",
+						   "text",
+						   MID_ICON_FORMAT_TEXT);
+		jsonDoc.remove(HA_NAMES_STATE_TOPIC);
+		jsonDoc.remove(HA_NAMES_VALUE_TEMPLATE);
+		jsonDoc[HA_NAMES_STATE_TOPIC] = "wopr/" + _getDeviceName() + "/display/text";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/display/text/set";
-		jsonDoc["icon"] = MID_ICON_FORMAT_TEXT;
 		mqttPublishMessage(topic, jsonDoc, true);
 	}
 
 	{
 		JsonDocument jsonDoc;
-		topic = "homeassistant/text/" + _getDeviceName() + "/display_scrolltext/config";
-		jsonDoc["name"] = "Display scroll text";
-		_addDeviceData(jsonDoc);
-		jsonDoc["unique_id"] = _getDeviceName() + "_display_scrolltext";
-		jsonDoc["object_id"] = _getDeviceName() + "_display_scrolltext";
-		_addAvailabilityData(jsonDoc);
-		jsonDoc["state_topic"] = "wopr/" + _getDeviceName() + "/display/scrolltext";
+		topic = _getDiscoveryTopic("text", "", "display_scrolltext");
+		_addDiscoveryPayload(jsonDoc,
+						   "text",
+						   "Display scroll text",
+						   "",
+						   "display_scrolltext",
+						   "scrolltext",
+						   MDI_ICON_TEXT_SHADOW);
+		jsonDoc.remove(HA_NAMES_STATE_TOPIC);
+		jsonDoc.remove(HA_NAMES_VALUE_TEMPLATE);
+		jsonDoc[HA_NAMES_STATE_TOPIC] = "wopr/" + _getDeviceName() + "/display/scrolltext";
 		jsonDoc["command_topic"] = "wopr/" + _getDeviceName() + "/display/scrolltext/set";
-		jsonDoc["icon"] = MDI_ICON_TEXT_SHADOW;
 		mqttPublishMessage(topic, jsonDoc, true);
 	}
 
@@ -476,6 +511,7 @@ std::string JBWoprHADevice::_getDiscoveryTopic(const std::string& component, con
 }
 
 void JBWoprHADevice::_addDiscoveryPayload(JsonDocument &jsonDoc,
+										  const std::string& platform,
 										  const std::string& name,
 										  const std::string& prefix,
 										  const std::string& entity,
@@ -489,7 +525,8 @@ void JBWoprHADevice::_addDiscoveryPayload(JsonDocument &jsonDoc,
 		jsonDoc[HA_NAMES_ENTITY_CATEGORY] = prefix;
 	}
 	jsonDoc[HA_NAMES_UNIQUE_ID] = _getDeviceName() + "_" + prefix + "_" + entity;
-	jsonDoc[HA_NAMES_OBJECT_ID] = _getDeviceName() + "_" +prefix + "_" + entity;
+	jsonDoc[HA_NAMES_DEFAULT_ENTITY_ID] = platform + "." + _getDeviceName() + "_" +prefix + "_" + entity;
+
 	jsonDoc[HA_NAMES_STATE_TOPIC] = _getTopic(prefix, SUBENTITY_NAME_STATE);
 	jsonDoc[HA_NAMES_VALUE_TEMPLATE] = "{{ value_json." + templateValue + "}}";
 	if (!icon.empty()) {
