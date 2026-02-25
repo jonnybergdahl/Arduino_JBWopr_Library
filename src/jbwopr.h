@@ -22,7 +22,7 @@
 #include "effects/jbwopreffects.h"
 #include "jbwoprhelpers.h"
 
-#define LIBRARY_VERSION "1.1.3";
+#define LIBRARY_VERSION "1.2.0";
 
 /// @brief W.O.P.R. board version
 enum JBWoprBoardVariant {
