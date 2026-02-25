@@ -507,7 +507,11 @@ bool JBWoprHADevice::_homeAssistantPublishState() {
 }
 
 std::string JBWoprHADevice::_getDiscoveryTopic(const std::string& component, const std::string& prefix,  const std::string& entity) {
-	return _haConfig.homeAssistantDiscoveryPrefix + "/" + component + "/" + _getDeviceName() + "/" + prefix + "_" + entity + "/config";
+	std::string entityName = entity;
+	if (!prefix.empty()) {
+		entityName = prefix + "_" + entity;
+	}
+	return _haConfig.homeAssistantDiscoveryPrefix + "/" + component + "/" + _getDeviceName() + "/" + entityName + "/config";
 }
 
 void JBWoprHADevice::_addDiscoveryPayload(JsonDocument &jsonDoc,
