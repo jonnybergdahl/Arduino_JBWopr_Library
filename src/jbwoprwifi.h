@@ -24,7 +24,7 @@
 struct JBWoprWiFiConfiguration {
 	std::string hostName;						///< Host name
 	std::string ntpServer;						///< NTP server address
-	std::string timeOffsetString;				///< UTC time offset (Empty string = auto)
+	std::string tzString;						///< Timezone string (POSIX format)
 	bool useWebPortal;                      	///< Use web portal
 };
 
@@ -156,7 +156,7 @@ protected:
 	const char* JSON_KEY_DISPLAY_BRIGHTNESS = "displayBrightness";	///< Display brightness key name
 	const char* JSON_KEY_WIFI_HOST_NAME = "hostName";               ///< Host name key name
 	const char* JSON_KEY_WIFI_NTP_SERVER = "ntpServer";				///< NTP Server key name
-	const char* JSON_KEY_WIFI_TIME_OFFSET = "timeOffsetString";			///< NTP Server key name
+	const char* JSON_KEY_WIFI_TIMEZONE = "tzString";				///< Timezone key name
 	const char* JSON_KEY_WIFI_USE_WEB_PORTAL = "useWebPortal";		///< Use portal key name
 
 	const char* HTML_WOPR_TITLE = "<h2>W.O.P.R. settings</h2>";		///< Settings title
@@ -175,8 +175,9 @@ protected:
 
 	WiFiManagerParameter* _hostNameParam;							///< Host name parameter
 	WiFiManagerParameter* _ntpServerNameParam;						///< NTP Server address
-	WiFiManagerParameter* _timeOffsetParam;							///< Time offset
+	WiFiManagerParameter* _tzStringParam;							///< Timezone string
 	WiFiManagerParameter* _useWebPortalParam;						///< Use web portal parameter
+	std::string _tzHtml;											///< Timezone HTML string
 
 	char _effectsTimeoutValue[4];									///< Effects timeout value, set in WiFiManager callback
 	char _defconLedsBrightnessValue[4];								///< DEFCON LEDs brightness value, set in WiFiManager callback

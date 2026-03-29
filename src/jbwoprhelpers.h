@@ -35,12 +35,7 @@ class JBTimeHelper {
 public:
 	/// @brief Configure helper with NTP Server and time offset
 	/// @param config WiFi configuration
-	static void configure(JBLogger* log, std::string ntpServer = "", std::string timeOffsetString = "");
-
-	/// @brief Get UTC offset in seconds
-	/// @details Uses https://ipapi.co/timezone/ to get the local UTC offset
-	/// @return UTC offset in seconds
-	static int64_t getUtcOffsetInSeconds();
+	static void configure(JBLogger* log, std::string ntpServer = "", std::string tzString = "");
 
 	/// @brief Get local time
 	/// @param ntpServer NTP server address
@@ -59,7 +54,7 @@ public:
 private:
 	static bool _isInitialized;						///< True if done initializing
 	static std::string _ntpServer;					///< NTP server
-	static std::string _timeOffsetString;			///< Time offset string
+	static std::string _tzString;					///< Timezone string
 	static JBLogger* _log;							///< Local logger
 };
 

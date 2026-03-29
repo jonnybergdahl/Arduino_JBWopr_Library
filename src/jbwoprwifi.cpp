@@ -8,6 +8,7 @@
 ///
 #include "jbwoprwifi.h"
 #include "jbwoprhelpers.h"
+#include "tz_data.h"
 #include <string>
 #include <sstream>
 #include <FS.h>
@@ -44,7 +45,7 @@ bool JBWoprWiFiDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 		_loadConfiguration();
 	}
 
-	JBTimeHelper::configure(_log, _wifiConfig.ntpServer, _wifiConfig.timeOffsetString);
+	JBTimeHelper::configure(_log, _wifiConfig.ntpServer, _wifiConfig.tzString);
 	_setupWiFiManager();
 
 	displayShowText("Start WiFi");
@@ -223,8 +224,8 @@ void JBWoprWiFiDevice::_setConfigFromJsonDocument(const JsonDocument &jsonDoc) {
 	if (!jsonDoc[JSON_KEY_WIFI_NTP_SERVER].isNull()) {
 		_wifiConfig.ntpServer = jsonDoc[JSON_KEY_WIFI_NTP_SERVER].as<std::string>();
 	}
-	if (!jsonDoc[JSON_KEY_WIFI_TIME_OFFSET].isNull()) {
-		_wifiConfig.timeOffsetString = jsonDoc[JSON_KEY_WIFI_TIME_OFFSET].as<std::string>();
+	if (!jsonDoc[JSON_KEY_WIFI_TIMEZONE].isNull()) {
+		_wifiConfig.tzString = jsonDoc[JSON_KEY_WIFI_TIMEZONE].as<std::string>();
 	}
 	if (!jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL].isNull()) {
 		_wifiConfig.useWebPortal = jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL].as<bool>();
@@ -239,7 +240,7 @@ void JBWoprWiFiDevice::_setJsonDocumentFromConfig(JsonDocument &jsonDoc) {
 	jsonDoc[JSON_KEY_EFFECTS_TIMEOUT] = _config.effectsTimeout;
 	jsonDoc[JSON_KEY_WIFI_HOST_NAME] = _wifiConfig.hostName;
 	jsonDoc[JSON_KEY_WIFI_NTP_SERVER] = _wifiConfig.ntpServer;
-	jsonDoc[JSON_KEY_WIFI_TIME_OFFSET] = _wifiConfig.timeOffsetString;
+	jsonDoc[JSON_KEY_WIFI_TIMEZONE] = _wifiConfig.tzString;
 	jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL] = _wifiConfig.useWebPortal;
 }
 
@@ -252,7 +253,7 @@ void JBWoprWiFiDevice::_dumpConfig() {
 	_log->trace("  Effects timeout: %u", _config.effectsTimeout);
 	_log->trace("  Host name: %s", _wifiConfig.hostName.c_str());
 	_log->trace("  NTP server: %s", _wifiConfig.ntpServer.c_str());
-	_log->trace("  Time offset string: %s", _wifiConfig.timeOffsetString.c_str());
+	_log->trace("  Timezone string: %s", _wifiConfig.tzString.c_str());
 	_log->trace("  Use web portal: %s", _wifiConfig.useWebPortal ? "true" : "false");
 }
 
@@ -295,7 +296,24 @@ void JBWoprWiFiDevice::_setupWiFiManager() {
 
 	_hostNameParam = new WiFiManagerParameter(JSON_KEY_WIFI_HOST_NAME, "Host name", _wifiConfig.hostName.c_str(), 40);
 	_ntpServerNameParam = new WiFiManagerParameter(JSON_KEY_WIFI_NTP_SERVER, "NTP server", _wifiConfig.ntpServer.c_str(), 40);
-	_timeOffsetParam = new WiFiManagerParameter(JSON_KEY_WIFI_TIME_OFFSET, "Time offset (leave empty for auto)", _wifiConfig.timeOffsetString.c_str(), 5);
+
+	_tzHtml = "<br/><label for='tz_select'>Timezone</label><select id='tz_select' name='tz_select'>";
+	_tzHtml.reserve(40 * 1024);
+	_tzHtml += "<option value=''>UTC</option>";
+	for (int i = 0; i < TZ_DATA_COUNT; i++) {
+		_tzHtml += "<option value='";
+		_tzHtml += TZ_DATA[i].v;
+		_tzHtml += "'";
+		if (_wifiConfig.tzString == TZ_DATA[i].v) {
+			_tzHtml += " selected";
+		}
+		_tzHtml += ">";
+		_tzHtml += TZ_DATA[i].n;
+		_tzHtml += "</option>";
+	}
+	_tzHtml += "</select>";
+	_tzStringParam = new WiFiManagerParameter(_tzHtml.c_str());
+
 	_useWebPortalParam = new WiFiManagerParameter(JSON_KEY_WIFI_USE_WEB_PORTAL, "Use web portal", "T", 2, _wifiConfig.useWebPortal ? HTML_CHECKBOX_TRUE : HTML_CHECKBOX_FALSE, WFM_LABEL_AFTER);
 
 	_wifiManager->addParameter(_woprTitleParam);
@@ -307,7 +325,7 @@ void JBWoprWiFiDevice::_setupWiFiManager() {
 	_wifiManager->addParameter(_networkTitleParam);
 	_wifiManager->addParameter(_hostNameParam);
 	_wifiManager->addParameter(_ntpServerNameParam);
-	_wifiManager->addParameter(_timeOffsetParam);
+	_wifiManager->addParameter(_tzStringParam);
 	_wifiManager->addParameter(_useWebPortalParam);
 
 	_wifiManager->setAPCallback(std::bind(&JBWoprWiFiDevice::_apCallback, this, std::placeholders::_1));
@@ -324,7 +342,7 @@ void JBWoprWiFiDevice::_saveParamsCallback () {
 	_config.effectsTimeout = atoi(_effectsTimeoutParam->getValue());
 	_wifiConfig.hostName = _hostNameParam->getValue();
 	_wifiConfig.ntpServer = _ntpServerNameParam->getValue();
-	_wifiConfig.timeOffsetString = _timeOffsetParam->getValue();
+	_wifiConfig.tzString = _wifiManager->server->arg("tz_select").c_str();
 	_wifiConfig.useWebPortal = strncmp(_useWebPortalParam->getValue(), "T", 1) == 0;
 	_shouldSaveConfig = true;
 }
