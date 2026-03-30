@@ -45,7 +45,7 @@ bool JBWoprWiFiDevice::begin(JBWoprBoardVariant variant, JBWoprBoardPins pins) {
 		_loadConfiguration();
 	}
 
-	JBTimeHelper::configure(_log, _wifiConfig.ntpServer, _wifiConfig.tzString);
+	JBTimeHelper::configure(_log, _wifiConfig.ntpServer, _wifiConfig.tzName);
 	_setupWiFiManager();
 
 	displayShowText("Start WiFi");
@@ -225,7 +225,7 @@ void JBWoprWiFiDevice::_setConfigFromJsonDocument(const JsonDocument &jsonDoc) {
 		_wifiConfig.ntpServer = jsonDoc[JSON_KEY_WIFI_NTP_SERVER].as<std::string>();
 	}
 	if (!jsonDoc[JSON_KEY_WIFI_TIMEZONE].isNull()) {
-		_wifiConfig.tzString = jsonDoc[JSON_KEY_WIFI_TIMEZONE].as<std::string>();
+		_wifiConfig.tzName = jsonDoc[JSON_KEY_WIFI_TIMEZONE].as<std::string>();
 	}
 	if (!jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL].isNull()) {
 		_wifiConfig.useWebPortal = jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL].as<bool>();
@@ -240,7 +240,7 @@ void JBWoprWiFiDevice::_setJsonDocumentFromConfig(JsonDocument &jsonDoc) {
 	jsonDoc[JSON_KEY_EFFECTS_TIMEOUT] = _config.effectsTimeout;
 	jsonDoc[JSON_KEY_WIFI_HOST_NAME] = _wifiConfig.hostName;
 	jsonDoc[JSON_KEY_WIFI_NTP_SERVER] = _wifiConfig.ntpServer;
-	jsonDoc[JSON_KEY_WIFI_TIMEZONE] = _wifiConfig.tzString;
+	jsonDoc[JSON_KEY_WIFI_TIMEZONE] = _wifiConfig.tzName;
 	jsonDoc[JSON_KEY_WIFI_USE_WEB_PORTAL] = _wifiConfig.useWebPortal;
 }
 
@@ -253,7 +253,7 @@ void JBWoprWiFiDevice::_dumpConfig() {
 	_log->trace("  Effects timeout: %u", _config.effectsTimeout);
 	_log->trace("  Host name: %s", _wifiConfig.hostName.c_str());
 	_log->trace("  NTP server: %s", _wifiConfig.ntpServer.c_str());
-	_log->trace("  Timezone string: %s", _wifiConfig.tzString.c_str());
+	_log->trace("  Timezone name: %s", _wifiConfig.tzName.c_str());
 	_log->trace("  Use web portal: %s", _wifiConfig.useWebPortal ? "true" : "false");
 }
 
@@ -297,21 +297,23 @@ void JBWoprWiFiDevice::_setupWiFiManager() {
 	_hostNameParam = new WiFiManagerParameter(JSON_KEY_WIFI_HOST_NAME, "Host name", _wifiConfig.hostName.c_str(), 40);
 	_ntpServerNameParam = new WiFiManagerParameter(JSON_KEY_WIFI_NTP_SERVER, "NTP server", _wifiConfig.ntpServer.c_str(), 40);
 
-	_tzHtml = "<br/><label for='tz_select'>Timezone</label><select id='tz_select' name='tz_select'>";
+	_tzHtml = "<input id='tzString' name='tzString' type='hidden' value='";
+	_tzHtml += _wifiConfig.tzName;
+	_tzHtml += "'><br/><label for='tz_select'>Timezone</label><select id='tz_select' name='tz_select'>";
 	_tzHtml.reserve(40 * 1024);
 	_tzHtml += "<option value=''>UTC</option>";
 	for (int i = 0; i < TZ_DATA_COUNT; i++) {
 		_tzHtml += "<option value='";
-		_tzHtml += TZ_DATA[i].v;
+		_tzHtml += TZ_DATA[i].n;
 		_tzHtml += "'";
-		if (_wifiConfig.tzString == TZ_DATA[i].v) {
+		if (_wifiConfig.tzName == TZ_DATA[i].n) {
 			_tzHtml += " selected";
 		}
 		_tzHtml += ">";
 		_tzHtml += TZ_DATA[i].n;
 		_tzHtml += "</option>";
 	}
-	_tzHtml += "</select>";
+	_tzHtml += "</select><script>document.getElementById('tz_select').onchange = function() { document.getElementById('tzString').value = this.value; };</script>";
 	_tzStringParam = new WiFiManagerParameter(_tzHtml.c_str());
 
 	_useWebPortalParam = new WiFiManagerParameter(JSON_KEY_WIFI_USE_WEB_PORTAL, "Use web portal", "T", 2, _wifiConfig.useWebPortal ? HTML_CHECKBOX_TRUE : HTML_CHECKBOX_FALSE, WFM_LABEL_AFTER);
@@ -342,7 +344,7 @@ void JBWoprWiFiDevice::_saveParamsCallback () {
 	_config.effectsTimeout = atoi(_effectsTimeoutParam->getValue());
 	_wifiConfig.hostName = _hostNameParam->getValue();
 	_wifiConfig.ntpServer = _ntpServerNameParam->getValue();
-	_wifiConfig.tzString = _wifiManager->server->arg("tz_select").c_str();
+	_wifiConfig.tzName = _wifiManager->server->arg(JSON_KEY_WIFI_TIMEZONE).c_str();
 	_wifiConfig.useWebPortal = strncmp(_useWebPortalParam->getValue(), "T", 1) == 0;
 	_shouldSaveConfig = true;
 }

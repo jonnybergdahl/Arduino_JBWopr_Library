@@ -6,18 +6,19 @@
 /// @date Created: 2023-10-02
 /// @copyright Copyright© 2023, Jonny Bergdahl
 #include "jbwoprhelpers.h"
+#include "tz_data.h"
 #include <WiFi.h>
 #include <HTTPClient.h>
 
 bool JBTimeHelper::_isInitialized = false;
 std::string JBTimeHelper::_ntpServer = "";
-std::string JBTimeHelper::_tzString = "";
+std::string JBTimeHelper::_tzName = "";
 JBLogger* JBTimeHelper::_log = nullptr;
 
-void JBTimeHelper::configure(JBLogger* log, std::string ntpServer, std::string tzString) {
+void JBTimeHelper::configure(JBLogger* log, std::string ntpServer, std::string tzName) {
 	_log = log;
 	_ntpServer = ntpServer;
-	_tzString = tzString;
+	_tzName = tzName;
 }
 
 bool JBTimeHelper::getTime(tm* info) {
@@ -27,9 +28,23 @@ bool JBTimeHelper::getTime(tm* info) {
 	if (hasWiFi && !_isInitialized) {
 		_log->trace("Obtain local time");
 
-		if (!_tzString.empty()) {
-			_log->trace("Using TZ string: %s", _tzString.c_str());
-			configTzTime(_tzString.c_str(), _ntpServer.c_str());
+		if (!_tzName.empty()) {
+			std::string tzString = "";
+			for (int i = 0; i < TZ_DATA_COUNT; i++) {
+				if (_tzName == TZ_DATA[i].n) {
+					tzString = TZ_DATA[i].v;
+					break;
+				}
+			}
+
+			if (!tzString.empty()) {
+				_log->trace("Using TZ string: %s (%s)", tzString.c_str(), _tzName.c_str());
+				configTzTime(tzString.c_str(), _ntpServer.c_str());
+			}
+			else {
+				_log->warning("Timezone name not found: %s. Using UTC.", _tzName.c_str());
+				configTime(0, 0, _ntpServer.c_str());
+			}
 		}
 		else {
 			_log->trace("Using UTC");

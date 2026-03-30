@@ -34,8 +34,10 @@ enum JBTextAlignment {
 class JBTimeHelper {
 public:
 	/// @brief Configure helper with NTP Server and time offset
-	/// @param config WiFi configuration
-	static void configure(JBLogger* log, std::string ntpServer = "", std::string tzString = "");
+	/// @param log Logger
+	/// @param ntpServer NTP server address
+	/// @param tzName Timezone name (e.g. Europe/Stockholm)
+	static void configure(JBLogger* log, std::string ntpServer = "", std::string tzName = "");
 
 	/// @brief Get local time
 	/// @param ntpServer NTP server address
@@ -54,7 +56,7 @@ public:
 private:
 	static bool _isInitialized;						///< True if done initializing
 	static std::string _ntpServer;					///< NTP server
-	static std::string _tzString;					///< Timezone string
+	static std::string _tzName;						///< Timezone name
 	static JBLogger* _log;							///< Local logger
 };
 

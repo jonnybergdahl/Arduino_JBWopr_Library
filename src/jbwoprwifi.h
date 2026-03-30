@@ -24,7 +24,7 @@
 struct JBWoprWiFiConfiguration {
 	std::string hostName;						///< Host name
 	std::string ntpServer;						///< NTP server address
-	std::string tzString;						///< Timezone string (POSIX format)
+	std::string tzName;							///< Timezone name (e.g. Europe/Stockholm)
 	bool useWebPortal;                      	///< Use web portal
 };
 
