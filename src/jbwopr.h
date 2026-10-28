@@ -146,6 +146,11 @@ public:
 	/// @param effect Effect to register
 	void effectsRegisterDefaultEffect(JBWoprEffectBase* effect);
 
+	/// @brief Get default effect
+	/// @ingroup EffectsGroup
+	/// @return Default effect, or nullptr if none is registered
+	JBWoprEffectBase* effectsGetDefaultEffect();
+
 	/// @brief Check if default effect is running
 	/// @ingroup EffectsGroup
 	/// @return True if default effect is running

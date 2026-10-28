@@ -349,6 +349,10 @@ bool JBWoprHADevice::_homeAssistantSendDiscovery() {
 		auto effects = effectsGetRegisteredEffects();
 		auto options = jsonDoc["options"].to<JsonArray>();
 		options.add("");
+		auto defaultEffect = effectsGetDefaultEffect();
+		if (defaultEffect != nullptr) {
+			options.add(defaultEffect->getName());
+		}
 		for (auto& effect : effects) {
 			options.add(effect->getName());
 		}
@@ -483,6 +487,8 @@ bool JBWoprHADevice::_homeAssistantPublishConfig() {
 
 	auto topic = _getTopic(HA_CONFIG_PREFIX, SUBENTITY_NAME_STATE);
 	_setJsonDocumentFromConfig(jsonDoc);
+	// Never publish the MQTT password
+	jsonDoc.remove(JSON_KEY_MQTT_PASSWORD);
 	return mqttPublishMessage(topic, jsonDoc);
 }
 

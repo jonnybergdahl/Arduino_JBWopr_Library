@@ -182,6 +182,10 @@ void JBWoprDevice::effectsRegisterDefaultEffect(JBWoprEffectBase* effect) {
 	_defaultEffect = effect;
 }
 
+JBWoprEffectBase* JBWoprDevice::effectsGetDefaultEffect() {
+	return _defaultEffect;
+}
+
 bool JBWoprDevice::effectsDefaultEffectIsRunning() {
 	if (_defaultEffect != nullptr) {
 		return _defaultEffect->isRunning();
@@ -234,6 +238,9 @@ void JBWoprDevice::effectsStartEffect(const std::string& name) {
 			effectsStartEffect(effect);
 			return;
 		}
+	}
+	if (_defaultEffect != nullptr && _defaultEffect->getName() == name) {
+		effectsStartEffect(_defaultEffect);
 	}
 }
 
